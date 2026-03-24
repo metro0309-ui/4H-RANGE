@@ -256,6 +256,31 @@ html,body{background:var(--bg0);color:var(--t1);font-family:var(--ui);font-size:
 .timetag.hot{background:rgba(0,177,64,.15);color:var(--G);border:1px solid rgba(0,177,64,.3)}
 .timetag.cold{background:var(--bg3);color:var(--t3)}
 
+
+/* ── MODE TOGGLE ── */
+.mode-bar{display:flex;gap:0;background:var(--bg2);border-bottom:1px solid var(--bd)}
+.mode-btn{flex:1;background:none;border:none;font-family:var(--ui);font-size:11px;font-weight:600;
+  color:var(--t3);padding:10px 0;cursor:pointer;position:relative;transition:all .15s;text-align:center;line-height:1.3}
+.mode-btn span{display:block;font-size:9px;opacity:.6;margin-top:2px}
+.mode-btn.active-range{color:var(--G)}.mode-btn.active-range::after{content:'';position:absolute;bottom:0;left:10%;right:10%;height:2px;background:var(--G);border-radius:1px 1px 0 0}
+.mode-btn.active-break{color:var(--A)}.mode-btn.active-break::after{content:'';position:absolute;bottom:0;left:10%;right:10%;height:2px;background:var(--A);border-radius:1px 1px 0 0}
+.mode-divider{width:1px;background:var(--bd);margin:8px 0}
+/* 돌파 모드 배지 */
+.break-badge{font-size:9px;font-family:var(--num);font-weight:700;padding:2px 6px;border-radius:2px;
+  background:rgba(240,176,64,.15);color:var(--A);border:1px solid rgba(240,176,64,.3);margin-right:6px}
+/* 모드 안내 배너 */
+.mode-hint{padding:8px 16px;font-size:11px;line-height:1.55;border-bottom:1px solid var(--bd);display:none}
+.mode-hint.on{display:block}
+.mode-hint.range{background:rgba(0,177,64,.06);color:var(--G)}
+.mode-hint.break{background:rgba(240,176,64,.06);color:var(--A)}
+/* 돌파 모드 진입 조건 카드 */
+.break-cond{background:var(--bg2);border:1px solid var(--bd);border-radius:4px;padding:8px 10px;margin-bottom:6px;font-size:11px;color:var(--t2)}
+.break-cond b{color:var(--t1)}
+.cond-row{display:flex;align-items:center;gap:6px;margin-bottom:3px}
+.cond-row:last-child{margin-bottom:0}
+.cond-dot{width:6px;height:6px;border-radius:50%;flex-shrink:0}
+.cond-dot.ok{background:var(--G)}.cond-dot.no{background:var(--R)}.cond-dot.warn{background:var(--A)}
+
 </style>
 </head>
 <body>
@@ -357,13 +382,24 @@ html,body{background:var(--bg0);color:var(--t1);font-family:var(--ui);font-size:
     </div>
   </div>
   <div class="results" id="results">
-    <div class="seclbl">추천 매수가 3단계</div>
+    <!-- MODE TOGGLE -->
+    <div class="mode-bar">
+      <button class="mode-btn active-range" id="mode-range" onclick="setMode('range')">
+        📉 Range 매수<span>하단 분할매수</span>
+      </button>
+      <div class="mode-divider"></div>
+      <button class="mode-btn" id="mode-break" onclick="setMode('break')">
+        🚀 Breakout 매수<span>고점 돌파 추세</span>
+      </button>
+    </div>
+    <div class="mode-hint range on" id="mode-hint"></div>
+    <div class="seclbl" id="mode-seclbl">추천 매수가 3단계</div>
     <div class="abandwrap" id="abandwrap"><div class="abandcard" id="abandcard"><div class="abandtitle" id="abandtitle">—</div><div class="abandbody" id="abandbody">—</div></div></div>
     <div class="buygroup">
       <div class="buylv lv1">
         <div class="lvbg" id="lb1" style="width:60%"></div>
         <div class="lvtop">
-          <div><div style="display:flex;align-items:center;margin-bottom:3px"><span class="lvbadge">BUY 1</span><span class="lvname">즉시진입 · 최적버퍼</span></div><div class="lvmethod" id="b1m">—</div></div>
+          <div><div style="display:flex;align-items:center;margin-bottom:3px"><span class="lvbadge" id="b1badge">BUY 1</span><span class="lvname" id="b1name">즉시진입 · 최적버퍼</span></div><div class="lvmethod" id="b1m">—</div></div>
           <div><div class="lvprice" id="b1p">—</div><div class="pct-badge" id="b1pct">—</div><div class="lvtp" id="b1g">—</div><div class="lvloss" id="b1l">—</div></div>
         </div>
         <div class="lvstats">
@@ -381,7 +417,7 @@ html,body{background:var(--bg0);color:var(--t1);font-family:var(--ui);font-size:
       <div class="buylv lv2">
         <div class="lvbg" id="lb2" style="width:40%"></div>
         <div class="lvtop">
-          <div><div style="display:flex;align-items:center;margin-bottom:3px"><span class="lvbadge">BUY 2</span><span class="lvname">지지선 대기 · Pivot</span></div><div class="lvmethod" id="b2m">—</div></div>
+          <div><div style="display:flex;align-items:center;margin-bottom:3px"><span class="lvbadge" id="b2badge">BUY 2</span><span class="lvname" id="b2name">지지선 대기 · Pivot</span></div><div class="lvmethod" id="b2m">—</div></div>
           <div><div class="lvprice" id="b2p">—</div><div class="pct-badge" id="b2pct">—</div><div class="lvtp" id="b2g">—</div><div class="lvloss" id="b2l">—</div></div>
         </div>
         <div class="lvstats">
@@ -399,7 +435,7 @@ html,body{background:var(--bg0);color:var(--t1);font-family:var(--ui);font-size:
       <div class="buylv lv3">
         <div class="lvbg" id="lb3" style="width:25%"></div>
         <div class="lvtop">
-          <div><div style="display:flex;align-items:center;margin-bottom:3px"><span class="lvbadge">BUY 3</span><span class="lvname">딥바이 · ATR 하방</span></div><div class="lvmethod" id="b3m">—</div></div>
+          <div><div style="display:flex;align-items:center;margin-bottom:3px"><span class="lvbadge" id="b3badge">BUY 3</span><span class="lvname" id="b3name">딥바이 · ATR 하방</span></div><div class="lvmethod" id="b3m">—</div></div>
           <div><div class="lvprice" id="b3p">—</div><div class="pct-badge" id="b3pct">—</div><div class="lvtp" id="b3g">—</div><div class="lvloss" id="b3l">—</div></div>
         </div>
         <div class="lvstats">
@@ -793,10 +829,78 @@ function calculate(noScroll){
   if(isNaN(high)||isNaN(low)||high<=low){toast('최고가 > 최저가 이어야 합니다',true);return;}
   if(isNaN(close)||close<=0)close=(high+low)/2;
   var rng=high-low,buf=G.bt?G.bt.ab:0.06,atr=G.bt?G.bt.la:rng*0.28;
+
+  // 모드 자동 감지 (제안만, 강제 전환 아님)
+  autoDetectMode(close, high, low);
+
+  // ── BREAKOUT 모드 ─────────────────────────────
+  if(G.mode === 'break') {
+    var br = calcBreakout(high, low, close, atr, buf);
+    var b1=br.e2, b2=br.e1, b3=br.e3;  // E2=즉시, E1=눌림, E3=선제
+    var tp=br.tp, s1=br.stop;
+    var l1=Math.abs((s1-b1)/b1*100), l2=Math.abs((s1-b2)/b2*100), l3=Math.abs((s1-b3)/b3*100);
+    var lp=G.livePrice||close;
+    // 배지 이름
+    el('b1name').textContent='즉시진입 · 돌파 직후';
+    el('b2name').textContent='눌림 대기 · 재확인 진입';
+    el('b3name').textContent='선제 진입 · 고점 직전';
+    // 돌파 상태 메시지
+    var statusTxt = br.isBroken
+      ? '✅ 고점 이미 돌파 — 눌림목 진입 대기'
+      : br.isBreaking
+        ? '⚡ 고점 근접 — 돌파 임박, 선제 진입 가능'
+        : '⏳ 고점 미돌파 — 돌파 확인 후 진입 권장';
+    el('abandwrap').classList.add('on');
+    el('abandcard').className='abandcard '+(br.isBroken?'':'caution');
+    el('abandtitle').textContent=statusTxt;
+    el('abandbody').innerHTML=
+      '고점 <b>$'+fp(high)+'</b> · 돌파 TP <b>$'+fp(tp)+'</b> (+'+((tp-high)/high*100).toFixed(1)+'%)<br>'+
+      '공격적 TP2 <b>$'+fp(br.tp2)+'</b> (+'+((br.tp2-high)/high*100).toFixed(1)+'%) · Stop <b>$'+fp(s1)+'</b>';
+    // 가격 표시
+    var d=G.bt||{b1WR:0,b1PF:0,b1EV:0,b1FR:0,b2WR:0,b2PF:0,b2EV:0,b2FR:0,b3WR:0,b3PF:0,b3EV:0,b3FR:0};
+    var hb=!!G.bt;
+    function ec(v){return v>0?'evtag evp':v<0?'evtag evn':'evtag evz';}
+    function et(v,h){return h?('EV '+(v>=0?'+':'')+v.toFixed(2)+'%'):'EV —';}
+    el('b1p').textContent='$'+fp(b1);el('b1m').textContent='High + Range × 1%';el('b1m').style.color='var(--A)';
+    el('b1g').textContent='↑'+((tp-b1)/b1*100).toFixed(2)+'% → TP';el('b1l').textContent='↓ 손절 '+l1.toFixed(2)+'%';
+    el('b1wr').textContent='—';el('b1fr').textContent='—';el('b1pf').textContent='—';el('b1wt').textContent='40%';
+    el('b1ev').textContent='EV —';el('b1ev').className='evtag evz';el('lb1').style.width='80%';
+    el('b2p').textContent='$'+fp(b2);el('b2m').textContent='High + Range × 3% (눌림)';el('b2m').style.color='';
+    el('b2g').textContent='↑'+((tp-b2)/b2*100).toFixed(2)+'% → TP';el('b2l').textContent='↓ 손절 '+l2.toFixed(2)+'%';
+    el('b2wr').textContent='—';el('b2fr').textContent='—';el('b2pf').textContent='—';el('b2wt').textContent='40%';
+    el('b2ev').textContent='EV —';el('b2ev').className='evtag evz';el('lb2').style.width='60%';
+    el('b3p').textContent='$'+fp(b3);el('b3m').textContent='High × 99.5% (선제, 공격적)';
+    el('b3g').textContent='↑'+((tp-b3)/b3*100).toFixed(2)+'% → TP';el('b3l').textContent='↓ 손절 '+l3.toFixed(2)+'%';
+    el('b3wr').textContent='—';el('b3fr').textContent='—';el('b3pf').textContent='—';el('b3wt').textContent='20%';
+    el('b3ev').textContent='EV —';el('b3ev').className='evtag evz';el('lb3').style.width='40%';
+    // % 배지
+    el('b1pct').textContent=((b1-lp)/lp*100).toFixed(2)+'% (현재가 대비)';
+    el('b1pct').className='pct-badge '+(b1<=lp?'neg':'pos');
+    el('b2pct').textContent=((b2-lp)/lp*100).toFixed(2)+'% (현재가 대비)';
+    el('b2pct').className='pct-badge '+(b2<=lp?'neg':'pos');
+    el('b3pct').textContent=((b3-lp)/lp*100).toFixed(2)+'% (현재가 대비)';
+    el('b3pct').className='pct-badge '+(b3<=lp?'neg':'pos');
+    // 분할비중
+    el('wg1').style.flex=40;el('wg2').style.flex=40;el('wg3').style.flex=20;
+    el('wl1').textContent='진입1 40%';el('wl2').textContent='눌림 40%';el('wl3').textContent='선제 20%';
+    el('rtp').textContent='$'+fp(tp);el('rstop').textContent='$'+fp(s1);el('rvol').textContent=fp(atr)+' / '+(atr/high*100).toFixed(1)+'%';
+    renderBar(high,low,b1,b2,b3,tp,s1);
+    G.res={coin:G.coin,tf:G.tf,high,low,close,buy1:b1,buy2:b2,buy3:b3,tp,stop1:s1,buf,atr,ts:Date.now(),b1WR:null,b1EV:null,af:null};
+    el('results').classList.add('on');
+    if(!noScroll)setTimeout(function(){el('results').scrollIntoView({behavior:'smooth',block:'start'});},80);
+    startMC(close,G.bt?(G.bt.la/high*Math.sqrt(24)):0.039,b1,b2,b3,tp,s1,high,low);
+    renderDirection(close,G.bt?(G.bt.la/high*Math.sqrt(24)):0.039);
+    return; // Breakout 모드 계산 끝
+  }
+
+  // ── RANGE 모드 (기존) ─────────────────────────
   var pv=(high+low+close)/3,ps1=2*pv-high,ps2=pv-rng,pb=ps1<low?ps1:ps2;
   var b1=low+rng*buf,b2=pb,b3=low-atr*0.35,s1=b1-atr*G.AS;
-  // TP: Range 85% 회복 vs BUY1 기준 최소 5% 중 높은 값
   var tp=Math.max(low+rng*0.85, b1*1.05);
+  // 이름 원복
+  el('b1name').textContent='즉시진입 · 최적버퍼';
+  el('b2name').textContent='지지선 대기 · Pivot';
+  el('b3name').textContent='딥바이 · ATR 하방';
   var l1=atr*G.AS/b1*100,l2=atr*G.AS/b2*100,l3=atr*G.AS/b3*100;
   var d=G.bt||{b1WR:0,b1PF:0,b1EV:0,b1FR:0,b2WR:0,b2PF:0,b2EV:0,b2FR:0,b3WR:0,b3PF:0,b3EV:0,b3FR:0};
   var hb=!!G.bt;
@@ -1271,6 +1375,98 @@ function renderQuant(b1, b2, b3, tp, s1, close, low, high) {
     });
   } else {
     el('btc-rel').textContent='해당없음';el('btc-tag').textContent='';
+  }
+}
+
+
+// ════════════════════════════════════════════════
+//  MODE: 'range' | 'break'
+// ════════════════════════════════════════════════
+G.mode = 'range';
+
+function setMode(mode) {
+  G.mode = mode;
+  var rb = el('mode-range'), bb = el('mode-break');
+  rb.className = 'mode-btn' + (mode==='range' ? ' active-range' : '');
+  bb.className = 'mode-btn' + (mode==='break' ? ' active-break' : '');
+  el('mode-seclbl').textContent = mode==='range' ? '추천 매수가 3단계' : '🚀 Breakout 진입가 3단계';
+  var hint = el('mode-hint');
+  if(mode==='range'){
+    hint.className='mode-hint range on';
+    hint.textContent='📉 Range 하단 매수 — 현재 봉 Low 근처에서 분할매수. 횡보·조정장에 유효.';
+  } else {
+    hint.className='mode-hint break on';
+    hint.textContent='🚀 Breakout 매수 — High 돌파 후 눌림목 진입. 상승 추세·모멘텀 장에 유효.';
+  }
+  // badge 색 변경
+  ['b1badge','b2badge','b3badge'].forEach(function(id){
+    var el2=el(id); if(!el2)return;
+    if(mode==='break'){
+      el2.style.background='rgba(240,176,64,.15)';
+      el2.style.color='var(--A)';
+      el2.style.borderColor='rgba(240,176,64,.3)';
+    } else {
+      el2.style.background='';el2.style.color='';el2.style.borderColor='';
+    }
+  });
+  if(el('results').classList.contains('on')) calculate(true);
+}
+
+// ════════════════════════════════════════════════
+//  BREAKOUT 계산
+//  - 돌파 진입 = High 위에서 눌림목
+//  - E1: High + Range×3% (돌파 직후 눌림)
+//  - E2: High + Range×1% (최소 돌파 확인)
+//  - E3: High (돌파 직전 눌림 — 가장 공격적)
+//  - TP: High + Range (동일 폭 상승)
+//  - Stop: High - ATR×1.0 (돌파 무효화 라인)
+// ════════════════════════════════════════════════
+function calcBreakout(high, low, close, atr, buf) {
+  var rng = high - low;
+  // 돌파 조건 체크
+  var isBreaking = close >= high * 0.98; // 고점 2% 이내
+  var isBroken   = close > high;         // 이미 돌파
+
+  // 진입가 3단계
+  var e1 = high + rng * 0.03;  // 눌림 후 재확인 진입
+  var e2 = high + rng * 0.01;  // 돌파 직후 진입
+  var e3 = high * 0.995;       // 돌파 직전 선제 진입 (공격적)
+
+  // TP: 고점에서 Range 만큼 추가 상승
+  var tp = high + rng * 1.0;
+  // Aggressive TP: 1.618 확장
+  var tp2 = high + rng * 1.618;
+
+  // Stop: 고점 아래 ATR (돌파 무효화)
+  var stop = high - atr * 1.0;
+
+  return {
+    e1:e1, e2:e2, e3:e3,
+    tp:tp, tp2:tp2, stop:stop,
+    rng:rng, isBreaking:isBreaking, isBroken:isBroken
+  };
+}
+
+// 돌파 모드 조건 자동 감지 → 모드 제안
+function autoDetectMode(close, high, low) {
+  var rng = high - low;
+  var posInRange = (close - low) / rng; // 0=Low, 1=High
+
+  if(posInRange >= 0.95) {
+    // 고점 5% 이내 → 돌파 모드 제안
+    if(G.mode === 'range') {
+      el('mode-break').style.boxShadow='0 0 0 2px var(--A)';
+      el('mode-break').style.borderRadius='4px';
+    }
+  } else if(posInRange <= 0.35) {
+    // 하단 35% 이내 → Range 모드 제안
+    if(G.mode === 'break') {
+      el('mode-range').style.boxShadow='0 0 0 2px var(--G)';
+      el('mode-range').style.borderRadius='4px';
+    }
+  } else {
+    el('mode-break').style.boxShadow='';
+    el('mode-range').style.boxShadow='';
   }
 }
 
