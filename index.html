@@ -281,6 +281,33 @@ html,body{background:var(--bg0);color:var(--t1);font-family:var(--ui);font-size:
 .cond-dot{width:6px;height:6px;border-radius:50%;flex-shrink:0}
 .cond-dot.ok{background:var(--G)}.cond-dot.no{background:var(--R)}.cond-dot.warn{background:var(--A)}
 
+
+/* ── VOLUME PANEL ── */
+.vol-panel{background:var(--bg1);border-bottom:1px solid var(--bd);padding:10px 16px;display:none}
+.vol-panel.on{display:block}
+.vol-rows{display:grid;grid-template-columns:1fr 1fr;gap:6px}
+.vrow{background:var(--bg2);border:1px solid var(--bd);border-radius:4px;padding:8px 10px}
+.vrow-lbl{font-size:9px;color:var(--t3);text-transform:uppercase;letter-spacing:.04em;margin-bottom:4px}
+.vrow-val{font-family:var(--num);font-size:13px;font-weight:600}
+.vrow-sub{font-size:9px;color:var(--t3);font-family:var(--num);margin-top:2px}
+/* 볼륨 상태 바 */
+.vol-status-bar{margin-top:8px;background:var(--bg2);border:1px solid var(--bd);border-radius:4px;padding:8px 10px}
+.vsb-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:6px}
+.vsb-lbl{font-size:11px;color:var(--t2)}
+.vsb-pct{font-family:var(--num);font-size:12px;font-weight:600}
+.vsb-track{height:5px;background:var(--bg3);border-radius:3px;overflow:hidden}
+.vsb-fill{height:100%;border-radius:3px;transition:width .5s}
+.vsb-fill.ok{background:var(--G)}.vsb-fill.warn{background:var(--A)}.vsb-fill.low{background:var(--R)}
+/* 볼륨 신호 뱃지 */
+.vol-signal{display:flex;align-items:center;gap:6px;margin-top:8px;padding:7px 10px;border-radius:4px;font-size:11px;font-weight:600}
+.vol-signal.strong{background:rgba(0,177,64,.08);border:1px solid rgba(0,177,64,.2);color:var(--G)}
+.vol-signal.weak{background:rgba(240,64,64,.08);border:1px solid rgba(240,64,64,.2);color:var(--R)}
+.vol-signal.normal{background:var(--bg2);border:1px solid var(--bd);color:var(--t2)}
+.vol-dot{width:6px;height:6px;border-radius:50%;flex-shrink:0}
+.vol-signal.strong .vol-dot{background:var(--G);box-shadow:0 0 5px var(--G)}
+.vol-signal.weak .vol-dot{background:var(--R)}
+.vol-signal.normal .vol-dot{background:var(--t3)}
+
 </style>
 </head>
 <body>
@@ -340,6 +367,35 @@ html,body{background:var(--bg0);color:var(--t1);font-family:var(--ui);font-size:
     <button class="re-btn" onclick="manualRefresh()">즉시 갱신</button>
   </div>
   <div class="lov" id="lov"><div class="spin"></div><div class="ltxt" id="ltxt">데이터 수집 중...</div></div>
+
+  <!-- VOLUME PANEL -->
+  <div class="vol-panel" id="vol-panel">
+    <div style="font-size:10px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--t3);margin-bottom:8px">거래량 분석</div>
+    <div class="vol-rows">
+      <div class="vrow">
+        <div class="vrow-lbl">현재 봉 거래량</div>
+        <div class="vrow-val" id="vol-cur">—</div>
+        <div class="vrow-sub" id="vol-cur-sub">—</div>
+      </div>
+      <div class="vrow">
+        <div class="vrow-lbl">20봉 평균 거래량</div>
+        <div class="vrow-val" id="vol-avg">—</div>
+        <div class="vrow-sub" id="vol-avg-sub">기준선 (80%)</div>
+      </div>
+    </div>
+    <div class="vol-status-bar">
+      <div class="vsb-top">
+        <span class="vsb-lbl">현재 거래량 / 평균 거래량</span>
+        <span class="vsb-pct" id="vol-ratio-pct">—</span>
+      </div>
+      <div class="vsb-track"><div class="vsb-fill" id="vol-bar" style="width:0%"></div></div>
+    </div>
+    <div class="vol-signal" id="vol-signal">
+      <div class="vol-dot"></div>
+      <span id="vol-signal-txt">거래량 분석 중...</span>
+    </div>
+  </div>
+
   <div class="bbar" id="bbar"><div><span class="blbl" id="blbl">—</span><span style="font-size:10px;color:var(--t3);margin-left:6px" id="bsub">—</span></div><div class="bval" id="bval">—</div></div>
   <div class="wbar" id="wbar"></div>
   <div class="btcard" id="btcard">
@@ -616,7 +672,8 @@ function setTF(tf){
   document.querySelectorAll('.tfbtn').forEach(function(b){b.classList.toggle('active',b.dataset.tf===tf);});
   var L=tf.toUpperCase();
   el('tclh').textContent=L+' HIGH';el('tclc').textContent=L+' CLOSE';el('tcll').textContent=L+' LOW';
-  ['btcard','ticker','results','bbar','wbar'].forEach(function(id){el(id).classList.remove('on');});
+  ['btcard','ticker','results','bbar','wbar','vol-panel'].forEach(function(id){el(id).classList.remove('on');});
+  G.curVolRatio=null;G._candles=null;
 }
 
 el('sinput').addEventListener('keydown',function(e){if(e.key==='Enter')doSearch();});
@@ -667,6 +724,9 @@ function doSearch(){
         el('ih').value=parseFloat(h.toFixed(6));
         el('il').value=parseFloat(l.toFixed(6));
         el('ic').value=parseFloat(cl.toFixed(6));
+        // 거래량 분석 실행
+        G._candles=c4;
+        renderVolume(c4, parseFloat(cur[5]));
         el('tkname').textContent=sym;
         el('tksub').textContent=pair+' · '+cfg.lbl+' · 🔴 LIVE · '+remStr;
         el('tkpx').textContent='$'+fp(cl);
@@ -906,7 +966,10 @@ function calculate(noScroll){
   var hb=!!G.bt;
   function ec(v){return v>0?'evtag evp':v<0?'evtag evn':'evtag evz';}
   function et(v,h){return h?('EV '+(v>=0?'+':'')+v.toFixed(2)+'%'):'EV —';}
-  var s1s=Math.max(0.1,d.b1FR*d.b1WR*Math.min(d.b1PF,4))||25,s2s=Math.max(0.1,d.b2FR*d.b2WR*Math.min(d.b2PF,4))||12,s3s=Math.max(0.1,d.b3FR*d.b3WR*Math.min(d.b3PF,4))||8;
+  // 거래량 비율에 따른 비중 조정
+  var volBoost = G.curVolRatio||1;
+  var volMult = volBoost>=1.5 ? 1.2 : volBoost>=0.8 ? 1.0 : 0.6; // 거래량 부족 시 비중 축소
+  var s1s=Math.max(0.1,d.b1FR*d.b1WR*Math.min(d.b1PF,4)*volMult)||25,s2s=Math.max(0.1,d.b2FR*d.b2WR*Math.min(d.b2PF,4)*volMult)||12,s3s=Math.max(0.1,d.b3FR*d.b3WR*Math.min(d.b3PF,4))||8;
   var st=s1s+s2s+s3s,w1=Math.round(s1s/st*100),w2=Math.round(s2s/st*100),w3=Math.max(0,100-w1-w2);
   el('b1p').textContent='$'+fp(b1);el('b1m').textContent='Low + Range × '+(buf*100).toFixed(0)+'%';
   var lp=G.livePrice||close;
@@ -1178,6 +1241,9 @@ function startWS(pair,tf){
         var h=parseFloat(k.h),l=parseFloat(k.l),cl=parseFloat(k.c);
         var now=Date.now();
 
+        // 거래량 실시간 업데이트
+        var curVol=parseFloat(k.v||0);
+        if(G._candles&&curVol>0) renderVolume(G._candles, curVol);
         // 티커 현재가 업데이트
         G.livePrice=cl;
         el('tkpx').textContent='$'+fp(cl);
@@ -1468,6 +1534,76 @@ function autoDetectMode(close, high, low) {
     el('mode-break').style.boxShadow='';
     el('mode-range').style.boxShadow='';
   }
+}
+
+
+// ════════════════════════════════════════════════
+//  VOLUME ANALYSIS
+// ════════════════════════════════════════════════
+function fmtVol(v) {
+  if(v>=1e9) return (v/1e9).toFixed(2)+'B';
+  if(v>=1e6) return (v/1e6).toFixed(2)+'M';
+  if(v>=1e3) return (v/1e3).toFixed(1)+'K';
+  return v.toFixed(0);
+}
+
+function renderVolume(candles, curVolume) {
+  if(!candles||candles.length<22)return;
+
+  // 20봉 평균 (현재 봉 제외)
+  var sum=0;
+  var n=Math.min(20, candles.length-1);
+  for(var i=candles.length-1-n; i<candles.length-1; i++) {
+    sum+=parseFloat(candles[i][5]);
+  }
+  var avgVol=sum/n;
+  var ratio=curVolume/avgVol;
+  var pct=Math.min(300, ratio*100); // 최대 300%까지 표시
+
+  // UI 업데이트
+  el('vol-panel').classList.add('on');
+  el('vol-cur').textContent=fmtVol(curVolume);
+  el('vol-avg').textContent=fmtVol(avgVol);
+  el('vol-ratio-pct').textContent=(ratio*100).toFixed(0)+'%';
+
+  // 진행 바
+  var bar=el('vol-bar');
+  bar.style.width=Math.min(100,pct/3)+'%'; // 100% = 300%
+  if(ratio>=1.5){bar.className='vsb-fill ok';}
+  else if(ratio>=0.8){bar.className='vsb-fill warn';}
+  else{bar.className='vsb-fill low';}
+
+  // 신호 판정
+  var sig=el('vol-signal'),txt=el('vol-signal-txt');
+  if(ratio>=2.0){
+    // 평균의 2배 이상 → 강한 신호
+    sig.className='vol-signal strong';
+    txt.textContent='🔥 거래량 급증 (평균 '+ratio.toFixed(1)+'배) — 강한 진입 신호';
+    el('vol-cur-sub').textContent='평균 대비 +'+((ratio-1)*100).toFixed(0)+'%';
+    el('vol-cur').style.color='var(--G)';
+  } else if(ratio>=1.5){
+    sig.className='vol-signal strong';
+    txt.textContent='✅ 거래량 충분 (평균 '+ratio.toFixed(1)+'배) — 진입 유효';
+    el('vol-cur-sub').textContent='평균 대비 +'+((ratio-1)*100).toFixed(0)+'%';
+    el('vol-cur').style.color='var(--G)';
+  } else if(ratio>=0.8){
+    sig.className='vol-signal normal';
+    txt.textContent='⚡ 거래량 보통 (평균 '+ratio.toFixed(1)+'배) — 진입 가능, 신뢰도 보통';
+    el('vol-cur-sub').textContent='기준선 충족';
+    el('vol-cur').style.color='var(--t1)';
+  } else {
+    // 평균의 80% 미만 → 거래량 부족
+    sig.className='vol-signal weak';
+    txt.textContent='⚠ 거래량 부족 (평균 '+ratio.toFixed(1)+'배) — 진입 신중 권장';
+    el('vol-cur-sub').textContent='기준선 미달';
+    el('vol-cur').style.color='var(--R)';
+  }
+
+  // 봉 마감 시간 기준 비교 안내
+  el('vol-avg-sub').textContent='20봉 평균 기준 80% 이상 = 유효';
+
+  // G에 저장 (calculate에서 활용)
+  G.curVolRatio=ratio;
 }
 
 setTF('4h');
