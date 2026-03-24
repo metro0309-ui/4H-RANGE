@@ -29,8 +29,7 @@ html,body{background:var(--bg0);color:var(--t1);font-family:var(--ui);font-size:
 .logo{width:28px;height:28px;background:var(--t1);border-radius:4px;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:11px;color:var(--bg0)}
 .hpair{font-size:13px;font-weight:600;margin-left:8px}
 .hpair span{color:var(--t2);font-weight:400}
-.apill{font-family:var(--num);font-size:10px;padding:3px 8px;border-radius:3px;border:1px solid var(--bd2);color:var(--t3);background:var(--bg2)}
-.apill.warn{border-color:var(--A);color:var(--A)}.apill.full{border-color:var(--R);color:var(--R)}
+
 
 /* TABS */
 .tabs{display:flex;background:var(--bg1);border-bottom:1px solid var(--bd)}
@@ -233,10 +232,7 @@ html,body{background:var(--bg0);color:var(--t1);font-family:var(--ui);font-size:
     <div class="logo">RC</div>
     <div class="hpair">RANGE CALC <span>/ USDT</span></div>
   </div>
-  <div style="display:flex;align-items:center;gap:8px">
-    <div class="apill" id="apill">API 6/6</div>
-    <div style="font-size:10px;color:var(--t3)">v0.5</div>
-  </div>
+  <div style="font-size:10px;color:var(--t3)">v0.5</div>
 </div>
 
 <!-- TABS -->
@@ -496,29 +492,9 @@ var G = {
 
 function el(id) { return document.getElementById(id); }
 
-/* ── RATE LIMIT ─────────────────────────────────────── */
-function getRD() {
-  try {
-    var d = JSON.parse(localStorage.getItem(G.RK)) || {};
-    var t = new Date().toDateString();
-    if (d.date !== t) return {date:t, count:0};
-    return d;
-  } catch(e) { return {date:new Date().toDateString(), count:0}; }
-}
-function saveRD(d) { localStorage.setItem(G.RK, JSON.stringify(d)); }
-function canAPI() { return getRD().count < G.RM; }
-function useAPI() { var d = getRD(); d.count++; saveRD(d); updateRUI(); }
-function updateRUI() {
-  var d = getRD(), rem = G.RM - d.count;
-  var e = el('apill');
-  e.textContent = 'API ' + rem + '/' + G.RM;
-  e.className = 'apill' + (rem <= 0 ? ' full' : rem <= 2 ? ' warn' : '');
-  var btn = el('sgo');
-  if (rem <= 0) {
-    btn.classList.add('locked');
-    btn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="var(--t3)" stroke-width="2.5" width="12" height="12"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>';
-  }
-}
+/* ── RATE LIMIT (비활성 — 오픈베타 때 재적용) ────────── */
+function canAPI() { return true; }
+function useAPI() { /* no-op */ }
 
 /* ── UI HELPERS ─────────────────────────────────────── */
 function switchTab(name) {
@@ -1076,7 +1052,6 @@ function clearH() {
 
 /* ── INIT ───────────────────────────────────────────── */
 setTF('4h');
-updateRUI();
 calculate();
 </script>
 </body>
