@@ -738,11 +738,51 @@ function renderBar(high,low,b1,b2,b3,tp,sl){
 }
 
 function checkAbandon(close,low,high,b1,b2,b3){
-  var rng=high-low,mid=low+rng*0.50,quit=low+rng*0.65;
+  var rng=high-low;
+  // 현재가 기준 BUY1까지 하락 필요 %
+  var distB1=((b1-close)/close*100);  // 음수 = 아래에 있음
+  var distB2=((b2-close)/close*100);
+  var distB3=((b3-close)/close*100);
+  // BUY1이 현재가보다 위에 있으면 (현재가가 이미 BUY1 아래) → 이미 진입 가능
+  var b1Below = close <= b1;
+  // 현재가가 High 근처 (상단 15% 이내)
+  var nearHigh = close >= high - rng*0.15;
+  // 현재가가 이미 TP 이상
+  var tp = Math.max(low+rng*0.85, b1*1.05);
+  var aboveTP = close >= tp;
+
   var wrap=el('abandwrap'),card=el('abandcard'),title=el('abandtitle'),body=el('abandbody');
-  if(close>=quit){wrap.classList.add('on');card.className='abandcard danger';title.textContent='❌ 매수가 포기 권장 — 재검색 필요';body.innerHTML='현재가 <b>$'+fp(close)+'</b>가 레인지 65% 돌파. BUY1·2·3 도달 확률 급락.<br><b>→ 새 H/L/C로 재검색 하세요.</b>';}
-  else if(close>=mid){wrap.classList.add('on');card.className='abandcard caution';title.textContent='⚠ 상승 주의 — BUY1 소량만';body.innerHTML='현재가 <b>$'+fp(close)+'</b>가 레인지 50% 돌파. BUY2·3 진입 확률 감소.<br>$'+fp(quit)+' 이상이면 완전 포기 후 재검색.';}
-  else{wrap.classList.remove('on');}
+
+  if(aboveTP){
+    // TP 이미 달성 수준 → 완전히 다른 타이밍
+    wrap.classList.add('on'); card.className='abandcard danger';
+    title.textContent='🚫 매수 타이밍 아님 — 이미 목표가 수준';
+    body.innerHTML=
+      '현재가 <b>$'+fp(close)+'</b>가 목표가(TP $'+fp(tp)+') 근처까지 상승했습니다.<br>'+
+      '지금 매수 시 하락 리스크가 상승 기대보다 큽니다.<br>'+
+      '<b>→ 다른 코인을 검색하거나 다음 조정을 기다리세요.</b>';
+  } else if(nearHigh){
+    // 고점 근처
+    wrap.classList.add('on'); card.className='abandcard danger';
+    title.textContent='⛔ 고점 근처 — 매수 불가 구간';
+    body.innerHTML=
+      '현재가 <b>$'+fp(close)+'</b>가 고점($'+fp(high)+') 근처입니다.<br>'+
+      'BUY1까지 <b>'+Math.abs(distB1).toFixed(1)+'% 하락</b>이 필요하고, '+
+      'BUY3까지는 <b>'+Math.abs(distB3).toFixed(1)+'% 하락</b>이 필요합니다.<br>'+
+      '<b>→ 지정가 주문을 걸어두고 하락을 기다리거나, 다른 코인을 검색하세요.</b>';
+  } else if(b1Below){
+    // 현재가가 이미 BUY1 이하 → 진입 기회
+    wrap.classList.remove('on');
+  } else if(distB1 > -2){
+    // BUY1까지 2% 미만 → 거의 도달
+    wrap.classList.add('on'); card.className='abandcard caution';
+    title.textContent='📍 BUY1 근접 — 진입 준비';
+    body.innerHTML=
+      'BUY1 <b>$'+fp(b1)+'</b>까지 <b>'+Math.abs(distB1).toFixed(2)+'%</b> 남았습니다.<br>'+
+      '지정가 주문을 미리 걸어두세요.';
+  } else {
+    wrap.classList.remove('on');
+  }
 }
 
 function randN(){var u=0,v=0;while(u===0)u=Math.random();while(v===0)v=Math.random();return Math.sqrt(-2*Math.log(u))*Math.cos(2*Math.PI*v);}
@@ -921,43 +961,44 @@ function startWS(pair,tf){
         var d=JSON.parse(evt.data);
         if(!d.k)return;
         var k=d.k;
-        var liveClose=parseFloat(k.c);
         var h=parseFloat(k.h),l=parseFloat(k.l),cl=parseFloat(k.c);
         var now=Date.now();
-        // 현재가 티커 업데이트 (항상)
-        G.livePrice=liveClose;
-        el('tkpx').textContent='$'+fp(liveClose);
-        el('tkc').textContent='$'+fp(liveClose);
-        var prevCl=parseFloat(el('ic').value)||liveClose;
-        var chg=(liveClose-prevCl)/prevCl*100;
+
+        // 티커 현재가 업데이트
+        G.livePrice=cl;
+        el('tkpx').textContent='$'+fp(cl);
+        el('tkh').textContent='$'+fp(h);
+        el('tkl').textContent='$'+fp(l);
+        el('tkc').textContent='$'+fp(cl);
+        var prevCl=G.lastClosedCl||cl;
+        var chg=(cl-prevCl)/prevCl*100;
         var ce=el('tkchg');ce.textContent=(chg>=0?'+':'')+chg.toFixed(2)+'%';ce.className='tkchg '+(chg>=0?'up':'dn');
-        // 봉 마감 감지 → BUY가 기준 갱신
+
+        // 봉 마감 감지 → 완성봉 기준 저장 후 갱신
         if(k.x){
-          el('ih').value=parseFloat(h.toFixed(6));
-          el('il').value=parseFloat(l.toFixed(6));
-          el('ic').value=parseFloat(cl.toFixed(6));
+          G.lastClosedCl=cl;
           G.lastClosedTs=parseInt(k.T);
           G.candleCloseTs=parseInt(k.T)+({'15m':15*60000,'1h':60*60000,'4h':4*60*60000,'1d':24*60*60000}[G.tf]||0);
           startExpiry();
-          toast('🕯 새 봉 마감 — BUY가 기준 업데이트됨');
-          setTimeout(calculate,50);
-          return;
+          toast('🕯 새 봉 마감 — BUY가 갱신됨');
         }
-        // 0.1% 이상 변동 OR 5초 경과 → % 배지만 갱신 (BUY가는 고정)
-        var priceMoved=Math.abs(liveClose-lastPrice)/Math.max(lastPrice,0.0001)>0.001;
+
+        // ★ 핵심: 현재 봉 H/L/C → 입력값 실시간 업데이트 → BUY가 재계산
+        // 0.05% 이상 H/L 변동 OR 5초 경과 시 재계산
+        var prevH=parseFloat(el('ih').value)||h;
+        var prevL=parseFloat(el('il').value)||l;
+        var hlMoved=Math.abs(h-prevH)/Math.max(prevH,0.0001)>0.0005
+                  ||Math.abs(l-prevL)/Math.max(prevL,0.0001)>0.0005;
         var timeElapsed=now-lastCalc>5000;
-        if(priceMoved||timeElapsed){
-          lastPrice=liveClose;lastCalc=now;
-          // % 배지 업데이트 (BUY가 고정, 현재가 대비 % 갱신)
-          if(G.res){
-            var b1=G.res.buy1,b2=G.res.buy2,b3=G.res.buy3;
-            function pS(p){return (p>=0?'+':'')+p.toFixed(2)+'% (현재가 대비)';}
-            var p1=(b1-liveClose)/liveClose*100,p2=(b2-liveClose)/liveClose*100,p3=(b3-liveClose)/liveClose*100;
-            el('b1pct').textContent=pS(p1);el('b1pct').className='pct-badge '+(p1<0?'neg':'pos');
-            el('b2pct').textContent=pS(p2);el('b2pct').className='pct-badge '+(p2<0?'neg':'pos');
-            el('b3pct').textContent=pS(p3);el('b3pct').className='pct-badge '+(p3<0?'neg':'pos');
-            checkAbandon(liveClose,parseFloat(el('il').value),parseFloat(el('ih').value),b1,b2,b3);
-          }
+
+        if(hlMoved||timeElapsed||k.x){
+          lastCalc=now;
+          // 입력값 업데이트 (BUY가 재계산 트리거)
+          el('ih').value=parseFloat(h.toFixed(6));
+          el('il').value=parseFloat(l.toFixed(6));
+          el('ic').value=parseFloat(cl.toFixed(6));
+          // BUY1/2/3 즉시 재계산
+          setTimeout(calculate,0);
         }
       }catch(e){}
     };
