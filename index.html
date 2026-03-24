@@ -118,7 +118,7 @@ html,body{background:var(--bg0);color:var(--t1);font-family:var(--ui);font-size:
 .ls{display:flex;flex-direction:column;gap:2px}.lsl{font-size:9px;color:var(--t3);text-transform:uppercase;letter-spacing:.03em}.lsv{font-family:var(--num);font-size:11px;font-weight:500}
 .evtag{font-family:var(--num);font-size:9px;padding:1px 5px;border-radius:2px;display:inline-block;margin-top:3px}
 .evp{background:var(--Gd);color:var(--G)}.evn{background:var(--Rd);color:var(--R)}.evz{background:var(--bg3);color:var(--t3)}
-.mcstatus{font-size:10px;color:var(--t3);font-family:var(--num);padding:6px 16px;background:var(--bg2);border-bottom:1px solid var(--bd);display:none;text-align:center}.mcstatus.on{display:block}
+.mcstatus{display:none!important}
 .wtpanel{background:var(--bg2);border-bottom:1px solid var(--bd);padding:10px 16px}
 .wttitle{font-size:9px;color:var(--t3);text-transform:uppercase;letter-spacing:.06em;margin-bottom:8px}
 .wtbars{display:flex;gap:2px;height:18px;border-radius:3px;overflow:hidden;margin-bottom:5px}
@@ -845,7 +845,7 @@ function renderDirection(S0, dv) {
 }
 
 function startMC(S0,dv,b1,b2,b3){
-  var mc=el('mcstatus');mc.textContent='⏳ Monte Carlo 2,000회 계산 중...';mc.classList.add('on');
+  var mc=el('mcstatus'); // 화면에 표시 안함
   ['b1p14','b1p30','b2p14','b2p30','b3p14','b3p30'].forEach(function(id){el(id).textContent='…';});
   var N=2000,hv=dv/Math.sqrt(24),s14=14*24,s30=30*24;
   var r14=[0,0,0],r30=[0,0,0],done=0,CHK=250,tgts=[b1,b2,b3];
@@ -863,8 +863,7 @@ function startMC(S0,dv,b1,b2,b3){
       sp('b1b14','b1b30','b1p14','b1p30',r14[0]/N,r30[0]/N);
       sp('b2b14','b2b30','b2p14','b2p30',r14[1]/N,r30[1]/N);
       sp('b3b14','b3b30','b3p14','b3p30',r14[2]/N,r30[2]/N);
-      mc.textContent='✓ Monte Carlo 완료 (2,000회 · drift=0)';
-      setTimeout(function(){mc.classList.remove('on');},2500);
+      // mc 표시 제거됨
     }
   }
   setTimeout(chunk,0);
