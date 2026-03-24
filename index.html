@@ -540,7 +540,7 @@ function doSearch(){
         G.liveTimer=setInterval(function(){liveUpdate(G.livePair,G.liveTF);},300000);
         G.candleCloseTs=parseInt(cur[0])+({'15m':15*60000,'1h':60*60000,'4h':4*60*60000,'1d':24*60*60000}[G.tf]||0);
         G.lastClosedTs=parseInt(c4[c4.length-2][0]);
-        G.livePrice=livePrice;
+        G.livePrice=cl;
         startExpiry();
         checkMTF(G.bm,parseInt(cur[0]),cfg);
         if(el('ws-toggle').checked) startWS(pair,G.tf);
