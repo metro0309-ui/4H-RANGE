@@ -367,7 +367,7 @@ var TFC={
   '4h': {iv:'4h', lim:540, htf:'1d',hl:110,look:6,lbl:'4H 스윙'},
   '1d': {iv:'1d', lim:365, htf:'1w',hl:52, look:5,lbl:'1D 장기'}
 };
-var G={coin:'AAVE',tf:'4h',bt:null,bm:null,res:null,FEE:0.0015,AP:14,VP:20,AS:1.5,CC:0.20,VR:0.80};
+var G={coin:'AAVE',tf:'4h',bt:null,bm:null,res:null,liveTimer:null,livePair:null,liveTF:null,FEE:0.0015,AP:14,VP:20,AS:1.5,CC:0.20,VR:0.80};
 
 function el(id){return document.getElementById(id);}
 function fp(n){
@@ -395,6 +395,8 @@ function switchTab(n){
 
 function setTF(tf){
   G.tf=tf;G.bt=null;G.bm=null;
+  // 타임프레임 변경 시 실시간 갱신 중지
+  if(G.liveTimer){clearInterval(G.liveTimer);G.liveTimer=null;}
   document.querySelectorAll('.tfbtn').forEach(function(b){b.classList.toggle('active',b.dataset.tf===tf);});
   var L=tf.toUpperCase();
   el('tclh').textContent=L+' HIGH';el('tclc').textContent=L+' CLOSE';el('tcll').textContent=L+' LOW';
@@ -424,24 +426,92 @@ function doSearch(){
     setLoad(true,cfg.lbl+' 백테스트 실행 중 ('+c4.length+'봉)...');
     setTimeout(function(){
       try{
-        G.bm=buildBM(ch);var bt=runBT(c4,G.bm,cfg);G.bt=bt;
-        var last=c4[c4.length-2];
-        var h=parseFloat(last[2]),l=parseFloat(last[3]),cl=parseFloat(last[4]);
-        var prev=c4.length>2?parseFloat(c4[c4.length-3][4]):parseFloat(last[1]);
-        var chg=(cl-prev)/prev*100;
-        el('ih').value=trimZ(h.toFixed(8));el('il').value=trimZ(l.toFixed(8));el('ic').value=trimZ(cl.toFixed(8));
-        el('tkname').textContent=sym;el('tksub').textContent=pair+' · '+cfg.lbl+' · '+c4.length+'봉';
+        G.bm=buildBM(ch);
+        // 백테스트는 완성된 봉만 사용 (length-2까지)
+        var bt=runBT(c4,G.bm,cfg);G.bt=bt;
+
+        // ★ 핵심: 현재 형성 중인 봉(실시간) = length-1
+        var cur=c4[c4.length-1];   // 현재 봉 (아직 완성 안됨 - 실시간)
+        var prev2=c4[c4.length-2]; // 직전 완성 봉
+        var h=parseFloat(cur[2]);  // 현재 봉 High (실시간)
+        var l=parseFloat(cur[3]);  // 현재 봉 Low  (실시간)
+        var cl=parseFloat(cur[4]); // 현재 봉 Close (= 현재가)
+        var prevCl=parseFloat(prev2[4]);
+        var chg=(cl-prevCl)/prevCl*100;
+
+        // 봉 마감까지 남은 시간 계산
+        var tfMs={'15m':15*60000,'1h':60*60000,'4h':4*60*60000,'1d':24*60*60000};
+        var openTs=parseInt(cur[0]);
+        var closeTs=openTs+tfMs[G.tf];
+        var remain=Math.max(0,closeTs-Date.now());
+        var remH=Math.floor(remain/3600000);
+        var remM=Math.floor((remain%3600000)/60000);
+        var remStr=remH>0?(remH+'h '+pad2(remM)+'m 후 봉 마감'):(remM+'m 후 봉 마감');
+
+        el('ih').value=trimZ(h.toFixed(8));
+        el('il').value=trimZ(l.toFixed(8));
+        el('ic').value=trimZ(cl.toFixed(8));
+        el('tkname').textContent=sym;
+        el('tksub').textContent=pair+' · '+cfg.lbl+' · 🔴 LIVE · '+remStr;
         el('tkpx').textContent='$'+fp(cl);
         var ce=el('tkchg');ce.textContent=(chg>=0?'+':'')+chg.toFixed(2)+'%';ce.className='tkchg '+(chg>=0?'up':'dn');
         el('tkh').textContent='$'+fp(h);el('tkl').textContent='$'+fp(l);el('tkc').textContent='$'+fp(cl);
+        el('tclh').textContent=G.tf.toUpperCase()+' HIGH (실시간)';
+        el('tcll').textContent=G.tf.toUpperCase()+' LOW (실시간)';
+        el('tclc').textContent='현재가 (실시간)';
         el('ticker').classList.add('on');
-        renderBias(G.bm,parseInt(last[0]),cfg);renderBT(bt,cfg);
-        setLoad(false);toast(sym+' 완료 · 실승률 '+bt.b1WR.toFixed(1)+'% · 연'+bt.af.toFixed(0)+'회');
+
+        // 바이어스는 현재 봉 시간 기준
+        renderBias(G.bm,parseInt(cur[0]),cfg);
+        renderBT(bt,cfg);
+
+        // 실시간 자동 갱신 (30초마다 현재가 업데이트)
+        if(G.liveTimer)clearInterval(G.liveTimer);
+        G.livePair=pair;G.liveTF=G.tf;
+        G.liveTimer=setInterval(function(){liveUpdate(G.livePair,G.liveTF);},30000);
+
+        setLoad(false);toast(sym+' 완료 · 실승률 '+bt.b1WR.toFixed(1)+'% · 연'+bt.af.toFixed(0)+'회 · 🔴LIVE');
         el('sinput').blur();calculate();
       }catch(e2){setLoad(false);toast('처리 오류: '+e2.message,true);console.error(e2);}
     },30);
   })
   .catch(function(e){setLoad(false);toast(sym+'USDT 없음 또는 네트워크 오류',true);console.error(e);});
+}
+
+// 30초마다 현재 봉 실시간 업데이트 (현재가 + H/L 갱신)
+function liveUpdate(pair,tf){
+  var B='https://api.binance.com/api/v3/klines';
+  var url=B+'?symbol='+pair+'&interval='+tf+'&limit=2';
+  function fetchOne(u){
+    return fetch(u).then(function(r){if(!r.ok)throw new Error();return r.json();})
+    .catch(function(){return fetch('https://corsproxy.io/?'+u).then(function(r){return r.json();});});
+  }
+  fetchOne(url).then(function(data){
+    if(!data||data.length<1)return;
+    var cur=data[data.length-1]; // 현재 형성 중 봉
+    var h=parseFloat(cur[2]),l=parseFloat(cur[3]),cl=parseFloat(cur[4]);
+    var prev=data.length>1?parseFloat(data[data.length-2][4]):cl;
+    var chg=(cl-prev)/prev*100;
+    // 입력값 업데이트
+    el('ih').value=trimZ(h.toFixed(8));
+    el('il').value=trimZ(l.toFixed(8));
+    el('ic').value=trimZ(cl.toFixed(8));
+    // 티커 업데이트
+    el('tkpx').textContent='$'+fp(cl);
+    el('tkh').textContent='$'+fp(h);
+    el('tkl').textContent='$'+fp(l);
+    el('tkc').textContent='$'+fp(cl);
+    var ce=el('tkchg');ce.textContent=(chg>=0?'+':'')+chg.toFixed(2)+'%';ce.className='tkchg '+(chg>=0?'up':'dn');
+    // 봉 마감 시간 업데이트
+    var tfMs={'15m':15*60000,'1h':60*60000,'4h':4*60*60000,'1d':24*60*60000};
+    var openTs=parseInt(cur[0]),closeTs=openTs+tfMs[tf];
+    var remain=Math.max(0,closeTs-Date.now());
+    var remH=Math.floor(remain/3600000),remM=Math.floor((remain%3600000)/60000);
+    var remStr=remH>0?(remH+'h '+pad2(remM)+'m 후 봉 마감'):(remM+'m 후 봉 마감');
+    el('tksub').textContent=pair+' · '+TFC[tf].lbl+' · 🔴 LIVE · '+remStr;
+    // 계산 자동 재실행
+    calculate();
+  }).catch(function(){});
 }
 
 function buildBM(c){
