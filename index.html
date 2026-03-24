@@ -18,11 +18,13 @@
   --amber:#ffb830;--amber-dim:rgba(255,184,48,0.1);
   --blue:#4d9fff;--blue-dim:rgba(77,159,255,0.1);
   --purple:#b06dff;--purple-dim:rgba(176,109,255,0.1);
+  --teal:#00c8d4;--teal-dim:rgba(0,200,212,0.1);
   --mono:'IBM Plex Mono',monospace;--sans:'Syne',sans-serif;
 }
 *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 html,body{background:var(--bg);color:var(--text);font-family:var(--sans);min-height:100vh;overflow-x:hidden}
 .app{max-width:430px;margin:0 auto;min-height:100vh;display:flex;flex-direction:column}
+
 .topbar{display:flex;align-items:center;justify-content:space-between;padding:16px 20px 12px;border-bottom:0.5px solid var(--border);position:sticky;top:0;background:rgba(10,10,15,0.94);backdrop-filter:blur(12px);z-index:100}
 .topbar-logo{font-size:15px;font-weight:700;letter-spacing:.08em}
 .topbar-logo span{color:var(--green)}
@@ -31,42 +33,72 @@ html,body{background:var(--bg);color:var(--text);font-family:var(--sans);min-hei
 .api-counter.warn{border-color:var(--amber);color:var(--amber)}
 .api-counter.full{border-color:var(--red);color:var(--red)}
 .topbar-tag{font-family:var(--mono);font-size:10px;color:var(--text3);border:0.5px solid var(--border2);padding:3px 8px;border-radius:20px}
+
 .tabs{display:flex;padding:0 20px;border-bottom:0.5px solid var(--border);background:var(--bg)}
 .tab-btn{flex:1;background:none;border:none;color:var(--text3);font-family:var(--sans);font-size:13px;font-weight:500;padding:14px 0;cursor:pointer;position:relative;transition:color .2s}
 .tab-btn.active{color:var(--green)}
 .tab-btn.active::after{content:'';position:absolute;bottom:0;left:20%;right:20%;height:2px;background:var(--green);border-radius:2px 2px 0 0}
+
 .page{display:none;flex:1;padding:20px;overflow-y:auto}
 .page.active{display:block}
-.section-title{font-size:11px;font-weight:600;letter-spacing:.1em;color:var(--text3);text-transform:uppercase;margin-bottom:12px}
+.sec{font-size:11px;font-weight:600;letter-spacing:.1em;color:var(--text3);text-transform:uppercase;margin-bottom:12px}
+
+/* SEARCH */
 .search-wrap{position:relative;margin-bottom:16px}
-.search-input{width:100%;background:var(--bg3);border:0.5px solid var(--border2);border-radius:12px;padding:14px 50px 14px 16px;font-family:var(--mono);font-size:16px;font-weight:500;color:var(--text);outline:none;text-transform:uppercase;transition:border-color .2s}
-.search-input::placeholder{color:var(--text3);text-transform:none;letter-spacing:0;font-size:14px}
+.search-input{width:100%;background:var(--bg3);border:0.5px solid var(--border2);border-radius:12px;padding:14px 50px 14px 16px;font-family:var(--mono);font-size:15px;font-weight:500;color:var(--text);outline:none;text-transform:uppercase;transition:border-color .2s}
+.search-input::placeholder{color:var(--text3);text-transform:none;letter-spacing:0;font-size:13px}
 .search-input:focus{border-color:var(--green)}
 .search-btn{position:absolute;right:8px;top:50%;transform:translateY(-50%);background:var(--green);border:none;width:36px;height:36px;border-radius:8px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:opacity .15s}
 .search-btn:active{opacity:.75}
 .search-btn.locked{background:var(--bg4);cursor:not-allowed}
 .search-btn svg{width:16px;height:16px}
+
+/* LOADING */
 .loading-overlay{display:none;flex-direction:column;align-items:center;gap:10px;padding:28px;text-align:center}
 .loading-overlay.visible{display:flex}
 .loader-ring{width:32px;height:32px;border:2px solid var(--border2);border-top-color:var(--green);border-radius:50%;animation:spin .7s linear infinite}
 @keyframes spin{to{transform:rotate(360deg)}}
 .loading-text{font-family:var(--mono);font-size:12px;color:var(--text3)}
-.bt-banner{background:var(--bg3);border:0.5px solid var(--border2);border-radius:12px;padding:14px;margin-bottom:16px;display:none}
+
+/* BACKTEST BANNER */
+.bt-banner{background:var(--bg3);border:0.5px solid var(--border2);border-radius:14px;padding:14px;margin-bottom:16px;display:none}
 .bt-banner.visible{display:block}
-.bt-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px}
+.bt-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px}
 .bt-title{font-size:12px;font-weight:600;color:var(--text2)}
-.bt-badge{font-family:var(--mono);font-size:11px;padding:3px 9px;border-radius:10px}
+.bt-title-sub{font-size:10px;color:var(--text3);font-family:var(--mono);margin-top:2px}
+.bt-badge{font-family:var(--mono);font-size:11px;padding:4px 10px;border-radius:10px;font-weight:600}
 .bt-badge.good{background:var(--green-dim);color:var(--green)}
 .bt-badge.ok{background:var(--amber-dim);color:var(--amber)}
 .bt-badge.bad{background:var(--red-dim);color:var(--red)}
-.bt-stats{display:grid;grid-template-columns:repeat(4,1fr);gap:6px}
-.bt-stat{display:flex;flex-direction:column;gap:3px;text-align:center}
-.bt-stat-lbl{font-size:9px;color:var(--text3);font-family:var(--mono);letter-spacing:.04em}
+
+.bt-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:10px}
+.bt-stat{display:flex;flex-direction:column;gap:3px;text-align:center;background:var(--bg4);border-radius:8px;padding:8px 4px}
+.bt-stat-lbl{font-size:9px;color:var(--text3);font-family:var(--mono);letter-spacing:.03em}
 .bt-stat-val{font-family:var(--mono);font-size:13px;font-weight:600}
-.bt-bar-wrap{margin-top:10px}
+
+.bt-filters{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:10px}
+.bt-filter-tag{font-family:var(--mono);font-size:9px;padding:2px 7px;border-radius:4px;border:0.5px solid var(--border2);color:var(--text3)}
+.bt-filter-tag.on{border-color:var(--green);color:var(--green)}
+
+.bt-bar-wrap{margin-top:2px}
 .bt-bar-lbl{font-size:10px;color:var(--text3);font-family:var(--mono);margin-bottom:5px;display:flex;justify-content:space-between}
 .bt-bar-track{width:100%;height:5px;background:var(--bg4);border-radius:3px;overflow:hidden}
-.bt-bar-fill{height:100%;border-radius:3px;transition:width .6s ease;background:linear-gradient(90deg,var(--red),var(--amber),var(--green))}
+.bt-bar-fill{height:100%;border-radius:3px;transition:width .6s ease}
+
+/* DAILY BIAS */
+.bias-card{border-radius:10px;padding:10px 14px;margin-bottom:16px;display:none;align-items:center;justify-content:space-between}
+.bias-card.visible{display:flex}
+.bias-card.bull{background:var(--green-dim);border:0.5px solid rgba(0,229,160,0.2)}
+.bias-card.bear{background:var(--red-dim);border:0.5px solid rgba(255,77,106,0.2)}
+.bias-card.neut{background:var(--bg3);border:0.5px solid var(--border2)}
+.bias-text{font-size:12px;font-weight:600}
+.bias-card.bull .bias-text{color:var(--green)}
+.bias-card.bear .bias-text{color:var(--red)}
+.bias-card.neut .bias-text{color:var(--text2)}
+.bias-sub{font-size:10px;font-family:var(--mono);margin-top:2px;opacity:.7}
+.bias-val{font-family:var(--mono);font-size:13px;font-weight:600}
+
+/* COIN CARD */
 .coin-card{background:var(--bg3);border:0.5px solid var(--border2);border-radius:14px;padding:16px;margin-bottom:16px;display:none}
 .coin-card.visible{display:block}
 .coin-card-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px}
@@ -82,64 +114,84 @@ html,body{background:var(--bg);color:var(--text);font-family:var(--sans);min-hei
 .candle-label{font-size:10px;color:var(--text3);margin-bottom:4px;font-family:var(--mono);letter-spacing:.05em}
 .candle-val{font-family:var(--mono);font-size:13px;font-weight:500}
 .candle-val.high{color:var(--red)}.candle-val.low{color:var(--green)}.candle-val.close{color:var(--text)}
-.input-row{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:16px}
+
+/* INPUTS */
+.input-row{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px}
 .input-group{display:flex;flex-direction:column;gap:6px}
 .input-label{font-size:11px;color:var(--text2);font-family:var(--mono)}
 .price-input{background:var(--bg3);border:0.5px solid var(--border2);border-radius:10px;padding:12px 14px;font-family:var(--mono);font-size:16px;font-weight:500;color:var(--text);outline:none;width:100%;transition:border-color .2s}
-.price-input.high-input:focus{border-color:var(--red)}
-.price-input.low-input:focus{border-color:var(--green)}
-.calc-btn{width:100%;padding:16px;background:var(--green);border:none;border-radius:12px;font-family:var(--sans);font-size:15px;font-weight:700;letter-spacing:.05em;color:#0a0a0f;cursor:pointer;margin-bottom:24px;transition:opacity .15s,transform .1s}
+.price-input.h:focus{border-color:var(--red)}
+.price-input.l:focus{border-color:var(--green)}
+.price-input.c:focus{border-color:var(--blue)}
+.calc-btn{width:100%;padding:15px;background:var(--green);border:none;border-radius:12px;font-family:var(--sans);font-size:15px;font-weight:700;letter-spacing:.05em;color:#0a0a0f;cursor:pointer;margin-top:4px;margin-bottom:20px;transition:opacity .15s,transform .1s}
 .calc-btn:active{opacity:.85;transform:scale(.99)}
+
+/* RESULTS */
 .result-section{display:none}
 .result-section.visible{display:block}
-.buy-card{background:rgba(0,229,160,0.06);border:0.5px solid rgba(0,229,160,0.3);border-radius:14px;padding:16px;margin-bottom:16px}
-.buy-card-top{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:12px}
-.buy-card-label{font-size:11px;color:var(--green);font-family:var(--mono);letter-spacing:.08em;text-transform:uppercase;margin-bottom:6px}
-.buy-price-big{font-family:var(--mono);font-size:28px;font-weight:600;color:var(--green);line-height:1}
-.buy-sub{font-size:11px;color:var(--text3);font-family:var(--mono);margin-top:6px}
-.bt-score-circle{display:flex;flex-direction:column;align-items:center;gap:2px;background:var(--bg3);border:0.5px solid var(--border2);border-radius:10px;padding:10px 14px;min-width:70px}
-.bt-score-num{font-family:var(--mono);font-size:18px;font-weight:600}
-.bt-score-lbl{font-size:9px;color:var(--text3);font-family:var(--mono);letter-spacing:.04em}
-.buy-extra{display:grid;grid-template-columns:1fr 1fr;gap:8px}
-.buy-extra-item{display:flex;flex-direction:column;gap:3px}
-.buy-extra-lbl{font-size:10px;color:var(--text3);font-family:var(--mono)}
-.buy-extra-val{font-family:var(--mono);font-size:13px;font-weight:500}
-.sell-targets{display:flex;flex-direction:column;gap:8px;margin-bottom:16px}
-.sell-target-card{background:var(--bg3);border:0.5px solid var(--border2);border-radius:12px;padding:14px 16px;display:flex;align-items:center;justify-content:space-between}
-.sell-target-card:nth-child(1){border-left:3px solid var(--blue)}
-.sell-target-card:nth-child(2){border-left:3px solid var(--amber)}
-.sell-target-card:nth-child(3){border-left:3px solid var(--red)}
-.sell-target-left{display:flex;flex-direction:column;gap:3px}
-.sell-target-num{font-size:10px;font-family:var(--mono)}
-.sell-target-card:nth-child(1) .sell-target-num{color:var(--blue)}
-.sell-target-card:nth-child(2) .sell-target-num{color:var(--amber)}
-.sell-target-card:nth-child(3) .sell-target-num{color:var(--red)}
-.sell-target-name{font-size:14px;font-weight:600;color:var(--text)}
-.sell-target-desc{font-size:11px;color:var(--text3);font-family:var(--mono)}
-.sell-target-right{text-align:right}
-.sell-target-price{font-family:var(--mono);font-size:18px;font-weight:600}
-.sell-target-card:nth-child(1) .sell-target-price{color:var(--blue)}
-.sell-target-card:nth-child(2) .sell-target-price{color:var(--amber)}
-.sell-target-card:nth-child(3) .sell-target-price{color:var(--red)}
-.sell-target-gain{font-family:var(--mono);font-size:11px;color:var(--text3);margin-top:3px}
-.sell-target-winrate{font-family:var(--mono);font-size:10px;margin-top:2px}
-.sell-target-card:nth-child(1) .sell-target-winrate{color:var(--blue)}
-.sell-target-card:nth-child(2) .sell-target-winrate{color:var(--amber)}
-.sell-target-card:nth-child(3) .sell-target-winrate{color:var(--red)}
-.rr-row{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:16px}
-.mini-card{background:var(--bg3);border:0.5px solid var(--border2);border-radius:12px;padding:12px;text-align:center}
-.mini-card-lbl{font-size:9px;color:var(--text3);font-family:var(--mono);text-transform:uppercase;letter-spacing:.05em;margin-bottom:6px}
-.mini-card-val{font-family:var(--mono);font-size:14px;font-weight:600}
+
+/* 3 BUY CARDS */
+.buy-cards{display:flex;flex-direction:column;gap:10px;margin-bottom:16px}
+.buy-card{border-radius:14px;padding:16px;position:relative}
+.buy-card-1{background:rgba(0,229,160,0.06);border:0.5px solid rgba(0,229,160,0.3)}
+.buy-card-2{background:rgba(77,159,255,0.05);border:0.5px solid rgba(77,159,255,0.25)}
+.buy-card-3{background:rgba(176,109,255,0.05);border:0.5px solid rgba(176,109,255,0.2)}
+
+.buy-card-head{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:14px}
+.buy-card-tag{font-size:10px;font-family:var(--mono);font-weight:600;letter-spacing:.07em;text-transform:uppercase;margin-bottom:5px}
+.buy-card-1 .buy-card-tag{color:var(--green)}
+.buy-card-2 .buy-card-tag{color:var(--blue)}
+.buy-card-3 .buy-card-tag{color:var(--purple)}
+.buy-card-name{font-size:15px;font-weight:600;color:var(--text)}
+.buy-card-method{font-size:11px;color:var(--text3);font-family:var(--mono);margin-top:3px}
+.buy-card-price{font-family:var(--mono);font-size:24px;font-weight:600;line-height:1}
+.buy-card-1 .buy-card-price{color:var(--green)}
+.buy-card-2 .buy-card-price{color:var(--blue)}
+.buy-card-3 .buy-card-price{color:var(--purple)}
+.buy-card-gain{font-family:var(--mono);font-size:11px;color:var(--text3);margin-top:4px}
+
+.buy-card-stats{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;border-top:0.5px solid rgba(255,255,255,0.07);padding-top:12px}
+.buy-stat{display:flex;flex-direction:column;gap:3px}
+.buy-stat-lbl{font-size:9px;color:var(--text3);font-family:var(--mono);letter-spacing:.03em;text-transform:uppercase}
+.buy-stat-val{font-family:var(--mono);font-size:12px;font-weight:600}
+
+/* EV BADGE */
+.ev-badge{display:inline-block;font-family:var(--mono);font-size:10px;padding:2px 7px;border-radius:4px;margin-top:4px}
+.ev-pos{background:var(--green-dim);color:var(--green)}
+.ev-neg{background:var(--red-dim);color:var(--red)}
+.ev-neu{background:var(--bg4);color:var(--text3)}
+
+/* SCALE GUIDE */
+.scale-guide{background:var(--bg3);border:0.5px solid var(--border2);border-radius:12px;padding:14px 16px;margin-bottom:16px}
+.scale-title{font-size:11px;color:var(--text3);font-family:var(--mono);letter-spacing:.06em;text-transform:uppercase;margin-bottom:10px}
+.scale-bars{display:flex;gap:4px;height:24px;border-radius:6px;overflow:hidden;margin-bottom:8px}
+.scale-bar{display:flex;align-items:center;justify-content:center;font-family:var(--mono);font-size:10px;font-weight:600;transition:flex .4s ease;min-width:16px}
+.scale-bar-1{background:rgba(0,229,160,0.2);color:var(--green)}
+.scale-bar-2{background:rgba(77,159,255,0.2);color:var(--blue)}
+.scale-bar-3{background:rgba(176,109,255,0.2);color:var(--purple)}
+.scale-labels{display:grid;grid-template-columns:1fr 1fr 1fr;gap:4px}
+.scale-label{font-size:10px;font-family:var(--mono);color:var(--text3);text-align:center}
+
+/* SUMMARY ROW */
+.summary-row{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:16px}
+.mini{background:var(--bg3);border:0.5px solid var(--border2);border-radius:12px;padding:12px;text-align:center}
+.mini-lbl{font-size:9px;color:var(--text3);font-family:var(--mono);text-transform:uppercase;letter-spacing:.05em;margin-bottom:6px}
+.mini-val{font-family:var(--mono);font-size:14px;font-weight:600}
+
+/* RANGE BAR */
 .range-visual{background:var(--bg3);border:0.5px solid var(--border2);border-radius:14px;padding:16px;margin-bottom:16px}
 .range-bar-track{width:100%;height:6px;background:var(--bg4);border-radius:3px;position:relative;margin:22px 0 10px}
 .range-fill{position:absolute;height:100%;border-radius:3px;background:linear-gradient(90deg,var(--green),var(--red))}
-.range-marker{position:absolute;top:50%;transform:translateX(-50%) translateY(-50%);display:flex;flex-direction:column;align-items:center}
-.range-marker-dot{width:12px;height:12px;border-radius:50%;border:2px solid var(--bg);z-index:2}
-.range-marker-label{font-family:var(--mono);font-size:9px;position:absolute;top:-18px;white-space:nowrap}
-.range-marker-price{font-family:var(--mono);font-size:9px;position:absolute;bottom:-18px;white-space:nowrap}
-.range-endpoints{display:flex;justify-content:space-between;font-family:var(--mono);font-size:11px;color:var(--text3);margin-top:4px}
+.rmarker{position:absolute;top:50%;transform:translateX(-50%) translateY(-50%);display:flex;flex-direction:column;align-items:center}
+.rmarker-dot{width:12px;height:12px;border-radius:50%;border:2px solid var(--bg);z-index:2}
+.rmarker-lbl{font-family:var(--mono);font-size:9px;position:absolute;top:-18px;white-space:nowrap}
+.rmarker-price{font-family:var(--mono);font-size:9px;position:absolute;bottom:-18px;white-space:nowrap}
+.range-ends{display:flex;justify-content:space-between;font-family:var(--mono);font-size:11px;color:var(--text3);margin-top:4px}
+
 .save-btn{width:100%;padding:13px;background:none;border:0.5px solid var(--border2);border-radius:12px;font-family:var(--sans);font-size:14px;font-weight:600;color:var(--text2);cursor:pointer;margin-bottom:24px;display:flex;align-items:center;justify-content:center;gap:8px;transition:all .2s}
 .save-btn:active{opacity:.7}
+
+/* HISTORY */
 .history-empty{text-align:center;padding:60px 20px;color:var(--text3);font-size:14px;font-family:var(--mono)}
 .hist-item{background:var(--bg3);border:0.5px solid var(--border2);border-radius:14px;padding:14px 16px;margin-bottom:10px;cursor:pointer}
 .hist-item:active{opacity:.8}
@@ -148,18 +200,30 @@ html,body{background:var(--bg);color:var(--text);font-family:var(--sans);min-hei
 .hist-meta{display:flex;align-items:center;gap:8px}
 .hist-time{font-family:var(--mono);font-size:11px;color:var(--text3)}
 .hist-wr{font-family:var(--mono);font-size:11px;padding:2px 7px;border-radius:6px}
-.hist-prices{display:grid;grid-template-columns:repeat(5,1fr);gap:0}
-.hist-price-item{display:flex;flex-direction:column;gap:3px}
-.hist-price-lbl{font-size:9px;color:var(--text3);font-family:var(--mono)}
-.hist-price-val{font-family:var(--mono);font-size:12px;font-weight:500}
-.hist-clear-btn{width:100%;padding:12px;background:none;border:0.5px solid var(--red-dim);border-radius:10px;color:var(--red);font-family:var(--sans);font-size:13px;font-weight:600;cursor:pointer;margin-top:8px;opacity:.7}
+.hist-prices{display:grid;grid-template-columns:repeat(5,1fr)}
+.hist-p{display:flex;flex-direction:column;gap:3px}
+.hist-p-lbl{font-size:9px;color:var(--text3);font-family:var(--mono)}
+.hist-p-val{font-family:var(--mono);font-size:12px;font-weight:500}
+.hist-clear{width:100%;padding:12px;background:none;border:0.5px solid var(--red-dim);border-radius:10px;color:var(--red);font-family:var(--sans);font-size:13px;font-weight:600;cursor:pointer;margin-top:8px;opacity:.7}
+
+/* INFO PAGE */
 .info-card{background:var(--bg3);border:0.5px solid var(--border2);border-radius:14px;padding:16px;margin-bottom:12px}
-.info-card-title{font-size:13px;font-weight:600;color:var(--text);margin-bottom:10px;display:flex;align-items:center;gap:8px}
-.info-badge{font-size:10px;font-family:var(--mono);background:var(--blue-dim);color:var(--blue);padding:2px 7px;border-radius:4px}
-.info-text{font-size:13px;color:var(--text2);line-height:1.7}
-.formula-line{font-family:var(--mono);font-size:12px;color:var(--text);background:var(--bg4);border-radius:6px;padding:8px 12px;margin:6px 0;line-height:1.6}
+.info-card-title{font-size:13px;font-weight:600;color:var(--text);margin-bottom:10px;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.ib{font-size:10px;font-family:var(--mono);padding:2px 7px;border-radius:4px}
+.ib-g{background:var(--green-dim);color:var(--green)}
+.ib-b{background:var(--blue-dim);color:var(--blue)}
+.ib-p{background:var(--purple-dim);color:var(--purple)}
+.ib-a{background:var(--amber-dim);color:var(--amber)}
+.ib-t{background:var(--teal-dim);color:var(--teal)}
+.info-text{font-size:13px;color:var(--text2);line-height:1.75}
+.fml{font-family:var(--mono);font-size:11px;color:var(--text);background:var(--bg4);border-radius:6px;padding:8px 12px;margin:6px 0;line-height:1.65}
 .fc{color:var(--text3)}
-.version-badge{text-align:center;font-family:var(--mono);font-size:11px;color:var(--text3);padding:20px 0 8px}
+.ver{text-align:center;font-family:var(--mono);font-size:11px;color:var(--text3);padding:20px 0 8px}
+
+/* WARN */
+.warn-box{background:var(--amber-dim);border:0.5px solid rgba(255,184,48,0.25);border-radius:10px;padding:10px 14px;font-size:12px;color:var(--amber);font-family:var(--mono);margin-bottom:16px;display:none}
+.warn-box.visible{display:block}
+
 .toast{position:fixed;bottom:30px;left:50%;transform:translateX(-50%) translateY(20px);background:var(--bg4);border:0.5px solid var(--border2);border-radius:10px;padding:12px 20px;font-size:13px;font-family:var(--mono);color:var(--text);opacity:0;transition:all .25s;pointer-events:none;z-index:999;white-space:nowrap}
 .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
 .toast.err{border-color:var(--red);color:var(--red)}
@@ -172,21 +236,22 @@ html,body{background:var(--bg);color:var(--text);font-family:var(--sans);min-hei
   <div class="topbar-logo">4H<span>▲</span>RANGE</div>
   <div class="topbar-right">
     <div class="api-counter" id="api-counter">API 6/6</div>
-    <div class="topbar-tag">v0.2 BETA</div>
+    <div class="topbar-tag">v0.4 BETA</div>
   </div>
 </div>
 
 <div class="tabs">
   <button class="tab-btn active" onclick="switchTab('calc')">계산</button>
   <button class="tab-btn" onclick="switchTab('history')">히스토리</button>
-  <button class="tab-btn" onclick="switchTab('info')">공식</button>
+  <button class="tab-btn" onclick="switchTab('info')">알고리즘</button>
 </div>
 
+<!-- CALC PAGE -->
 <div class="page active" id="page-calc">
 
   <div class="search-wrap">
     <input class="search-input" id="coin-input" type="text"
-      placeholder="코인 검색 → 백테스트 자동 실행"
+      placeholder="코인(BTC) 검색 — 백테스트로 최적 매수가 추천"
       maxlength="10" autocomplete="off" autocorrect="off" spellcheck="false"/>
     <button class="search-btn" id="search-btn" onclick="searchCoin()">
       <svg viewBox="0 0 24 24" fill="none" stroke="#0a0a0f" stroke-width="2.5" stroke-linecap="round">
@@ -197,38 +262,69 @@ html,body{background:var(--bg);color:var(--text);font-family:var(--sans);min-hei
 
   <div class="loading-overlay" id="loading-overlay">
     <div class="loader-ring"></div>
-    <div class="loading-text" id="loading-text">3개월 데이터 수집 중...</div>
+    <div class="loading-text" id="loading-text">데이터 수집 중...</div>
   </div>
 
+  <!-- DAILY BIAS -->
+  <div class="bias-card" id="bias-card">
+    <div>
+      <div class="bias-text" id="bias-text">—</div>
+      <div class="bias-sub" id="bias-sub">Daily 20MA 기준</div>
+    </div>
+    <div class="bias-val" id="bias-val">—</div>
+  </div>
+
+  <!-- BACKTEST BANNER -->
   <div class="bt-banner" id="bt-banner">
-    <div class="bt-top">
-      <div class="bt-title">백테스트 결과 (3개월 · 4H)</div>
+    <div class="bt-head">
+      <div>
+        <div class="bt-title">백테스트 결과 (현실 보정)</div>
+        <div class="bt-title-sub" id="bt-sub-title">3개월 4H · 수수료 · 슬리피지 반영</div>
+      </div>
       <div class="bt-badge" id="bt-badge">—</div>
     </div>
-    <div class="bt-stats">
+
+    <div class="bt-filters" id="bt-filters"></div>
+
+    <div class="bt-grid">
       <div class="bt-stat">
-        <span class="bt-stat-lbl">분석봉</span>
-        <span class="bt-stat-val" id="bt-total" style="color:var(--text)">—</span>
+        <span class="bt-stat-lbl">실거래수</span>
+        <span class="bt-stat-val" id="bt-trades" style="color:var(--text)">—</span>
       </div>
       <div class="bt-stat">
-        <span class="bt-stat-lbl">승률</span>
+        <span class="bt-stat-lbl">순승률</span>
         <span class="bt-stat-val" id="bt-wr" style="color:var(--green)">—</span>
+      </div>
+      <div class="bt-stat">
+        <span class="bt-stat-lbl">프로핏팩터</span>
+        <span class="bt-stat-val" id="bt-pf" style="color:var(--blue)">—</span>
       </div>
       <div class="bt-stat">
         <span class="bt-stat-lbl">최적버퍼</span>
         <span class="bt-stat-val" id="bt-buf" style="color:var(--amber)">—</span>
       </div>
       <div class="bt-stat">
-        <span class="bt-stat-lbl">평균수익</span>
-        <span class="bt-stat-val" id="bt-avgR" style="color:var(--blue)">—</span>
+        <span class="bt-stat-lbl">기대값</span>
+        <span class="bt-stat-val" id="bt-ev" style="color:var(--purple)">—</span>
+      </div>
+      <div class="bt-stat">
+        <span class="bt-stat-lbl">최대연속손실</span>
+        <span class="bt-stat-val" id="bt-streak" style="color:var(--red)">—</span>
       </div>
     </div>
+
     <div class="bt-bar-wrap">
-      <div class="bt-bar-lbl"><span>매수 승률</span><span id="bt-bar-pct">0%</span></div>
-      <div class="bt-bar-track"><div class="bt-bar-fill" id="bt-bar-fill" style="width:0%"></div></div>
+      <div class="bt-bar-lbl"><span>BUY1 실승률</span><span id="bt-bar-pct">0%</span></div>
+      <div class="bt-bar-track">
+        <div class="bt-bar-fill" id="bt-bar-fill" style="width:0%"></div>
+      </div>
     </div>
   </div>
 
+  <!-- WARN BOX -->
+  <div class="warn-box" id="warn-box"></div>
+
+  <!-- COIN CARD -->
   <div class="coin-card" id="coin-card">
     <div class="coin-card-top">
       <div class="coin-name">
@@ -250,108 +346,128 @@ html,body{background:var(--bg);color:var(--text);font-family:var(--sans);min-hei
     </div>
   </div>
 
-  <div class="section-title">입력값 (수동 수정 가능)</div>
+  <!-- MANUAL INPUTS -->
+  <div class="sec">수동 입력</div>
   <div class="input-row">
     <div class="input-group">
       <span class="input-label">4H 최고가 ($)</span>
-      <input class="price-input high-input" id="inp-high" type="number" placeholder="0.00" step="0.01" value="131.98"/>
+      <input class="price-input h" id="inp-high" type="number" placeholder="최고가" step="0.0001" value="131.98"/>
     </div>
     <div class="input-group">
       <span class="input-label">4H 최저가 ($)</span>
-      <input class="price-input low-input" id="inp-low" type="number" placeholder="0.00" step="0.01" value="103.68"/>
+      <input class="price-input l" id="inp-low" type="number" placeholder="최저가" step="0.0001" value="103.68"/>
     </div>
   </div>
-  <button class="calc-btn" onclick="calculate()">계산하기</button>
+  <div class="input-row">
+    <div class="input-group">
+      <span class="input-label">4H 종가 ($) — Pivot 계산용</span>
+      <input class="price-input c" id="inp-close" type="number" placeholder="종가 (선택)" step="0.0001" value="118.50"/>
+    </div>
+    <div class="input-group" style="justify-content:flex-end">
+      <span class="input-label">&nbsp;</span>
+      <button class="calc-btn" style="margin:0;padding:12px 0" onclick="calculate()">계산하기</button>
+    </div>
+  </div>
 
+  <div style="height:8px"></div>
+
+  <!-- RESULTS -->
   <div class="result-section" id="result-section">
 
-    <div class="section-title">매수 진입가</div>
-    <div class="buy-card">
-      <div class="buy-card-top">
-        <div>
-          <div class="buy-card-label">추천 매수가</div>
-          <div class="buy-price-big" id="r-buy">—</div>
-          <div class="buy-sub" id="r-buy-sub">—</div>
+    <div class="sec">추천 매수가 3단계 · 분할매수 전략</div>
+    <div class="buy-cards">
+
+      <div class="buy-card buy-card-1">
+        <div class="buy-card-head">
+          <div>
+            <div class="buy-card-tag">BUY 1 · 즉시진입</div>
+            <div class="buy-card-name">ATR 최적버퍼</div>
+            <div class="buy-card-method" id="b1-method">—</div>
+          </div>
+          <div style="text-align:right">
+            <div class="buy-card-price" id="b1-price">—</div>
+            <div class="buy-card-gain" id="b1-gain">—</div>
+            <div class="ev-badge" id="b1-ev">EV —</div>
+          </div>
         </div>
-        <div class="bt-score-circle">
-          <span class="bt-score-num" id="r-winrate" style="color:var(--green)">—</span>
-          <span class="bt-score-lbl">WIN RATE</span>
+        <div class="buy-card-stats">
+          <div class="buy-stat"><span class="buy-stat-lbl">실승률</span><span class="buy-stat-val" id="b1-wr" style="color:var(--green)">—</span></div>
+          <div class="buy-stat"><span class="buy-stat-lbl">Fill률</span><span class="buy-stat-val" id="b1-fill" style="color:var(--text2)">—</span></div>
+          <div class="buy-stat"><span class="buy-stat-lbl">PF</span><span class="buy-stat-val" id="b1-pf" style="color:var(--blue)">—</span></div>
+          <div class="buy-stat"><span class="buy-stat-lbl">비중</span><span class="buy-stat-val" id="b1-wt" style="color:var(--green)">—</span></div>
         </div>
       </div>
-      <div class="buy-extra">
-        <div class="buy-extra-item">
-          <span class="buy-extra-lbl">STOP LOSS</span>
-          <span class="buy-extra-val" id="r-stop" style="color:var(--red)">—</span>
+
+      <div class="buy-card buy-card-2">
+        <div class="buy-card-head">
+          <div>
+            <div class="buy-card-tag">BUY 2 · 지지선 대기</div>
+            <div class="buy-card-name">Pivot S1 지지</div>
+            <div class="buy-card-method" id="b2-method">—</div>
+          </div>
+          <div style="text-align:right">
+            <div class="buy-card-price" id="b2-price">—</div>
+            <div class="buy-card-gain" id="b2-gain">—</div>
+            <div class="ev-badge" id="b2-ev">EV —</div>
+          </div>
         </div>
-        <div class="buy-extra-item">
-          <span class="buy-extra-lbl">MAX RISK</span>
-          <span class="buy-extra-val" id="r-risk" style="color:var(--amber)">—</span>
+        <div class="buy-card-stats">
+          <div class="buy-stat"><span class="buy-stat-lbl">실승률</span><span class="buy-stat-val" id="b2-wr" style="color:var(--blue)">—</span></div>
+          <div class="buy-stat"><span class="buy-stat-lbl">Fill률</span><span class="buy-stat-val" id="b2-fill" style="color:var(--text2)">—</span></div>
+          <div class="buy-stat"><span class="buy-stat-lbl">PF</span><span class="buy-stat-val" id="b2-pf" style="color:var(--blue)">—</span></div>
+          <div class="buy-stat"><span class="buy-stat-lbl">비중</span><span class="buy-stat-val" id="b2-wt" style="color:var(--blue)">—</span></div>
+        </div>
+      </div>
+
+      <div class="buy-card buy-card-3">
+        <div class="buy-card-head">
+          <div>
+            <div class="buy-card-tag">BUY 3 · 딥바이</div>
+            <div class="buy-card-name">ATR 딥바이</div>
+            <div class="buy-card-method" id="b3-method">—</div>
+          </div>
+          <div style="text-align:right">
+            <div class="buy-card-price" id="b3-price">—</div>
+            <div class="buy-card-gain" id="b3-gain">—</div>
+            <div class="ev-badge" id="b3-ev">EV —</div>
+          </div>
+        </div>
+        <div class="buy-card-stats">
+          <div class="buy-stat"><span class="buy-stat-lbl">실승률</span><span class="buy-stat-val" id="b3-wr" style="color:var(--purple)">—</span></div>
+          <div class="buy-stat"><span class="buy-stat-lbl">Fill률</span><span class="buy-stat-val" id="b3-fill" style="color:var(--text2)">—</span></div>
+          <div class="buy-stat"><span class="buy-stat-lbl">PF</span><span class="buy-stat-val" id="b3-pf" style="color:var(--blue)">—</span></div>
+          <div class="buy-stat"><span class="buy-stat-lbl">비중</span><span class="buy-stat-val" id="b3-wt" style="color:var(--purple)">—</span></div>
         </div>
       </div>
     </div>
 
-    <div class="section-title">추천 매도가 3단계</div>
-    <div class="sell-targets">
-      <div class="sell-target-card">
-        <div class="sell-target-left">
-          <span class="sell-target-num">TP 1 · 보수적</span>
-          <span class="sell-target-name">1차 목표</span>
-          <span class="sell-target-desc">Fib 0.382 · 낮은 리스크</span>
-        </div>
-        <div class="sell-target-right">
-          <div class="sell-target-price" id="tp1-price">—</div>
-          <div class="sell-target-gain" id="tp1-gain">—</div>
-          <div class="sell-target-winrate" id="tp1-wr">—</div>
-        </div>
+    <div class="scale-guide">
+      <div class="scale-title">분할매수 비중 가이드</div>
+      <div class="scale-bars">
+        <div class="scale-bar scale-bar-1" id="sg-b1" style="flex:3">B1</div>
+        <div class="scale-bar scale-bar-2" id="sg-b2" style="flex:4">B2</div>
+        <div class="scale-bar scale-bar-3" id="sg-b3" style="flex:3">B3</div>
       </div>
-      <div class="sell-target-card">
-        <div class="sell-target-left">
-          <span class="sell-target-num">TP 2 · 표준</span>
-          <span class="sell-target-name">2차 목표</span>
-          <span class="sell-target-desc">Fib 0.618 · 황금비</span>
-        </div>
-        <div class="sell-target-right">
-          <div class="sell-target-price" id="tp2-price">—</div>
-          <div class="sell-target-gain" id="tp2-gain">—</div>
-          <div class="sell-target-winrate" id="tp2-wr">—</div>
-        </div>
-      </div>
-      <div class="sell-target-card">
-        <div class="sell-target-left">
-          <span class="sell-target-num">TP 3 · 공격적</span>
-          <span class="sell-target-name">3차 목표</span>
-          <span class="sell-target-desc">High −7% · 고점 근처</span>
-        </div>
-        <div class="sell-target-right">
-          <div class="sell-target-price" id="tp3-price">—</div>
-          <div class="sell-target-gain" id="tp3-gain">—</div>
-          <div class="sell-target-winrate" id="tp3-wr">—</div>
-        </div>
+      <div class="scale-labels">
+        <div class="scale-label" id="sg-l1">—</div>
+        <div class="scale-label" id="sg-l2">—</div>
+        <div class="scale-label" id="sg-l3">—</div>
       </div>
     </div>
 
-    <div class="section-title">리스크 / 리워드</div>
-    <div class="rr-row">
-      <div class="mini-card">
-        <div class="mini-card-lbl">R:R (TP2)</div>
-        <div class="mini-card-val" id="r-rr" style="color:var(--text)">—</div>
-      </div>
-      <div class="mini-card">
-        <div class="mini-card-lbl">레인지 폭</div>
-        <div class="mini-card-val" id="r-range" style="color:var(--blue)">—</div>
-      </div>
-      <div class="mini-card">
-        <div class="mini-card-lbl">변동성</div>
-        <div class="mini-card-val" id="r-vol" style="color:var(--purple)">—</div>
-      </div>
+    <div class="sec">요약</div>
+    <div class="summary-row">
+      <div class="mini"><div class="mini-lbl">목표가 TP</div><div class="mini-val" id="r-tp" style="color:var(--amber)">—</div></div>
+      <div class="mini"><div class="mini-lbl">동적 Stop</div><div class="mini-val" id="r-stop" style="color:var(--red)">—</div></div>
+      <div class="mini"><div class="mini-lbl">변동성</div><div class="mini-val" id="r-vol" style="color:var(--purple)">—</div></div>
     </div>
 
     <div class="range-visual">
-      <div class="section-title" style="margin-bottom:4px">가격 위치</div>
+      <div class="sec" style="margin-bottom:4px">가격 위치</div>
       <div class="range-bar-track" id="range-track">
         <div class="range-fill" id="range-fill"></div>
       </div>
-      <div class="range-endpoints">
+      <div class="range-ends">
         <span id="bar-low-lbl" style="color:var(--green)">Low</span>
         <span id="bar-high-lbl" style="color:var(--red)">High</span>
       </div>
@@ -367,326 +483,768 @@ html,body{background:var(--bg);color:var(--text);font-family:var(--sans);min-hei
   </div>
 </div>
 
-<div class="page" id="page-history">
-  <div id="hist-list"></div>
-</div>
+<!-- HISTORY PAGE -->
+<div class="page" id="page-history"><div id="hist-list"></div></div>
 
+<!-- INFO PAGE -->
 <div class="page" id="page-info">
+
   <div class="info-card">
-    <div class="info-card-title">백테스트 엔진 <span class="info-badge">3개월 · 4H</span></div>
-    <div class="info-text">
-      검색 시 Binance에서 3개월치 4H 캔들(약 540봉) 로드.<br/>
-      각 봉에서 Low+X% 매수 → 다음 3봉(12시간) 내 목표 도달 여부 시뮬레이션.<br/>
-      버퍼 3~10% 중 승률 최고값을 자동 선택해 매수가에 적용.
-    </div>
+    <div class="info-card-title">① 백테스트 엔진 완전 재설계 <span class="ib ib-g">핵심</span></div>
+    <div class="info-text">기존: 다음 3봉 High가 TP 위크만 스쳐도 Win → 과낙관<br/>
+    <b style="color:var(--text)">개선:</b></div>
+    <div class="fml">Step 1: 매수가(Low+buf)에 LOW가 실제 닿아야 체결</div>
+    <div class="fml">Step 2: 체결 후 캔들마다 Stop vs TP 순서 체크</div>
+    <div class="fml">Step 3: 같은 캔들에서 둘 다 닿으면 → 보수적으로 LOSS</div>
+    <div class="fml">Step 4: 최대 6봉(24시간) 내 미결 = 타임아웃 제외</div>
+    <div class="info-text" style="margin-top:6px">수수료+슬리피지 0.15% 차감 후 순수익 계산</div>
   </div>
+
   <div class="info-card">
-    <div class="info-card-title">매도 3단계 공식 <span class="info-badge">선반영</span></div>
-    <div class="formula-line">Range = High − Low</div>
-    <div class="formula-line">BUY &nbsp;= Low + (Range × <span style="color:var(--green)">최적버퍼%</span>)</div>
-    <div class="formula-line">TP1 &nbsp;= Low + (Range × <span style="color:var(--blue)">0.382</span>) <span class="fc"> // Fib 38.2%</span></div>
-    <div class="formula-line">TP2 &nbsp;= Low + (Range × <span style="color:var(--amber)">0.618</span>) <span class="fc"> // 황금비 61.8%</span></div>
-    <div class="formula-line">TP3 &nbsp;= High − (Range × <span style="color:var(--red)">0.07</span>) <span class="fc"> // −7% 고점 근처</span></div>
-    <div class="formula-line">STOP = Low − (Range × <span style="color:var(--amber)">0.05</span>) <span class="fc"> // −5% 하방</span></div>
+    <div class="info-card-title">② ATR14 동적 Stop <span class="ib ib-a">변동성 반영</span></div>
+    <div class="fml">TrueRange = max(H−L, |H−Cprev|, |L−Cprev|)</div>
+    <div class="fml">ATR14 = EMA of TrueRange over 14 periods</div>
+    <div class="fml">Stop = BuyPrice − (ATR14 × 1.5) <span class="fc">// 동적</span></div>
+    <div class="info-text" style="margin-top:6px">고정 Range×5% 대신 실제 변동성 기반. BTC/고변동 코인은 Stop이 더 넓게, 저변동 코인은 좁게 자동 적용</div>
   </div>
+
   <div class="info-card">
-    <div class="info-card-title">API 호출 제한 <span class="info-badge">하루 6회</span></div>
-    <div class="info-text">
-      4시간봉 원칙 — 하루 6회 갱신에 맞춰 API도 6회 제한.<br/>
-      자정(00:00)에 자동 리셋. 수동 High/Low 입력은 제한 없음.
-    </div>
+    <div class="info-card-title">③ Volume 필터 <span class="ib ib-b">False Breakout 방지</span></div>
+    <div class="fml">avgVol20 = 20봉 평균 거래량</div>
+    <div class="fml">진입 조건: 신호봉 Volume ≥ avgVol20 × 0.8</div>
+    <div class="info-text" style="margin-top:6px">저거래량 구간의 Range는 신뢰도 낮음. 거래량 충분한 봉의 Range만 백테스트에 포함</div>
   </div>
+
   <div class="info-card">
-    <div class="info-card-title">R:R 기준</div>
-    <div class="info-text">
-      <span style="color:var(--green)">2.0+ 우량</span> — 최적 진입<br/>
-      <span style="color:var(--amber)">1.5~2.0 적정</span> — 거래 가능<br/>
-      <span style="color:var(--red)">1.5 미만 주의</span> — 레인지 재확인
-    </div>
+    <div class="info-card-title">④ Close 확인 로직 <span class="ib ib-b">Wick false signal 방지</span></div>
+    <div class="fml">신호 유효 조건: Close ≥ Low + Range × 0.20</div>
+    <div class="info-text" style="margin-top:6px">신호봉이 하단 20% 이하에서 종가 마감 = 하락 모멘텀. 이 경우 Range를 신뢰할 수 없으므로 해당 봉 백테스트 제외</div>
   </div>
-  <div class="version-badge">4H▲RANGE v0.2 BETA · 개인 테스트 버전</div>
+
+  <div class="info-card">
+    <div class="info-card-title">⑤ Daily MTF Bias <span class="ib ib-t">추세 필터</span></div>
+    <div class="fml">Daily 20MA = 20일 종가 단순이동평균</div>
+    <div class="fml">강세 = Daily Close > Daily 20MA</div>
+    <div class="fml">백테: 강세 구간 진입만 카운트</div>
+    <div class="info-text" style="margin-top:6px">일봉 추세 역행 매수는 체결 후에도 Stop까지 밀릴 확률이 높음. Daily API 데이터 병렬 fetch</div>
+  </div>
+
+  <div class="info-card">
+    <div class="info-card-title">최적 버퍼 선택 기준 <span class="ib ib-p">복합점수</span></div>
+    <div class="fml">Score = WinRate × ProfitFactor × ExpectedValue</div>
+    <div class="info-text" style="margin-top:6px">단순 승률 최고값이 아닌, 수익성(PF)과 기대값(EV)까지 복합 평가. 승률 60%라도 PF가 낮으면 탈락</div>
+  </div>
+
+  <div class="ver">4H▲RANGE v0.4 BETA · 현실 보정 백테스트</div>
 </div>
 
 </div>
 <div class="toast" id="toast"></div>
 
 <script>
-var currentCoin='AAVE';
-var btData=null;
-var lastResult=null;
-var RATE_KEY='4hrange_api_v2';
-var RATE_MAX=6;
+// ═══════════════════════════════════════════════════════════════════
+//  GLOBALS
+// ═══════════════════════════════════════════════════════════════════
+var G = {
+  coin: 'AAVE',
+  btData: null,
+  dailyBiasMap: null,  // Map: dayKey → {bullish, sma20, close}
+  lastResult: null,
+  RATE_KEY: '4hrange_v4',
+  RATE_MAX: 6,
+  FEE_SLIP: 0.0015,    // 0.15% round-trip fees + slippage
+  ATR_PERIOD: 14,
+  VOL_PERIOD: 20,
+  LOOK_MAX: 6,         // max candles to wait after fill (24h)
+  CLOSE_CONFIRM: 0.20, // close must be above Low + Range×20%
+  VOL_MIN_RATIO: 0.80, // volume must be ≥ 80% of 20-period avg
+  ATR_STOP_MULT: 1.5,  // stop = buy - ATR × 1.5
+};
 
-function getRateData(){
-  try{
-    var d=JSON.parse(localStorage.getItem(RATE_KEY))||{};
-    var today=new Date().toDateString();
-    if(d.date!==today)return{date:today,count:0};
+// ═══════════════════════════════════════════════════════════════════
+//  RATE LIMIT
+// ═══════════════════════════════════════════════════════════════════
+function getRD() {
+  try {
+    var d = JSON.parse(localStorage.getItem(G.RATE_KEY)) || {};
+    var today = new Date().toDateString();
+    if (d.date !== today) return { date: today, count: 0 };
     return d;
-  }catch(e){return{date:new Date().toDateString(),count:0};}
+  } catch(e) { return { date: new Date().toDateString(), count: 0 }; }
 }
-function saveRate(d){localStorage.setItem(RATE_KEY,JSON.stringify(d));}
-function canAPI(){return getRateData().count<RATE_MAX;}
-function useAPI(){var d=getRateData();d.count++;saveRate(d);updateRateUI();}
-function updateRateUI(){
-  var d=getRateData();
-  var rem=RATE_MAX-d.count;
-  var el=document.getElementById('api-counter');
-  el.textContent='API '+rem+'/'+RATE_MAX;
-  el.className='api-counter'+(rem<=0?' full':rem<=2?' warn':'');
-  var btn=document.getElementById('search-btn');
-  if(rem<=0){
+function saveRD(d) { localStorage.setItem(G.RATE_KEY, JSON.stringify(d)); }
+function canAPI() { return getRD().count < G.RATE_MAX; }
+function useAPI() { var d = getRD(); d.count++; saveRD(d); updateRateUI(); }
+function updateRateUI() {
+  var d = getRD(); var rem = G.RATE_MAX - d.count;
+  var el = document.getElementById('api-counter');
+  el.textContent = 'API ' + rem + '/' + G.RATE_MAX;
+  el.className = 'api-counter' + (rem <= 0 ? ' full' : rem <= 2 ? ' warn' : '');
+  var btn = document.getElementById('search-btn');
+  if (rem <= 0) {
     btn.classList.add('locked');
-    btn.innerHTML='<svg viewBox="0 0 24 24" fill="none" stroke="var(--text3)" stroke-width="2.5" width="16" height="16"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>';
+    btn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="var(--text3)" stroke-width="2.5" width="16" height="16"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>';
   }
 }
 
-function switchTab(name){
-  var names=['calc','history','info'];
-  document.querySelectorAll('.tab-btn').forEach(function(b,i){b.classList.toggle('active',names[i]===name);});
-  document.querySelectorAll('.page').forEach(function(p){p.classList.remove('active');});
+// ═══════════════════════════════════════════════════════════════════
+//  TAB / TOAST / LOADING
+// ═══════════════════════════════════════════════════════════════════
+function switchTab(name) {
+  var names = ['calc','history','info'];
+  document.querySelectorAll('.tab-btn').forEach(function(b,i){ b.classList.toggle('active', names[i]===name); });
+  document.querySelectorAll('.page').forEach(function(p){ p.classList.remove('active'); });
   document.getElementById('page-'+name).classList.add('active');
-  if(name==='history')renderHistory();
+  if (name==='history') renderHistory();
+}
+function showToast(msg, isErr) {
+  var t = document.getElementById('toast');
+  t.textContent = msg; t.className = 'toast'+(isErr?' err':''); t.classList.add('show');
+  setTimeout(function(){ t.classList.remove('show'); }, 2400);
+}
+function setLoading(on, msg) {
+  document.getElementById('loading-overlay').classList.toggle('visible', on);
+  if (msg) document.getElementById('loading-text').textContent = msg;
+  var btn = document.getElementById('search-btn');
+  btn.style.opacity = on ? '0.4' : ''; btn.style.pointerEvents = on ? 'none' : '';
 }
 
-function showToast(msg,isErr){
-  var t=document.getElementById('toast');
-  t.textContent=msg;
-  t.className='toast'+(isErr?' err':'');
-  t.classList.add('show');
-  setTimeout(function(){t.classList.remove('show');},2400);
+// ═══════════════════════════════════════════════════════════════════
+//  SEARCH
+// ═══════════════════════════════════════════════════════════════════
+document.getElementById('coin-input').addEventListener('keydown', function(e){ if(e.key==='Enter') searchCoin(); });
+function searchCoin() {
+  if (!canAPI()) { showToast('오늘 API 한도 소진 · 수동 입력 사용', true); return; }
+  var val = document.getElementById('coin-input').value.trim().toUpperCase();
+  if (!val) { showToast('코인 심볼을 입력하세요'); return; }
+  G.coin = val; doFetch(val);
 }
 
-document.getElementById('coin-input').addEventListener('keydown',function(e){if(e.key==='Enter')searchCoin();});
-
-function searchCoin(){
-  if(!canAPI()){showToast('오늘 API 한도 소진 (6/6) · 수동 입력 사용',true);return;}
-  var val=document.getElementById('coin-input').value.trim().toUpperCase();
-  if(!val){showToast('코인 심볼을 입력하세요');return;}
-  currentCoin=val;
-  doFetch(val);
-}
-
-function doFetch(symbol){
+function doFetch(symbol) {
   useAPI();
-  setLoading(true,'3개월 데이터 수집 중...');
-  var pair=symbol+'USDT';
-  fetch('https://api.binance.com/api/v3/klines?symbol='+pair+'&interval=4h&limit=540')
-    .then(function(r){if(!r.ok)throw new Error();return r.json();})
-    .then(function(data){
-      if(!data||data.length<20)throw new Error();
-      setLoading(true,'백테스트 계산 중 ('+data.length+'봉)...');
-      setTimeout(function(){
-        var bt=runBacktest(data);
-        btData=bt;
-        var last=data[data.length-2];
-        var h=parseFloat(last[2]),l=parseFloat(last[3]),cl=parseFloat(last[4]);
-        var prev=data.length>2?parseFloat(data[data.length-3][4]):parseFloat(last[1]);
-        var chg=(cl-prev)/prev*100;
-        document.getElementById('inp-high').value=trimZero(h.toFixed(8));
-        document.getElementById('inp-low').value=trimZero(l.toFixed(8));
-        document.getElementById('cc-symbol').textContent=symbol;
-        document.getElementById('cc-pair').textContent=pair+' · 4H · '+data.length+'봉';
-        document.getElementById('cc-price').textContent='$'+fp(cl);
-        var ce=document.getElementById('cc-chg');
-        ce.textContent=(chg>=0?'+':'')+chg.toFixed(2)+'%';
-        ce.className='coin-price-chg '+(chg>=0?'up':'dn');
-        document.getElementById('cc-high').textContent='$'+fp(h);
-        document.getElementById('cc-low').textContent='$'+fp(l);
-        document.getElementById('cc-close').textContent='$'+fp(cl);
+  setLoading(true, symbol + ' 4H + Daily 데이터 수집 중...');
+  var pair = symbol + 'USDT';
+  var url4h  = 'https://api.binance.com/api/v3/klines?symbol='+pair+'&interval=4h&limit=540';
+  var url1d  = 'https://api.binance.com/api/v3/klines?symbol='+pair+'&interval=1d&limit=110';
+
+  Promise.all([fetch(url4h), fetch(url1d)])
+    .then(function(rs) {
+      return Promise.all([
+        rs[0].ok ? rs[0].json() : Promise.reject('4h fail'),
+        rs[1].ok ? rs[1].json() : Promise.resolve([]) // daily optional
+      ]);
+    })
+    .then(function(results) {
+      var candles4h = results[0];
+      var candles1d = results[1];
+      if (!candles4h || candles4h.length < 30) throw new Error('insufficient');
+
+      setLoading(true, '현실 보정 백테스트 계산 중 ('+candles4h.length+'봉)...');
+
+      setTimeout(function() {
+        // Build daily bias map
+        G.dailyBiasMap = buildDailyBiasMap(candles1d);
+
+        var bt = runBacktest(candles4h, G.dailyBiasMap);
+        G.btData = bt;
+
+        // Fill UI with latest completed candle
+        var last = candles4h[candles4h.length - 2];
+        var h = parseFloat(last[2]), l = parseFloat(last[3]), cl = parseFloat(last[4]);
+        var prev = candles4h.length > 2 ? parseFloat(candles4h[candles4h.length-3][4]) : parseFloat(last[1]);
+        var chg = (cl - prev) / prev * 100;
+
+        document.getElementById('inp-high').value  = trimZ(h.toFixed(8));
+        document.getElementById('inp-low').value   = trimZ(l.toFixed(8));
+        document.getElementById('inp-close').value = trimZ(cl.toFixed(8));
+
+        document.getElementById('cc-symbol').textContent = symbol;
+        document.getElementById('cc-pair').textContent   = pair + ' · 4H · ' + candles4h.length + '봉';
+        document.getElementById('cc-price').textContent  = '$' + fp(cl);
+        var ce = document.getElementById('cc-chg');
+        ce.textContent = (chg>=0?'+':'')+chg.toFixed(2)+'%';
+        ce.className = 'coin-price-chg '+(chg>=0?'up':'dn');
+        document.getElementById('cc-high').textContent  = '$'+fp(h);
+        document.getElementById('cc-low').textContent   = '$'+fp(l);
+        document.getElementById('cc-close').textContent = '$'+fp(cl);
         document.getElementById('coin-card').classList.add('visible');
+
+        // Daily bias UI
+        renderDailyBias(G.dailyBiasMap, parseInt(last[0]));
         renderBtBanner(bt);
         setLoading(false);
-        showToast(symbol+' 백테스트 완료 · 승률 '+bt.winRate.toFixed(1)+'%');
+        showToast(symbol + ' 완료 · 실승률 ' + bt.b1WR.toFixed(1) + '%');
         document.getElementById('coin-input').blur();
-      },30);
+        calculate();
+      }, 30);
     })
-    .catch(function(){
+    .catch(function(e) {
       setLoading(false);
-      showToast(symbol+'USDT 마켓 없음',true);
+      showToast(symbol + 'USDT 마켓 없음', true);
     });
 }
 
-function runBacktest(candles){
-  var buffers=[0.03,0.04,0.05,0.06,0.07,0.08,0.10];
-  var stats=buffers.map(function(b){return{buf:b,wins:0,total:0,gain:0,tp1:0,tp2:0,tp3:0};});
-  var look=3;
-  for(var i=0;i<candles.length-look-1;i++){
-    var c=candles[i];
-    var h=parseFloat(c[2]),l=parseFloat(c[3]);
-    var range=h-l;
-    if(range<=0)continue;
-    var fh=[];
-    for(var j=1;j<=look;j++){if(i+j<candles.length)fh.push(parseFloat(candles[i+j][2]));}
-    var maxH=Math.max.apply(null,fh);
-    var tp1t=l+range*0.382,tp2t=l+range*0.618,tp3t=h-range*0.07;
-    buffers.forEach(function(buf,bi){
-      var buy=l+range*buf;
-      if(buy>l&&buy<h){
-        stats[bi].total++;
-        if(maxH>=tp1t){stats[bi].wins++;stats[bi].gain+=((tp1t-buy)/buy*100);stats[bi].tp1++;}
-        if(maxH>=tp2t)stats[bi].tp2++;
-        if(maxH>=tp3t)stats[bi].tp3++;
+// ═══════════════════════════════════════════════════════════════════
+//  DAILY BIAS MAP
+// ═══════════════════════════════════════════════════════════════════
+function buildDailyBiasMap(candles1d) {
+  if (!candles1d || candles1d.length < 21) return null;
+  var map = {};
+  var period = 20;
+  for (var i = period; i < candles1d.length; i++) {
+    // SMA20 of closes
+    var sum = 0;
+    for (var k = i - period; k < i; k++) sum += parseFloat(candles1d[k][4]);
+    var sma20 = sum / period;
+    var close = parseFloat(candles1d[i][4]);
+    var openTime = parseInt(candles1d[i][0]);
+    var dayKey = Math.floor(openTime / 86400000); // day bucket
+    map[dayKey] = { bullish: close > sma20, sma20: sma20, close: close };
+  }
+  return map;
+}
+
+function getBias(biasMap, timestampMs) {
+  if (!biasMap) return null;
+  var dayKey = Math.floor(timestampMs / 86400000);
+  // Look back up to 1 day for the closest bias
+  return biasMap[dayKey] || biasMap[dayKey-1] || null;
+}
+
+function renderDailyBias(biasMap, latestTs) {
+  var card = document.getElementById('bias-card');
+  var bias = getBias(biasMap, latestTs);
+  if (!bias) { card.classList.remove('visible'); return; }
+  card.className = 'bias-card visible ' + (bias.bullish ? 'bull' : 'bear');
+  document.getElementById('bias-text').textContent = bias.bullish ? '강세 (Bullish Bias)' : '약세 (Bearish Bias)';
+  document.getElementById('bias-sub').textContent  = 'Daily Close ' + (bias.bullish ? '>' : '<') + ' 20MA · 진입 신중';
+  document.getElementById('bias-val').textContent  = '$' + fp(bias.sma20);
+  card.classList.add('visible');
+
+  // Warning if bearish
+  var warn = document.getElementById('warn-box');
+  if (!bias.bullish) {
+    warn.textContent = '⚠ Daily 약세 구간 — 매수 신중. BUY3(딥바이) 비중 축소 권장.';
+    warn.classList.add('visible');
+  } else {
+    warn.classList.remove('visible');
+  }
+}
+
+// ═══════════════════════════════════════════════════════════════════
+//  ATR (EMA-based True Range)
+// ═══════════════════════════════════════════════════════════════════
+function calcATR(candles, idx, period) {
+  if (idx < 1) return parseFloat(candles[0][2]) - parseFloat(candles[0][3]);
+  // Use simple avg for first window, then approximate EMA
+  var start = Math.max(1, idx - period * 3);
+  var trArr = [];
+  for (var i = start; i <= idx; i++) {
+    var h = parseFloat(candles[i][2]);
+    var l = parseFloat(candles[i][3]);
+    var pc = parseFloat(candles[i-1][4]);
+    trArr.push(Math.max(h-l, Math.abs(h-pc), Math.abs(l-pc)));
+  }
+  // Wilder EMA
+  var atr = trArr[0];
+  for (var j = 1; j < trArr.length; j++) {
+    atr = (atr * (period-1) + trArr[j]) / period;
+  }
+  return atr;
+}
+
+function calcAvgVol(candles, idx, period) {
+  var sum = 0; var cnt = 0;
+  for (var i = Math.max(0, idx-period); i < idx; i++) {
+    sum += parseFloat(candles[i][5]); cnt++;
+  }
+  return cnt > 0 ? sum / cnt : 0;
+}
+
+// ═══════════════════════════════════════════════════════════════════
+//  BACKTEST ENGINE — FULL REALISTIC SIMULATION
+// ═══════════════════════════════════════════════════════════════════
+function runBacktest(candles, biasMap) {
+  var buffers = [0.03, 0.04, 0.05, 0.06, 0.07, 0.08, 0.10];
+
+  // Per-buffer accumulators
+  var bAcc = buffers.map(function(b) {
+    return {
+      buf: b,
+      wins: 0, losses: 0, timeouts: 0, noFill: 0,
+      grossProfit: 0, grossLoss: 0,
+      maxStreak: 0, curStreak: 0,
+      filteredByVol: 0, filteredByClose: 0, filteredByBias: 0
+    };
+  });
+
+  // Per-level type accumulators (BUY1=optBuf, BUY2=pivot, BUY3=ATR deep)
+  // We'll compute BUY2/BUY3 stats separately after finding opt buf
+  var pivotAcc = { fills: 0, wins: 0, losses: 0, gp: 0, gl: 0, total: 0 };
+  var deepAcc  = { fills: 0, wins: 0, losses: 0, gp: 0, gl: 0, total: 0 };
+
+  var start = Math.max(G.ATR_PERIOD + 2, G.VOL_PERIOD + 1);
+
+  for (var i = start; i < candles.length - G.LOOK_MAX - 2; i++) {
+    var c  = candles[i];
+    var h  = parseFloat(c[2]);
+    var l  = parseFloat(c[3]);
+    var cl = parseFloat(c[4]);
+    var vol = parseFloat(c[5]);
+    var ts  = parseInt(c[0]);
+    var range = h - l;
+    if (range <= 0) continue;
+
+    var atr    = calcATR(candles, i, G.ATR_PERIOD);
+    var avgVol = calcAvgVol(candles, i, G.VOL_PERIOD);
+
+    // ── FILTER 1: Volume ────────────────────────────────────────────
+    var volOK = avgVol <= 0 || vol >= avgVol * G.VOL_MIN_RATIO;
+
+    // ── FILTER 2: Close confirmation (no bearish close at bottom) ──
+    var closeOK = cl >= l + range * G.CLOSE_CONFIRM;
+
+    // ── FILTER 3: Daily bias (bullish preferred) ────────────────────
+    var bias = getBias(biasMap, ts);
+    var biasOK = !bias || bias.bullish; // pass if no daily data
+
+    // Pivot S1/S2 for BUY2
+    var pivot    = (h + l + cl) / 3;
+    var ps1      = 2 * pivot - h;
+    var ps2      = pivot - range;
+    var pivotBuy = ps1 < l ? ps1 : ps2;
+
+    // ATR deep buy
+    var deepBuy = l - atr * 0.35;
+
+    // TP (Fib 0.618 of range from low — common target)
+    var tp = l + range * 0.618;
+
+    // Gather future candle data
+    var future = [];
+    for (var j = 1; j <= G.LOOK_MAX + 4; j++) {
+      if (i + j < candles.length) {
+        future.push({
+          h: parseFloat(candles[i+j][2]),
+          l: parseFloat(candles[i+j][3]),
+          cl: parseFloat(candles[i+j][4])
+        });
+      }
+    }
+
+    // ── Per-buffer simulation ───────────────────────────────────────
+    buffers.forEach(function(buf, bi) {
+      var acc = bAcc[bi];
+      if (!volOK)   { acc.filteredByVol++;   }
+      if (!closeOK) { acc.filteredByClose++; }
+      if (!biasOK)  { acc.filteredByBias++;  }
+      if (!volOK || !closeOK || !biasOK) return;
+
+      var buyP  = l + range * buf;
+      var stopP = buyP - atr * G.ATR_STOP_MULT; // dynamic ATR stop
+
+      if (buyP >= h || buyP <= 0 || tp <= buyP || stopP >= buyP) return;
+
+      // Simulate fill: next candles' LOW must reach buyP
+      var filled = false;
+      var fillCandle = -1;
+      for (var k = 0; k < Math.min(G.LOOK_MAX, future.length); k++) {
+        if (future[k].l <= buyP) { filled = true; fillCandle = k; break; }
+      }
+
+      if (!filled) { acc.noFill++; return; }
+
+      // After fill, check stop vs TP sequentially
+      var outcome = null;
+      for (var k = fillCandle; k < Math.min(fillCandle + G.LOOK_MAX, future.length); k++) {
+        var fh = future[k].h, fl = future[k].l;
+        var stopHit = fl <= stopP;
+        var tpHit   = fh >= tp;
+
+        if (stopHit && tpHit) {
+          // Both in same candle: conservative → LOSS
+          outcome = 'loss'; break;
+        }
+        if (tpHit)   { outcome = 'win';  break; }
+        if (stopHit) { outcome = 'loss'; break; }
+      }
+
+      if (outcome === null) { acc.timeouts++; return; } // timeout, exclude
+
+      acc.wins   += outcome === 'win'  ? 1 : 0;
+      acc.losses += outcome === 'loss' ? 1 : 0;
+
+      // Deduct fees & slippage
+      if (outcome === 'win') {
+        var pnl = (tp - buyP) / buyP - G.FEE_SLIP;
+        acc.grossProfit += pnl;
+        acc.curStreak = 0;
+      } else {
+        var pnl = Math.abs((stopP - buyP) / buyP) + G.FEE_SLIP;
+        acc.grossLoss += pnl;
+        acc.curStreak++;
+        acc.maxStreak = Math.max(acc.maxStreak, acc.curStreak);
       }
     });
+
+    // ── Pivot BUY2 simulation (always with all filters) ────────────
+    if (volOK && closeOK && biasOK && pivotBuy < l && pivotBuy > 0) {
+      var stopP2 = pivotBuy - atr * G.ATR_STOP_MULT;
+      pivotAcc.total++;
+      var filled2 = false, fill2C = -1;
+      for (var k = 0; k < Math.min(G.LOOK_MAX, future.length); k++) {
+        if (future[k].l <= pivotBuy) { filled2 = true; fill2C = k; break; }
+      }
+      if (filled2) {
+        pivotAcc.fills++;
+        var out2 = null;
+        for (var k = fill2C; k < Math.min(fill2C + G.LOOK_MAX, future.length); k++) {
+          var fh = future[k].h, fl = future[k].l;
+          if (fl<=stopP2 && fh>=tp) { out2='loss'; break; }
+          if (fh>=tp)   { out2='win';  break; }
+          if (fl<=stopP2) { out2='loss'; break; }
+        }
+        if (out2==='win') {
+          pivotAcc.wins++; pivotAcc.gp += (tp-pivotBuy)/pivotBuy - G.FEE_SLIP;
+        } else if (out2==='loss') {
+          pivotAcc.losses++; pivotAcc.gl += Math.abs((stopP2-pivotBuy)/pivotBuy) + G.FEE_SLIP;
+        }
+      }
+    }
+
+    // ── ATR Deep BUY3 simulation ───────────────────────────────────
+    if (volOK && closeOK && biasOK && deepBuy > 0) {
+      var stopP3 = deepBuy - atr * G.ATR_STOP_MULT;
+      deepAcc.total++;
+      var filled3 = false, fill3C = -1;
+      for (var k = 0; k < Math.min(G.LOOK_MAX, future.length); k++) {
+        if (future[k].l <= deepBuy) { filled3 = true; fill3C = k; break; }
+      }
+      if (filled3) {
+        deepAcc.fills++;
+        var out3 = null;
+        for (var k = fill3C; k < Math.min(fill3C + G.LOOK_MAX, future.length); k++) {
+          var fh = future[k].h, fl = future[k].l;
+          if (fl<=stopP3 && fh>=tp) { out3='loss'; break; }
+          if (fh>=tp)   { out3='win';  break; }
+          if (fl<=stopP3) { out3='loss'; break; }
+        }
+        if (out3==='win') {
+          deepAcc.wins++; deepAcc.gp += (tp-deepBuy)/deepBuy - G.FEE_SLIP;
+        } else if (out3==='loss') {
+          deepAcc.losses++; deepAcc.gl += Math.abs((stopP3-deepBuy)/deepBuy) + G.FEE_SLIP;
+        }
+      }
+    }
   }
-  var best=stats[2];var bestWR=0;
-  stats.forEach(function(s){
-    if(s.total>=15){var wr=s.wins/s.total*100;if(wr>bestWR){bestWR=wr;best=s;}}
+
+  // ── Find optimal buffer via composite score ─────────────────────
+  var bestBuf = bAcc[2]; var bestScore = -Infinity;
+  bAcc.forEach(function(acc) {
+    var trades = acc.wins + acc.losses;
+    if (trades < 10) return;
+    var wr = acc.wins / trades;
+    var pf = acc.grossLoss > 0 ? acc.grossProfit / acc.grossLoss : (acc.grossProfit > 0 ? 99 : 0);
+    var ev = (wr * (acc.grossProfit / Math.max(acc.wins,1))) - ((1-wr) * (acc.grossLoss / Math.max(acc.losses,1)));
+    var score = wr * Math.min(pf, 5) * (ev > 0 ? 1 : 0.5);
+    if (score > bestScore) { bestScore = score; bestBuf = acc; }
   });
-  var tot=best.total||1;
-  return{
-    buf:best.buf,
-    winRate:best.wins/tot*100,
-    avgGain:best.gain/Math.max(best.wins,1),
-    totalCandles:candles.length,
-    analyzed:tot,
-    tp1WR:best.tp1/tot*100,
-    tp2WR:best.tp2/tot*100,
-    tp3WR:best.tp3/tot*100
+
+  var trades1 = bestBuf.wins + bestBuf.losses;
+  var wr1  = trades1 > 0 ? bestBuf.wins / trades1 * 100 : 0;
+  var pf1  = bestBuf.grossLoss > 0 ? bestBuf.grossProfit / bestBuf.grossLoss : 0;
+  var ev1  = trades1 > 0 ? ((bestBuf.grossProfit - bestBuf.grossLoss) / trades1 * 100) : 0;
+
+  var trades2 = pivotAcc.wins + pivotAcc.losses;
+  var wr2  = trades2 > 0 ? pivotAcc.wins / trades2 * 100 : 0;
+  var pf2  = pivotAcc.gl > 0 ? pivotAcc.gp / pivotAcc.gl : 0;
+  var fr2  = pivotAcc.total > 0 ? pivotAcc.fills / pivotAcc.total * 100 : 0;
+  var ev2  = trades2 > 0 ? ((pivotAcc.gp - pivotAcc.gl) / trades2 * 100) : 0;
+
+  var trades3 = deepAcc.wins + deepAcc.losses;
+  var wr3  = trades3 > 0 ? deepAcc.wins / trades3 * 100 : 0;
+  var pf3  = deepAcc.gl > 0 ? deepAcc.gp / deepAcc.gl : 0;
+  var fr3  = deepAcc.total > 0 ? deepAcc.fills / deepAcc.total * 100 : 0;
+  var ev3  = trades3 > 0 ? ((deepAcc.gp - deepAcc.gl) / trades3 * 100) : 0;
+
+  var fr1  = (trades1 + bestBuf.noFill) > 0 ? trades1 / (trades1 + bestBuf.noFill) * 100 : 85;
+
+  var lastATR = calcATR(candles, candles.length - 2, G.ATR_PERIOD);
+  var lastPrice = parseFloat(candles[candles.length-2][4]);
+  var atrRatio = lastATR / lastPrice * 100;
+  var volGrade = atrRatio > 5 ? '고변동' : atrRatio > 2.5 ? '중변동' : '저변동';
+
+  return {
+    optBuf: bestBuf.buf,
+    lastATR, volGrade, atrRatio,
+    // BUY1
+    b1Trades: trades1, b1WR: wr1, b1PF: pf1, b1EV: ev1, b1FR: fr1, b1Streak: bestBuf.maxStreak,
+    // BUY2
+    b2Trades: trades2, b2WR: wr2, b2PF: pf2, b2EV: ev2, b2FR: fr2,
+    // BUY3
+    b3Trades: trades3, b3WR: wr3, b3PF: pf3, b3EV: ev3, b3FR: fr3,
+    // Filters applied
+    volFiltered: bestBuf.filteredByVol,
+    closeFiltered: bestBuf.filteredByClose,
+    biasFiltered: bestBuf.filteredByBias,
   };
 }
 
-function renderBtBanner(bt){
-  document.getElementById('bt-total').textContent=bt.analyzed+'봉';
-  document.getElementById('bt-wr').textContent=bt.winRate.toFixed(1)+'%';
-  document.getElementById('bt-buf').textContent=(bt.buf*100).toFixed(0)+'%';
-  document.getElementById('bt-avgR').textContent='+'+bt.avgGain.toFixed(2)+'%';
-  document.getElementById('bt-bar-pct').textContent=bt.winRate.toFixed(1)+'%';
-  document.getElementById('bt-bar-fill').style.width=Math.min(100,bt.winRate)+'%';
-  var badge=document.getElementById('bt-badge');
-  if(bt.winRate>=65){badge.textContent='우량';badge.className='bt-badge good';}
-  else if(bt.winRate>=50){badge.textContent='적정';badge.className='bt-badge ok';}
-  else{badge.textContent='주의';badge.className='bt-badge bad';}
+// ═══════════════════════════════════════════════════════════════════
+//  RENDER BACKTEST BANNER
+// ═══════════════════════════════════════════════════════════════════
+function renderBtBanner(bt) {
+  document.getElementById('bt-trades').textContent = bt.b1Trades + '회';
+  document.getElementById('bt-wr').textContent     = bt.b1WR.toFixed(1) + '%';
+  document.getElementById('bt-pf').textContent     = bt.b1PF.toFixed(2);
+  document.getElementById('bt-buf').textContent    = (bt.optBuf*100).toFixed(0) + '%';
+  document.getElementById('bt-ev').textContent     = (bt.b1EV >= 0 ? '+' : '') + bt.b1EV.toFixed(2) + '%';
+  document.getElementById('bt-streak').textContent = bt.b1Streak + '연속';
+  document.getElementById('bt-bar-pct').textContent = bt.b1WR.toFixed(1) + '%';
+
+  var fillPct = Math.min(100, bt.b1WR);
+  var fillEl = document.getElementById('bt-bar-fill');
+  fillEl.style.width = fillPct + '%';
+  fillEl.style.background = bt.b1WR >= 60 ? 'var(--green)' : bt.b1WR >= 45 ? 'var(--amber)' : 'var(--red)';
+
+  var badge = document.getElementById('bt-badge');
+  var score = bt.b1WR * 0.4 + Math.min(bt.b1PF, 5) * 10 + (bt.b1EV > 0 ? 10 : 0);
+  if (score >= 42)      { badge.textContent='우량'; badge.className='bt-badge good'; }
+  else if (score >= 30) { badge.textContent='적정'; badge.className='bt-badge ok'; }
+  else                  { badge.textContent='주의'; badge.className='bt-badge bad'; }
+
+  // Filter tags
+  var tags = [
+    { lbl: 'Fill 체결 시뮬', on: true },
+    { lbl: 'Stop 순차체크', on: true },
+    { lbl: 'ATR14 동적Stop', on: true },
+    { lbl: 'Volume 필터', on: bt.volFiltered > 0 },
+    { lbl: 'Close 확인', on: bt.closeFiltered > 0 },
+    { lbl: 'Daily MTF', on: bt.biasFiltered > 0 },
+    { lbl: '수수료+슬리피지', on: true },
+  ];
+  document.getElementById('bt-filters').innerHTML = tags.map(function(t) {
+    return '<span class="bt-filter-tag' + (t.on ? ' on' : '') + '">' + t.lbl + '</span>';
+  }).join('');
+
   document.getElementById('bt-banner').classList.add('visible');
 }
 
-function calculate(){
-  var high=parseFloat(document.getElementById('inp-high').value);
-  var low=parseFloat(document.getElementById('inp-low').value);
-  if(isNaN(high)||isNaN(low)||high<=low){showToast('최고가 > 최저가 이어야 합니다',true);return;}
-  var buf=btData?btData.buf:0.05;
-  var range=high-low;
-  var buyP=low+range*buf;
-  var stopP=low-range*0.05;
-  var tp1=low+range*0.382;
-  var tp2=low+range*0.618;
-  var tp3=high-range*0.07;
-  var risk=buyP-stopP;
-  var rr=(tp2-buyP)/risk;
-  var winrate=btData?btData.winRate.toFixed(1)+'%':'—';
-  var tp1WR=btData?btData.tp1WR.toFixed(1)+'%':'—';
-  var tp2WR=btData?btData.tp2WR.toFixed(1)+'%':'—';
-  var tp3WR=btData?btData.tp3WR.toFixed(1)+'%':'—';
-  lastResult={coin:currentCoin,high,low,buyP,tp1,tp2,tp3,stopP,rr,buf,ts:Date.now(),winRate:btData?btData.winRate:null};
-  document.getElementById('r-buy').textContent='$'+fp(buyP);
-  document.getElementById('r-buy-sub').textContent='Low + '+(buf*100).toFixed(0)+'% range'+(btData?' (백테스트 최적화)':' (기본값)');
-  document.getElementById('r-winrate').textContent=winrate;
-  document.getElementById('r-stop').textContent='$'+fp(stopP);
-  document.getElementById('r-risk').textContent='-$'+fp(risk);
-  document.getElementById('tp1-price').textContent='$'+fp(tp1);
-  document.getElementById('tp1-gain').textContent='+'+(((tp1-buyP)/buyP)*100).toFixed(2)+'%';
-  document.getElementById('tp1-wr').textContent='백테 도달률 '+tp1WR;
-  document.getElementById('tp2-price').textContent='$'+fp(tp2);
-  document.getElementById('tp2-gain').textContent='+'+(((tp2-buyP)/buyP)*100).toFixed(2)+'%';
-  document.getElementById('tp2-wr').textContent='백테 도달률 '+tp2WR;
-  document.getElementById('tp3-price').textContent='$'+fp(tp3);
-  document.getElementById('tp3-gain').textContent='+'+(((tp3-buyP)/buyP)*100).toFixed(2)+'%';
-  document.getElementById('tp3-wr').textContent='백테 도달률 '+tp3WR;
-  document.getElementById('r-rr').textContent='1 : '+rr.toFixed(2);
-  document.getElementById('r-range').textContent='$'+fp(range);
-  document.getElementById('r-vol').textContent=(range/low*100).toFixed(1)+'%';
-  renderBar(high,low,buyP,tp1,tp2,tp3,stopP);
+// ═══════════════════════════════════════════════════════════════════
+//  CALCULATE — 3 BUY LEVELS
+// ═══════════════════════════════════════════════════════════════════
+function calculate() {
+  var high  = parseFloat(document.getElementById('inp-high').value);
+  var low   = parseFloat(document.getElementById('inp-low').value);
+  var close = parseFloat(document.getElementById('inp-close').value);
+  if (isNaN(high) || isNaN(low) || high <= low) { showToast('최고가 > 최저가 이어야 합니다', true); return; }
+  if (isNaN(close) || close <= 0) close = (high+low)/2;
+
+  var range = high - low;
+  var buf   = G.btData ? G.btData.optBuf : 0.05;
+  var atr   = G.btData ? G.btData.lastATR : range * 0.28;
+
+  // Pivot S1/S2
+  var pivot = (high + low + close) / 3;
+  var ps1   = 2*pivot - high;
+  var ps2   = pivot - range;
+  var pivotBuy = ps1 < low ? ps1 : ps2;
+
+  // 3 Buy levels
+  var buy1 = low + range * buf;
+  var buy2 = pivotBuy;
+  var buy3 = low - atr * 0.35;
+
+  // Dynamic ATR stops per level
+  var stop1 = buy1 - atr * G.ATR_STOP_MULT;
+  var stop2 = buy2 - atr * G.ATR_STOP_MULT;
+  var stop3 = buy3 - atr * G.ATR_STOP_MULT;
+
+  // TP = Fib 0.618
+  var tp = low + range * 0.618;
+
+  var b1WR = G.btData ? G.btData.b1WR : 0;
+  var b1FR = G.btData ? G.btData.b1FR : 0;
+  var b1PF = G.btData ? G.btData.b1PF : 0;
+  var b1EV = G.btData ? G.btData.b1EV : 0;
+  var b2WR = G.btData ? G.btData.b2WR : 0;
+  var b2FR = G.btData ? G.btData.b2FR : 0;
+  var b2PF = G.btData ? G.btData.b2PF : 0;
+  var b2EV = G.btData ? G.btData.b2EV : 0;
+  var b3WR = G.btData ? G.btData.b3WR : 0;
+  var b3FR = G.btData ? G.btData.b3FR : 0;
+  var b3PF = G.btData ? G.btData.b3PF : 0;
+  var b3EV = G.btData ? G.btData.b3EV : 0;
+
+  // Composite score for weight
+  var sc1 = Math.max(0.1, b1FR * b1WR * Math.min(b1PF, 4)) || 30;
+  var sc2 = Math.max(0.1, b2FR * b2WR * Math.min(b2PF, 4)) || 15;
+  var sc3 = Math.max(0.1, b3FR * b3WR * Math.min(b3PF, 4)) || 10;
+  var scT = sc1 + sc2 + sc3;
+  var w1 = Math.round(sc1 / scT * 100);
+  var w2 = Math.round(sc2 / scT * 100);
+  var w3 = Math.max(0, 100 - w1 - w2);
+
+  function evClass(ev) { return ev > 0 ? 'ev-badge ev-pos' : ev < 0 ? 'ev-badge ev-neg' : 'ev-badge ev-neu'; }
+  function evTxt(ev, hasBt) { return hasBt ? 'EV '+(ev>=0?'+':'')+ev.toFixed(2)+'%' : 'EV —'; }
+  var hasBt = !!G.btData;
+
+  // BUY 1
+  document.getElementById('b1-price').textContent   = '$'+fp(buy1);
+  document.getElementById('b1-method').textContent  = 'Low + Range × '+(buf*100).toFixed(0)+'% (백테 최적화)';
+  document.getElementById('b1-gain').textContent    = '↑ '+((tp-buy1)/buy1*100).toFixed(2)+'% → TP';
+  document.getElementById('b1-ev').textContent      = evTxt(b1EV, hasBt);
+  document.getElementById('b1-ev').className        = evClass(b1EV);
+  document.getElementById('b1-wr').textContent      = hasBt ? b1WR.toFixed(1)+'%' : '—';
+  document.getElementById('b1-fill').textContent    = hasBt ? b1FR.toFixed(1)+'%' : '—';
+  document.getElementById('b1-pf').textContent      = hasBt ? b1PF.toFixed(2) : '—';
+  document.getElementById('b1-wt').textContent      = w1+'%';
+
+  // BUY 2
+  var b2label = ps1 < low ? 'S1 = 2×Pivot−High (강한지지)' : 'S2 = Pivot−Range (약한지지)';
+  document.getElementById('b2-price').textContent   = '$'+fp(buy2);
+  document.getElementById('b2-method').textContent  = b2label;
+  document.getElementById('b2-gain').textContent    = '↑ '+((tp-buy2)/buy2*100).toFixed(2)+'% → TP';
+  document.getElementById('b2-ev').textContent      = evTxt(b2EV, hasBt);
+  document.getElementById('b2-ev').className        = evClass(b2EV);
+  document.getElementById('b2-wr').textContent      = hasBt ? b2WR.toFixed(1)+'%' : '—';
+  document.getElementById('b2-fill').textContent    = hasBt ? b2FR.toFixed(1)+'%' : '—';
+  document.getElementById('b2-pf').textContent      = hasBt ? b2PF.toFixed(2) : '—';
+  document.getElementById('b2-wt').textContent      = w2+'%';
+
+  // BUY 3
+  document.getElementById('b3-price').textContent   = '$'+fp(buy3);
+  document.getElementById('b3-method').textContent  = 'Low − ATR14×0.35 = −$'+fp(atr*0.35);
+  document.getElementById('b3-gain').textContent    = '↑ '+((tp-buy3)/buy3*100).toFixed(2)+'% → TP';
+  document.getElementById('b3-ev').textContent      = evTxt(b3EV, hasBt);
+  document.getElementById('b3-ev').className        = evClass(b3EV);
+  document.getElementById('b3-wr').textContent      = hasBt ? b3WR.toFixed(1)+'%' : '—';
+  document.getElementById('b3-fill').textContent    = hasBt ? b3FR.toFixed(1)+'%' : '—';
+  document.getElementById('b3-pf').textContent      = hasBt ? b3PF.toFixed(2) : '—';
+  document.getElementById('b3-wt').textContent      = w3+'%';
+
+  // Scale guide
+  document.getElementById('sg-b1').style.flex = Math.max(w1, 5);
+  document.getElementById('sg-b2').style.flex = Math.max(w2, 5);
+  document.getElementById('sg-b3').style.flex = Math.max(w3, 5);
+  document.getElementById('sg-l1').textContent = 'BUY1 '+w1+'%';
+  document.getElementById('sg-l2').textContent = 'BUY2 '+w2+'%';
+  document.getElementById('sg-l3').textContent = 'BUY3 '+w3+'%';
+
+  // Summary
+  document.getElementById('r-tp').textContent   = '$'+fp(tp);
+  document.getElementById('r-stop').textContent = '$'+fp(stop1)+' (ATR×1.5)';
+  document.getElementById('r-vol').textContent  = (range/low*100).toFixed(1)+'%';
+
+  // Bar
+  renderBar(high, low, buy1, buy2, buy3, tp, stop1);
+
+  G.lastResult = {
+    coin: G.coin, high, low, close, buy1, buy2, buy3, tp, stop1,
+    buf, atr: G.btData ? G.btData.lastATR : atr,
+    ts: Date.now(), b1WR: hasBt ? b1WR : null, b1EV: hasBt ? b1EV : null
+  };
+
   document.getElementById('result-section').classList.add('visible');
-  setTimeout(function(){document.getElementById('result-section').scrollIntoView({behavior:'smooth',block:'start'});},80);
+  setTimeout(function() {
+    document.getElementById('result-section').scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }, 80);
 }
 
-function renderBar(high,low,buyP,tp1,tp2,tp3,stopP){
-  var track=document.getElementById('range-track');
-  track.querySelectorAll('.range-marker').forEach(function(m){m.remove();});
-  var pad=(high-low)*0.45;
-  var mn=stopP-pad*0.05,mx=high+pad*0.2,span=mx-mn;
-  function pct(p){return Math.max(1,Math.min(99,(p-mn)/span*100));}
-  document.getElementById('bar-low-lbl').textContent='$'+fp(low);
-  document.getElementById('bar-high-lbl').textContent='$'+fp(high);
-  var fill=document.getElementById('range-fill');
-  fill.style.left=pct(low)+'%';
-  fill.style.width=(pct(high)-pct(low))+'%';
-  [{p:stopP,c:'var(--amber)',lbl:'STOP'},{p:buyP,c:'var(--green)',lbl:'BUY'},
-   {p:tp1,c:'var(--blue)',lbl:'TP1'},{p:tp2,c:'var(--amber)',lbl:'TP2'},{p:tp3,c:'var(--red)',lbl:'TP3'}]
-  .forEach(function(m){
-    var el=document.createElement('div');
-    el.className='range-marker';el.style.left=pct(m.p)+'%';
-    el.innerHTML='<span class="range-marker-label" style="color:'+m.c+'">'+m.lbl+'</span>'+
-      '<div class="range-marker-dot" style="background:'+m.c+';box-shadow:0 0 5px '+m.c+'"></div>'+
-      '<span class="range-marker-price" style="color:'+m.c+'">$'+fp(m.p)+'</span>';
+function renderBar(high, low, b1, b2, b3, tp, stop) {
+  var track = document.getElementById('range-track');
+  track.querySelectorAll('.rmarker').forEach(function(m){ m.remove(); });
+  var pad = (high-low)*0.5;
+  var mn = Math.min(b3, stop) - pad*0.05;
+  var mx = high + pad*0.2;
+  var span = mx - mn;
+  function pct(p){ return Math.max(1,Math.min(99,(p-mn)/span*100)); }
+  document.getElementById('bar-low-lbl').textContent  = '$'+fp(low);
+  document.getElementById('bar-high-lbl').textContent = '$'+fp(high);
+  document.getElementById('range-fill').style.left  = pct(low)+'%';
+  document.getElementById('range-fill').style.width = (pct(high)-pct(low))+'%';
+  [
+    { p:stop, c:'var(--red)',   lbl:'SL'  },
+    { p:b3,   c:'var(--purple)',lbl:'B3'  },
+    { p:b2,   c:'var(--blue)',  lbl:'B2'  },
+    { p:b1,   c:'var(--green)', lbl:'B1'  },
+    { p:tp,   c:'var(--amber)', lbl:'TP'  },
+  ].forEach(function(m){
+    var el = document.createElement('div');
+    el.className = 'rmarker'; el.style.left = pct(m.p)+'%';
+    el.innerHTML =
+      '<span class="rmarker-lbl" style="color:'+m.c+'">'+m.lbl+'</span>'+
+      '<div class="rmarker-dot" style="background:'+m.c+';box-shadow:0 0 5px '+m.c+'"></div>'+
+      '<span class="rmarker-price" style="color:'+m.c+'">$'+fp(m.p)+'</span>';
     track.appendChild(el);
   });
 }
 
-function setLoading(on,msg){
-  document.getElementById('loading-overlay').classList.toggle('visible',on);
-  if(msg)document.getElementById('loading-text').textContent=msg;
-  var btn=document.getElementById('search-btn');
-  btn.style.opacity=on?'0.4':'';btn.style.pointerEvents=on?'none':'';
+// ═══════════════════════════════════════════════════════════════════
+//  HISTORY
+// ═══════════════════════════════════════════════════════════════════
+function saveToHistory() {
+  if (!G.lastResult) { showToast('먼저 계산하세요'); return; }
+  var h = getHist(); h.unshift(G.lastResult);
+  if (h.length > 50) h = h.slice(0,50);
+  localStorage.setItem('4hrange_hist', JSON.stringify(h));
+  showToast(G.lastResult.coin + ' 저장 완료');
 }
-
-function saveToHistory(){
-  if(!lastResult){showToast('먼저 계산하세요');return;}
-  var h=getHistory();h.unshift(lastResult);
-  if(h.length>50)h=h.slice(0,50);
-  localStorage.setItem('4hrange_hist',JSON.stringify(h));
-  showToast(lastResult.coin+' 저장 완료');
-}
-function getHistory(){try{return JSON.parse(localStorage.getItem('4hrange_hist'))||[];}catch(e){return[];}}
-function renderHistory(){
-  var h=getHistory(),el=document.getElementById('hist-list');
-  if(!h.length){el.innerHTML='<div class="history-empty"><div style="font-size:32px;opacity:.4;margin-bottom:12px">📋</div>저장된 계산이 없습니다</div>';return;}
+function getHist() { try { return JSON.parse(localStorage.getItem('4hrange_hist'))||[]; } catch(e){ return []; } }
+function renderHistory() {
+  var h = getHist(), el = document.getElementById('hist-list');
+  if (!h.length) { el.innerHTML='<div class="history-empty"><div style="font-size:32px;opacity:.4;margin-bottom:12px">📋</div>저장된 계산이 없습니다</div>'; return; }
   var html='';
   h.forEach(function(item,i){
-    var d=new Date(item.ts);
-    var ts=(d.getMonth()+1)+'/'+d.getDate()+' '+pad2(d.getHours())+':'+pad2(d.getMinutes());
-    var wrStyle=item.winRate?(item.winRate>=65?'background:var(--green-dim);color:var(--green)':'background:var(--amber-dim);color:var(--amber)'):'';
-    html+='<div class="hist-item" onclick="loadHistory('+i+')">'+
+    var d = new Date(item.ts);
+    var ts = (d.getMonth()+1)+'/'+d.getDate()+' '+pad2(d.getHours())+':'+pad2(d.getMinutes());
+    var wrStyle = item.b1WR ? (item.b1WR>=55 ? 'background:var(--green-dim);color:var(--green)' : item.b1WR>=42 ? 'background:var(--amber-dim);color:var(--amber)' : 'background:var(--red-dim);color:var(--red)') : '';
+    html += '<div class="hist-item" onclick="loadHistory('+i+')">'+
       '<div class="hist-top"><span class="hist-coin">'+(item.coin||'—')+'</span>'+
       '<div class="hist-meta">'+
-      (item.winRate?'<span class="hist-wr" style="'+wrStyle+'">승률 '+item.winRate.toFixed(1)+'%</span>':'')+
+      (item.b1WR ? '<span class="hist-wr" style="'+wrStyle+'">'+item.b1WR.toFixed(1)+'%</span>' : '')+
       '<span class="hist-time">'+ts+'</span></div></div>'+
       '<div class="hist-prices">'+
-      '<div class="hist-price-item"><span class="hist-price-lbl">HIGH</span><span class="hist-price-val" style="color:var(--red)">$'+fp(item.high)+'</span></div>'+
-      '<div class="hist-price-item"><span class="hist-price-lbl">LOW</span><span class="hist-price-val" style="color:var(--green)">$'+fp(item.low)+'</span></div>'+
-      '<div class="hist-price-item"><span class="hist-price-lbl">BUY</span><span class="hist-price-val" style="color:var(--green)">$'+fp(item.buyP)+'</span></div>'+
-      '<div class="hist-price-item"><span class="hist-price-lbl">TP2</span><span class="hist-price-val" style="color:var(--amber)">$'+fp(item.tp2)+'</span></div>'+
-      '<div class="hist-price-item"><span class="hist-price-lbl">TP3</span><span class="hist-price-val" style="color:var(--red)">$'+fp(item.tp3)+'</span></div>'+
+      '<div class="hist-p"><span class="hist-p-lbl">HIGH</span><span class="hist-p-val" style="color:var(--red)">$'+fp(item.high)+'</span></div>'+
+      '<div class="hist-p"><span class="hist-p-lbl">LOW</span><span class="hist-p-val" style="color:var(--green)">$'+fp(item.low)+'</span></div>'+
+      '<div class="hist-p"><span class="hist-p-lbl">B1</span><span class="hist-p-val" style="color:var(--green)">$'+fp(item.buy1)+'</span></div>'+
+      '<div class="hist-p"><span class="hist-p-lbl">B2</span><span class="hist-p-val" style="color:var(--blue)">$'+fp(item.buy2)+'</span></div>'+
+      '<div class="hist-p"><span class="hist-p-lbl">B3</span><span class="hist-p-val" style="color:var(--purple)">$'+fp(item.buy3)+'</span></div>'+
       '</div></div>';
   });
-  html+='<button class="hist-clear-btn" onclick="clearHistory()">전체 삭제</button>';
-  el.innerHTML=html;
+  html += '<button class="hist-clear" onclick="clearHistory()">전체 삭제</button>';
+  el.innerHTML = html;
 }
-function loadHistory(i){
-  var item=getHistory()[i];if(!item)return;
-  currentCoin=item.coin||'COIN';
-  btData=item.winRate?{buf:item.buf||0.05,winRate:item.winRate,tp1WR:0,tp2WR:0,tp3WR:0}:null;
-  document.getElementById('inp-high').value=item.high;
-  document.getElementById('inp-low').value=item.low;
+function loadHistory(i) {
+  var item = getHist()[i]; if(!item) return;
+  G.coin = item.coin||'COIN';
+  G.btData = item.b1WR ? { optBuf:item.buf||0.05, lastATR:item.atr||0, b1WR:item.b1WR, b1FR:0, b1PF:0, b1EV:item.b1EV||0, b2WR:0,b2FR:0,b2PF:0,b2EV:0,b3WR:0,b3FR:0,b3PF:0,b3EV:0,volGrade:'—',volFiltered:0,closeFiltered:0,biasFiltered:0 } : null;
+  document.getElementById('inp-high').value  = item.high;
+  document.getElementById('inp-low').value   = item.low;
+  document.getElementById('inp-close').value = item.close || (item.high+item.low)/2;
   switchTab('calc');
-  setTimeout(calculate,80);
-  showToast(item.coin+' 불러옴');
+  setTimeout(calculate, 80);
+  showToast(item.coin + ' 불러옴');
 }
-function clearHistory(){
-  if(confirm('히스토리 전체 삭제?')){localStorage.removeItem('4hrange_hist');renderHistory();}
+function clearHistory() {
+  if (confirm('히스토리 전체 삭제?')) { localStorage.removeItem('4hrange_hist'); renderHistory(); }
 }
 
-function fp(n){
-  if(n>=10000)return n.toFixed(0);
-  if(n>=1000)return n.toFixed(1);
-  if(n>=1)return n.toFixed(4).replace(/\.?0+$/,'');
-  if(n>=0.01)return n.toFixed(5);
+// ═══════════════════════════════════════════════════════════════════
+//  UTILS
+// ═══════════════════════════════════════════════════════════════════
+function fp(n) {
+  if (n == null || isNaN(n)) return '—';
+  if (n >= 10000) return n.toFixed(0);
+  if (n >= 1000)  return n.toFixed(1);
+  if (n >= 1)     return n.toFixed(4).replace(/\.?0+$/,'');
+  if (n >= 0.01)  return n.toFixed(5);
   return n.toFixed(8);
 }
-function pad2(n){return n<10?'0'+n:''+n;}
-function trimZero(s){return s.replace(/\.?0+$/,'');}
+function pad2(n) { return n<10?'0'+n:''+n; }
+function trimZ(s) { return s.replace(/\.?0+$/,''); }
 
+// ── INIT ─────────────────────────────────────────────────────────
 updateRateUI();
 calculate();
 </script>
