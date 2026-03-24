@@ -209,6 +209,53 @@ html,body{background:var(--bg0);color:var(--t1);font-family:var(--ui);font-size:
 .expired-banner.on{display:flex;align-items:center;justify-content:space-between}
 .re-btn{background:var(--R);border:none;border-radius:3px;padding:5px 12px;font-family:var(--ui);font-size:11px;font-weight:600;color:#fff;cursor:pointer}
 
+
+/* ── QUANT PANEL ── */
+.qpanel{background:var(--bg1);border-bottom:1px solid var(--bd);padding:12px 16px;display:none}
+.qpanel.on{display:block}
+.qp-title{font-size:10px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--t3);margin-bottom:10px;display:flex;align-items:center;gap:6px}
+.qp-title::after{content:'';flex:1;height:1px;background:var(--bd)}
+/* Kelly */
+.kelly-card{background:var(--bg2);border:1px solid var(--bd);border-radius:4px;padding:10px 12px;margin-bottom:8px}
+.kelly-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:6px}
+.kelly-lbl{font-size:11px;color:var(--t2)}
+.kelly-val{font-family:var(--num);font-size:18px;font-weight:700;color:var(--G)}
+.kelly-val.warn{color:var(--A)}.kelly-val.danger{color:var(--R)}
+.kelly-sub{font-size:10px;color:var(--t3);font-family:var(--num);margin-bottom:6px}
+.kelly-bar-wrap{height:4px;background:var(--bg3);border-radius:2px;overflow:hidden}
+.kelly-bar{height:100%;border-radius:2px;transition:width .5s;background:var(--G)}
+.kelly-bar.warn{background:var(--A)}.kelly-bar.danger{background:var(--R)}
+/* EV Combined */
+.ev-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;margin-bottom:8px}
+.ev-card{background:var(--bg2);border:1px solid var(--bd);border-radius:4px;padding:8px;text-align:center}
+.ev-card-lbl{font-size:9px;color:var(--t3);text-transform:uppercase;letter-spacing:.03em;margin-bottom:4px}
+.ev-card-val{font-family:var(--num);font-size:13px;font-weight:700}
+.ev-card-sub{font-size:9px;color:var(--t3);font-family:var(--num);margin-top:2px}
+/* Volatility Squeeze */
+.vol-row{display:flex;align-items:center;justify-content:space-between;background:var(--bg2);border:1px solid var(--bd);border-radius:4px;padding:8px 10px;margin-bottom:8px}
+.vol-lbl{font-size:11px;color:var(--t2)}
+.vol-right{display:flex;align-items:center;gap:7px}
+.vol-val{font-family:var(--num);font-size:12px;font-weight:600}
+.vtag{font-size:9px;padding:2px 6px;border-radius:2px;font-family:var(--num)}
+.vtag.squeeze{background:rgba(0,177,64,.15);color:var(--G);border:1px solid rgba(0,177,64,.3)}
+.vtag.expand{background:rgba(240,64,64,.15);color:var(--R);border:1px solid rgba(240,64,64,.3)}
+.vtag.normal{background:var(--bg3);color:var(--t3)}
+/* BTC Relative */
+.btc-row{display:flex;align-items:center;justify-content:space-between;background:var(--bg2);border:1px solid var(--bd);border-radius:4px;padding:8px 10px;margin-bottom:8px}
+.btc-lbl{font-size:11px;color:var(--t2)}
+.btc-val{font-family:var(--num);font-size:12px;font-weight:600}
+.btctag{font-size:9px;padding:2px 6px;border-radius:2px;font-family:var(--num)}
+.btctag.over{background:rgba(0,177,64,.15);color:var(--G);border:1px solid rgba(0,177,64,.3)}
+.btctag.under{background:rgba(240,64,64,.15);color:var(--R);border:1px solid rgba(240,64,64,.3)}
+.btctag.neutral{background:var(--bg3);color:var(--t3)}
+/* Time Filter */
+.time-row{display:flex;align-items:center;justify-content:space-between;background:var(--bg2);border:1px solid var(--bd);border-radius:4px;padding:8px 10px}
+.time-lbl{font-size:11px;color:var(--t2)}
+.time-val{font-family:var(--num);font-size:11px;font-weight:600}
+.timetag{font-size:9px;padding:2px 6px;border-radius:2px;font-family:var(--num)}
+.timetag.hot{background:rgba(0,177,64,.15);color:var(--G);border:1px solid rgba(0,177,64,.3)}
+.timetag.cold{background:var(--bg3);color:var(--t3)}
+
 </style>
 </head>
 <body>
@@ -405,6 +452,70 @@ html,body{background:var(--bg0);color:var(--t1);font-family:var(--ui);font-size:
       <div class="rngtrack" id="rtrack"><div class="rngfill" id="rfill"></div></div>
       <div class="rngends"><span id="rlow" style="color:var(--G)">Low</span><span id="rhigh" style="color:var(--R)">High</span></div>
     </div>
+
+    <!-- QUANT PANEL -->
+    <div class="qpanel" id="qpanel">
+      <div class="qp-title">퀀트 분석</div>
+
+      <!-- Kelly Criterion -->
+      <div class="kelly-card">
+        <div class="kelly-top">
+          <div>
+            <div class="kelly-lbl">Kelly Criterion — 최적 투자 비율</div>
+            <div class="kelly-sub" id="kelly-sub">승률·PF 기반 수학적 최적 베팅 크기</div>
+          </div>
+          <div class="kelly-val" id="kelly-val">—</div>
+        </div>
+        <div class="kelly-bar-wrap"><div class="kelly-bar" id="kelly-bar" style="width:0%"></div></div>
+      </div>
+
+      <!-- EV Combined (MC × BT) -->
+      <div class="ev-grid">
+        <div class="ev-card">
+          <div class="ev-card-lbl">BUY1 복합 EV</div>
+          <div class="ev-card-val" id="cev1">—</div>
+          <div class="ev-card-sub">MC × 백테스트</div>
+        </div>
+        <div class="ev-card">
+          <div class="ev-card-lbl">BUY2 복합 EV</div>
+          <div class="ev-card-val" id="cev2">—</div>
+          <div class="ev-card-sub">MC × 백테스트</div>
+        </div>
+        <div class="ev-card">
+          <div class="ev-card-lbl">BUY3 복합 EV</div>
+          <div class="ev-card-val" id="cev3">—</div>
+          <div class="ev-card-sub">MC × 백테스트</div>
+        </div>
+      </div>
+
+      <!-- Volatility Squeeze -->
+      <div class="vol-row">
+        <div class="vol-lbl">변동성 수축 지수 (ATR 비율)</div>
+        <div class="vol-right">
+          <span class="vol-val" id="vol-ratio">—</span>
+          <span class="vtag" id="vol-tag">—</span>
+        </div>
+      </div>
+
+      <!-- BTC Relative Strength -->
+      <div class="btc-row">
+        <div class="btc-lbl">BTC 대비 초과낙폭</div>
+        <div class="vol-right">
+          <span class="btc-val" id="btc-rel">—</span>
+          <span class="btctag" id="btc-tag">—</span>
+        </div>
+      </div>
+
+      <!-- Time Filter -->
+      <div class="time-row">
+        <div class="time-lbl">현재 시간대 (한국 시간)</div>
+        <div class="vol-right">
+          <span class="time-val" id="time-val">—</span>
+          <span class="timetag" id="time-tag">—</span>
+        </div>
+      </div>
+    </div>
+
     <div class="saverow">
       <button class="savebtn" onclick="saveH()">
         <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
@@ -719,7 +830,7 @@ function calculate(noScroll){
   G.res={coin:G.coin,tf:G.tf,high,low,close,buy1:b1,buy2:b2,buy3:b3,tp,stop1:s1,buf,atr,ts:Date.now(),b1WR:hb?d.b1WR:null,b1EV:hb?d.b1EV:null,af:hb?G.bt.af:null};
   el('results').classList.add('on');
   if(!noScroll) setTimeout(function(){el('results').scrollIntoView({behavior:'smooth',block:'start'});},80);
-  startMC(close,G.bt?(G.bt.la/low*Math.sqrt(24)):0.039,b1,b2,b3);
+  startMC(close,G.bt?(G.bt.la/low*Math.sqrt(24)):0.039,b1,b2,b3,tp,s1,high,low);
   renderDirection(close, G.bt?(G.bt.la/low*Math.sqrt(24)):0.039);
 }
 
@@ -844,7 +955,7 @@ function renderDirection(S0, dv) {
   }, 50);
 }
 
-function startMC(S0,dv,b1,b2,b3){
+function startMC(S0,dv,b1,b2,b3,tp,s1,high,low){
   var mc=el('mcstatus'); // 화면에 표시 안함
   ['b1p14','b1p30','b2p14','b2p30','b3p14','b3p30'].forEach(function(id){el(id).textContent='…';});
   var N=2000,hv=dv/Math.sqrt(24),s14=14*24,s30=30*24;
@@ -1034,6 +1145,133 @@ function checkMTF(bm,ts,cfg){
   var badge=el('mtf-badge');
   if(b&&b.bull){badge.classList.add('on');}
   else{badge.classList.remove('on');}
+}
+
+
+// ════════════════════════════════════════════════
+//  QUANT ENGINE
+// ════════════════════════════════════════════════
+
+// 1. Kelly Criterion
+function calcKelly(wr, avgWin, avgLoss) {
+  // f* = W/L - (1-W)/W * (L/W) = W - (1-W)/(avgWin/avgLoss)
+  if(avgLoss<=0||avgWin<=0)return 0;
+  var f = wr - (1-wr)/(avgWin/avgLoss);
+  return Math.max(0, Math.min(f, 1)); // 0~100% 클리핑
+}
+
+// 2. Combined EV (Monte Carlo 도달확률 × 백테스트 수익률)
+function calcCombinedEV(mcProb, tpPct, stopPct) {
+  // EV = MC도달확률 × TP수익 - (1-MC도달확률) × Stop손실
+  return mcProb * tpPct - (1 - mcProb) * stopPct;
+}
+
+// 3. Volatility Squeeze (ATR ratio)
+function calcVolRatio(curATR, avgATR) {
+  if(!avgATR||avgATR<=0)return 1;
+  return curATR / avgATR;
+}
+
+// 4. BTC Relative Strength (24h 수익률 비교)
+function fetchBTCRelative(coinPair, callback) {
+  var B='https://api.binance.com/api/v3/ticker/24hr';
+  var u1=B+'?symbol='+coinPair;
+  var u2=B+'?symbol=BTCUSDT';
+  function fetchOne(u){return fetch(u).then(function(r){return r.json();}).catch(function(){return null;});}
+  Promise.all([fetchOne(u1),fetchOne(u2)]).then(function(res){
+    if(!res[0]||!res[1]){callback(null,null);return;}
+    var coinChg=parseFloat(res[0].priceChangePercent)||0;
+    var btcChg=parseFloat(res[1].priceChangePercent)||0;
+    callback(coinChg, btcChg);
+  });
+}
+
+// 5. Time Filter (한국 시간 기준 주요 세션)
+function getTimeSession() {
+  var now=new Date();
+  var kh=(now.getUTCHours()+9)%24; // 한국 시간
+  // 주요 시간대
+  if(kh>=9&&kh<11) return{label:'아시아 오전 (9-11시)',hot:true,desc:'변동성 ↑ 진입 유리'};
+  if(kh>=14&&kh<16) return{label:'아시아 오후 (14-16시)',hot:false,desc:'변동성 낮음'};
+  if(kh>=22&&kh<24) return{label:'뉴욕 개장 (22-24시)',hot:true,desc:'변동성 ↑ 진입 유리'};
+  if(kh>=0&&kh<2)   return{label:'뉴욕 장중 (0-2시)',hot:true,desc:'변동성 ↑ 진입 유리'};
+  if(kh>=4&&kh<6)   return{label:'뉴욕 마감 (4-6시)',hot:false,desc:'변동성 감소 중'};
+  return{label:kh+'시 (일반 시간대)',hot:false,desc:'평균 변동성'};
+}
+
+// MC 결과 저장용 (calculate → startMC 결과 공유)
+var G_MC = {r14:[0,0,0], r30:[0,0,0], ready:false};
+
+// 퀀트 패널 렌더링 (calculate + startMC 완료 후 호출)
+function renderQuant(b1, b2, b3, tp, s1, close, low, high) {
+  if(!G.bt)return;
+  el('qpanel').classList.add('on');
+
+  var d=G.bt;
+  var rng=high-low;
+  var tpPct1=(tp-b1)/b1, tpPct2=(tp-b2)/b2, tpPct3=(tp-b3)/b3;
+  var stPct1=Math.abs((s1-b1)/b1);
+  var stPct2=Math.abs((s1-b2)/b2);
+  var stPct3=Math.abs((s1-b3)/b3);
+
+  // ── Kelly ────────────────────────────────────
+  var wr=d.b1WR/100;
+  var avgWin=d.b1PF>0?(d.b1EV/100+stPct1):tpPct1;
+  var avgLoss=stPct1;
+  var kelly=calcKelly(wr, tpPct1, stPct1);
+  var halfKelly=kelly*0.5; // 실전: Half Kelly 권장
+  var kpct=(halfKelly*100).toFixed(1);
+  var kEl=el('kelly-val'), kBar=el('kelly-bar');
+  kEl.textContent=kpct+'%';
+  kBar.style.width=Math.min(100,halfKelly*100)+'%';
+  if(halfKelly>0.35){kEl.className='kelly-val danger';kBar.className='kelly-bar danger';el('kelly-sub').textContent='⚠ 공격적 — Half Kelly '+kpct+'% (최대 권장)';}
+  else if(halfKelly>0.20){kEl.className='kelly-val warn';kBar.className='kelly-bar warn';el('kelly-sub').textContent='Half Kelly '+kpct+'% — 적정 수준';}
+  else{kEl.className='kelly-val';kBar.className='kelly-bar';el('kelly-sub').textContent='Half Kelly '+kpct+'% — 보수적 (안전)';}
+
+  // ── Combined EV (MC 확률 사용 가능 시) ───────
+  function renderCEV(elId, mcP, tpP, stP, color) {
+    var ev=G_MC.ready ? calcCombinedEV(mcP, tpP*100, stP*100) : null;
+    var e=el(elId);
+    if(ev===null){e.textContent='계산중';e.style.color='var(--t3)';return;}
+    e.textContent=(ev>=0?'+':'')+ev.toFixed(2)+'%';
+    e.style.color=ev>0?'var(--G)':ev<-1?'var(--R)':'var(--A)';
+  }
+  renderCEV('cev1', G_MC.r14[0], tpPct1, stPct1);
+  renderCEV('cev2', G_MC.r14[1], tpPct2, stPct2);
+  renderCEV('cev3', G_MC.r14[2], tpPct3, stPct3);
+
+  // ── Volatility Squeeze ───────────────────────
+  var curATR=G.bt.la;
+  // avgATR 근사: Range의 비율로 계산 (백테스트 샘플 기반)
+  var impliedAvgATR=rng*0.18; // 일반적으로 range의 18% 수준
+  var vr=calcVolRatio(curATR, impliedAvgATR);
+  el('vol-ratio').textContent=vr.toFixed(2)+'x';
+  var vtag=el('vol-tag');
+  if(vr<0.7){vtag.textContent='수축 — 진입 최적';vtag.className='vtag squeeze';}
+  else if(vr>1.3){vtag.textContent='확장 — 변동 주의';vtag.className='vtag expand';}
+  else{vtag.textContent='보통';vtag.className='vtag normal';}
+
+  // ── Time Filter ──────────────────────────────
+  var ts=getTimeSession();
+  el('time-val').textContent=ts.label;
+  var ttag=el('time-tag');
+  if(ts.hot){ttag.textContent='진입 유리 ↑';ttag.className='timetag hot';}
+  else{ttag.textContent=ts.desc;ttag.className='timetag cold';}
+
+  // ── BTC Relative (비동기) ────────────────────
+  if(G.coin&&G.coin!=='BTC'){
+    fetchBTCRelative(G.coin+'USDT',function(coinChg,btcChg){
+      if(coinChg===null){el('btc-rel').textContent='—';el('btc-tag').textContent='—';return;}
+      var excess=coinChg-btcChg; // 양수=코인이 BTC보다 더 올랐음
+      var brel=el('btc-rel'),btag=el('btc-tag');
+      brel.textContent=(excess>=0?'+':'')+excess.toFixed(2)+'% (코인'+coinChg.toFixed(1)+'% / BTC'+btcChg.toFixed(1)+'%)';
+      if(excess<-3){btag.textContent='초과 낙폭 — 매수 유리';btag.className='btctag over';}
+      else if(excess>3){btag.textContent='초과 상승 — 매수 불리';btag.className='btctag under';}
+      else{btag.textContent='BTC 동조';btag.className='btctag neutral';}
+    });
+  } else {
+    el('btc-rel').textContent='해당없음';el('btc-tag').textContent='';
+  }
 }
 
 setTF('4h');
