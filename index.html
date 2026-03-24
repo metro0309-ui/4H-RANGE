@@ -586,7 +586,7 @@ function liveUpdate(pair,tf){
     var remStr=remH>0?(remH+'h '+pad2(remM)+'m 후 봉 마감'):(remM+'m 후 봉 마감');
     el('tksub').textContent=pair+' · '+TFC[tf].lbl+' · 🔴 LIVE · '+remStr;
     // 입력값 DOM 반영 후 계산 실행 (타이밍 보장)
-    setTimeout(function(){calculate();},10);
+    setTimeout(function(){calculate(true);},10);
   }).catch(function(){});
 }
 
@@ -677,7 +677,7 @@ function renderBT(bt,cfg){
   el('btcard').classList.add('on');
 }
 
-function calculate(){
+function calculate(noScroll){
   var high=parseFloat(el('ih').value),low=parseFloat(el('il').value),close=parseFloat(el('ic').value);
   if(isNaN(high)||isNaN(low)||high<=low){toast('최고가 > 최저가 이어야 합니다',true);return;}
   if(isNaN(close)||close<=0)close=(high+low)/2;
@@ -718,7 +718,7 @@ function calculate(){
   checkAbandon(close,low,high,b1,b2,b3);
   G.res={coin:G.coin,tf:G.tf,high,low,close,buy1:b1,buy2:b2,buy3:b3,tp,stop1:s1,buf,atr,ts:Date.now(),b1WR:hb?d.b1WR:null,b1EV:hb?d.b1EV:null,af:hb?G.bt.af:null};
   el('results').classList.add('on');
-  setTimeout(function(){el('results').scrollIntoView({behavior:'smooth',block:'start'});},80);
+  if(!noScroll) setTimeout(function(){el('results').scrollIntoView({behavior:'smooth',block:'start'});},80);
   startMC(close,G.bt?(G.bt.la/low*Math.sqrt(24)):0.039,b1,b2,b3);
   renderDirection(close, G.bt?(G.bt.la/low*Math.sqrt(24)):0.039);
 }
@@ -998,7 +998,7 @@ function startWS(pair,tf){
           el('il').value=parseFloat(l.toFixed(6));
           el('ic').value=parseFloat(cl.toFixed(6));
           // BUY1/2/3 즉시 재계산
-          setTimeout(calculate,0);
+          setTimeout(function(){calculate(true);},0);
         }
       }catch(e){}
     };
