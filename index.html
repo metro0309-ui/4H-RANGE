@@ -448,9 +448,9 @@ function doSearch(){
         var remM=Math.floor((remain%3600000)/60000);
         var remStr=remH>0?(remH+'h '+pad2(remM)+'m 후 봉 마감'):(remM+'m 후 봉 마감');
 
-        el('ih').value=trimZ(h.toFixed(8));
-        el('il').value=trimZ(l.toFixed(8));
-        el('ic').value=trimZ(cl.toFixed(8));
+        el('ih').value=parseFloat(h.toFixed(6));
+        el('il').value=parseFloat(l.toFixed(6));
+        el('ic').value=parseFloat(cl.toFixed(6));
         el('tkname').textContent=sym;
         el('tksub').textContent=pair+' · '+cfg.lbl+' · 🔴 LIVE · '+remStr;
         el('tkpx').textContent='$'+fp(cl);
@@ -493,9 +493,9 @@ function liveUpdate(pair,tf){
     var prev=data.length>1?parseFloat(data[data.length-2][4]):cl;
     var chg=(cl-prev)/prev*100;
     // 입력값 업데이트
-    el('ih').value=trimZ(h.toFixed(8));
-    el('il').value=trimZ(l.toFixed(8));
-    el('ic').value=trimZ(cl.toFixed(8));
+    el('ih').value=parseFloat(h.toFixed(6));
+    el('il').value=parseFloat(l.toFixed(6));
+    el('ic').value=parseFloat(cl.toFixed(6));
     // 티커 업데이트
     el('tkpx').textContent='$'+fp(cl);
     el('tkh').textContent='$'+fp(h);
@@ -509,8 +509,8 @@ function liveUpdate(pair,tf){
     var remH=Math.floor(remain/3600000),remM=Math.floor((remain%3600000)/60000);
     var remStr=remH>0?(remH+'h '+pad2(remM)+'m 후 봉 마감'):(remM+'m 후 봉 마감');
     el('tksub').textContent=pair+' · '+TFC[tf].lbl+' · 🔴 LIVE · '+remStr;
-    // 계산 자동 재실행
-    calculate();
+    // 입력값 DOM 반영 후 계산 실행 (타이밍 보장)
+    setTimeout(function(){calculate();},10);
   }).catch(function(){});
 }
 
@@ -589,7 +589,7 @@ function runBT(candles,bm,cfg){
 }
 
 function renderBT(bt,cfg){
-  el('btts').innerHTML='<b>'+fmtDT(bt.sTs)+'</b> ~ <b>'+fmtDT(bt.eTs)+'</b><br/>총 <b>'+Math.round(bt.bd)+'일</b> · 유효봉 <b>'+bt.vc+'회</b>';
+  el('btts').innerHTML='백테스트 기간: <b>'+fmtDT(bt.sTs)+'</b> ~ <b>'+fmtDT(bt.eTs)+'</b><br/>총 <b>'+Math.round(bt.bd)+'일</b> · 유효봉 <b>'+bt.vc+'회</b> <span style="color:var(--t3);font-size:9px">(현재 봉 제외, 완성봉 기준)</span>';
   el('bttl').textContent='백테스트 ('+cfg.lbl+') — 현실 보정';
   el('fval').textContent='연 약 '+bt.af.toFixed(1)+'회';
   var ft=el('ftag');
