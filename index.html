@@ -308,6 +308,37 @@ html,body{background:var(--bg0);color:var(--t1);font-family:var(--ui);font-size:
 .vol-signal.weak .vol-dot{background:var(--R)}
 .vol-signal.normal .vol-dot{background:var(--t3)}
 
+
+/* ── GUIDE PAGE ── */
+.guide-hero{background:linear-gradient(135deg,rgba(0,177,64,.08),rgba(51,112,255,.05));border-bottom:1px solid var(--bd);padding:20px 16px 16px}
+.guide-hero-title{font-size:18px;font-weight:700;color:var(--t1);margin-bottom:4px}
+.guide-hero-sub{font-size:12px;color:var(--t2);line-height:1.6}
+.guide-step{border-bottom:1px solid var(--bd);padding:16px}
+.gs-num{width:24px;height:24px;border-radius:50%;background:var(--G);color:#000;font-weight:700;font-size:11px;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-family:var(--num)}
+.gs-head{display:flex;align-items:center;gap:10px;margin-bottom:10px}
+.gs-title{font-size:13px;font-weight:700;color:var(--t1)}
+.gs-body{font-size:12px;color:var(--t2);line-height:1.75;padding-left:34px}
+.gs-body b{color:var(--t1)}
+.gs-tip{background:var(--bg2);border-left:3px solid var(--G);border-radius:0 4px 4px 0;padding:8px 10px;margin-top:8px;font-size:11px;color:var(--t2);line-height:1.6}
+.gs-tip b{color:var(--G)}
+.gs-warn{background:rgba(240,64,64,.07);border-left:3px solid var(--R);border-radius:0 4px 4px 0;padding:8px 10px;margin-top:6px;font-size:11px;color:var(--t2);line-height:1.6}
+.gs-warn b{color:var(--R)}
+.guide-section{border-bottom:1px solid var(--bd);padding:16px}
+.guide-section-title{font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--t3);margin-bottom:12px}
+.faq-item{margin-bottom:10px}
+.faq-q{font-size:12px;font-weight:600;color:var(--t1);margin-bottom:4px}
+.faq-a{font-size:12px;color:var(--t2);line-height:1.65}
+.mode-explain{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:8px}
+.me-card{background:var(--bg2);border:1px solid var(--bd);border-radius:4px;padding:10px}
+.me-title{font-size:11px;font-weight:700;margin-bottom:5px}
+.me-title.range{color:var(--G)}.me-title.break{color:var(--A)}
+.me-body{font-size:10px;color:var(--t2);line-height:1.6}
+.signal-row{display:flex;align-items:flex-start;gap:8px;margin-bottom:8px;padding:8px;background:var(--bg2);border-radius:4px}
+.sr-icon{font-size:16px;flex-shrink:0;line-height:1.2}
+.sr-text{font-size:11px;color:var(--t2);line-height:1.6}
+.sr-text b{color:var(--t1)}
+.guide-ver{text-align:center;font-family:var(--num);font-size:10px;color:var(--t3);padding:20px}
+
 </style>
 </head>
 <body>
@@ -321,7 +352,7 @@ html,body{background:var(--bg0);color:var(--t1);font-family:var(--ui);font-size:
 </div>
 <div class="tabs">
   <button class="tab active" onclick="switchTab('calc')">계산기</button>
-  <button class="tab" onclick="switchTab('history')">히스토리</button>
+  <button class="tab" onclick="switchTab('guide')">사용법</button>
   <button class="tab" onclick="switchTab('info')">알고리즘</button>
 </div>
 <div class="page active" id="page-calc">
@@ -616,7 +647,122 @@ html,body{background:var(--bg0);color:var(--t1);font-family:var(--ui);font-size:
     </div>
   </div>
 </div>
-<div class="page" id="page-history"><div id="hlist"></div></div>
+<div class="page" id="page-guide">
+
+  <div class="guide-hero">
+    <div class="guide-hero-title">📱 Range Calc 사용법</div>
+    <div class="guide-hero-sub">코인을 검색하면 AI가 자동으로 최적 매수 가격을 계산해줍니다.<br>지정가 주문만 활용해도 수익 가능성이 크게 높아집니다.</div>
+  </div>
+
+  <!-- STEP 1 -->
+  <div class="guide-step">
+    <div class="gs-head"><div class="gs-num">1</div><div class="gs-title">원하는 코인 검색</div></div>
+    <div class="gs-body">
+      상단 검색창에 코인 이름을 입력하고 🔍 버튼을 누르세요.<br>
+      예: <b>BTC</b>, <b>ETH</b>, <b>SOL</b>, <b>AAVE</b><br><br>
+      검색하면 자동으로 <b>3개월치 데이터를 분석</b>해서 승률, 수익 배수(PF), 최적 매수 가격을 계산합니다.
+      <div class="gs-tip"><b>💡 팁:</b> 상단 탭에서 거래 스타일을 먼저 선택하세요.<br>
+      <b>15M</b> 하루~며칠 단위 / <b>4H</b> 1~2주 단위 (추천) / <b>1D</b> 한달 이상</div>
+    </div>
+  </div>
+
+  <!-- STEP 2 -->
+  <div class="guide-step">
+    <div class="gs-head"><div class="gs-num">2</div><div class="gs-title">백테스트 결과 확인</div></div>
+    <div class="gs-body">
+      검색 후 나오는 <b>백테스트 카드</b>를 먼저 보세요.<br><br>
+      <b>우량</b> 뱃지 → 진입 적합<br>
+      <b>적정</b> 뱃지 → 소량 진입 고려<br>
+      <b>주의</b> 뱃지 → 이 코인은 패스<br><br>
+      <b>순승률 55% 이상</b>, <b>PF 1.3 이상</b>인 코인만 진입하는 게 좋습니다.
+      <div class="gs-tip"><b>💡 PF(수익배수)란?</b> PF 2.0이면 손절 1번 나도 수익 2번이면 플러스라는 뜻입니다.</div>
+    </div>
+  </div>
+
+  <!-- STEP 3 -->
+  <div class="guide-step">
+    <div class="gs-head"><div class="gs-num">3</div><div class="gs-title">매수 모드 선택</div></div>
+    <div class="gs-body">
+      결과 화면에서 <b>두 가지 모드</b> 중 하나를 선택하세요.
+      <div class="mode-explain">
+        <div class="me-card">
+          <div class="me-title range">📉 Range 매수</div>
+          <div class="me-body">가격이 내려올 때 사서 반등을 기다리는 전략. 횡보장·조정장에 유리.</div>
+        </div>
+        <div class="me-card">
+          <div class="me-title break">🚀 Breakout 매수</div>
+          <div class="me-body">가격이 고점을 뚫고 올라갈 때 따라 사는 전략. 상승장에 유리.</div>
+        </div>
+      </div>
+      <div class="gs-tip" style="margin-top:10px"><b>💡 모르겠으면 Range 모드</b>가 기본입니다. 앱이 자동으로 어떤 모드가 유리한지 알려줍니다.</div>
+    </div>
+  </div>
+
+  <!-- STEP 4 -->
+  <div class="guide-step">
+    <div class="gs-head"><div class="gs-num">4</div><div class="gs-title">BUY 1·2·3 지정가 주문</div></div>
+    <div class="gs-body">
+      앱이 제시하는 <b>BUY 1, BUY 2, BUY 3</b> 가격에 지정가 주문을 거래소에 미리 걸어두세요.<br><br>
+      <b>BUY 1</b> — 가장 빠르게 도달할 가능성이 높은 가격 (비중 가장 큼)<br>
+      <b>BUY 2</b> — 더 내려올 때를 대비한 두 번째 가격<br>
+      <b>BUY 3</b> — 큰 폭 하락 시 마지막 매수 (비중 작음)<br><br>
+      각 카드의 <b>14일 도달 %</b>를 보고 너무 낮으면(10% 미만) 그 레벨은 건너뛰세요.
+      <div class="gs-warn"><b>❌ 시장가 주문 금지</b> — 지금 당장 사고 싶어도 반드시 지정가로 걸어두세요. 시장가로 사면 이 앱의 의미가 없습니다.</div>
+    </div>
+  </div>
+
+  <!-- STEP 5 -->
+  <div class="guide-step">
+    <div class="gs-head"><div class="gs-num">5</div><div class="gs-title">목표가(TP)와 손절가(Stop) 설정</div></div>
+    <div class="gs-body">
+      매수 체결 후 반드시 두 가지를 동시에 설정하세요.<br><br>
+      <b>목표가 TP</b> — 이 가격에 오면 절반 이상 팝니다. 욕심 내지 마세요.<br>
+      <b>손절가 Stop</b> — 이 가격 아래로 봉이 마감하면 손절합니다.<br><br>
+      카드에 표시된 <b>↑ X% → TP</b>가 수익률, <b>↓ 감내손실 X%</b>가 최대 허용 손실입니다.
+      <div class="gs-tip"><b>💡 손절이 나쁜 게 아닙니다.</b> 승률 60%라면 10번 중 4번은 손절이 정상입니다. 손절을 안 하면 그 4번에서 전체 수익을 날립니다.</div>
+    </div>
+  </div>
+
+  <!-- STEP 6 -->
+  <div class="guide-step">
+    <div class="gs-head"><div class="gs-num">6</div><div class="gs-title">신호 읽는 법</div></div>
+    <div class="gs-body">
+      <div class="signal-row"><span class="sr-icon">✅</span><div class="sr-text"><b>강세 바이어스</b> — 큰 흐름이 상승 중. 매수에 유리한 환경입니다.</div></div>
+      <div class="signal-row"><span class="sr-icon">⚠</span><div class="sr-text"><b>약세 바이어스</b> — 큰 흐름이 하락 중. BUY 1만 소량 진입하거나 기다리세요.</div></div>
+      <div class="signal-row"><span class="sr-icon">★</span><div class="sr-text"><b>Multi-TF 강추</b> — 단기·중기 모두 상승 방향. 지금이 가장 유리한 타이밍입니다.</div></div>
+      <div class="signal-row"><span class="sr-icon">🔥</span><div class="sr-text"><b>거래량 급증</b> — 실제로 많이 거래되고 있음. 신호의 신뢰도가 높습니다.</div></div>
+      <div class="signal-row"><span class="sr-icon">⚠</span><div class="sr-text"><b>거래량 부족</b> — 조용한 상태. 가격이 예상대로 움직이지 않을 수 있습니다.</div></div>
+      <div class="signal-row"><span class="sr-icon">⛔</span><div class="sr-text"><b>고점 근처 / 포기 권장</b> — 지금은 사면 안 됩니다. 다른 코인을 찾거나 기다리세요.</div></div>
+    </div>
+  </div>
+
+  <!-- 자주 묻는 질문 -->
+  <div class="guide-section">
+    <div class="guide-section-title">자주 묻는 질문</div>
+    <div class="faq-item">
+      <div class="faq-q">Q. BUY 가격까지 안 내려오면 어떻게 하나요?</div>
+      <div class="faq-a">그냥 기다리세요. 주문을 취소하지 말고 봉 마감까지 기다렸다가, 유효기간이 지나면 새로 검색해서 업데이트하면 됩니다. 억지로 진입할 필요가 없습니다.</div>
+    </div>
+    <div class="faq-item">
+      <div class="faq-q">Q. 실시간 토글은 언제 켜야 하나요?</div>
+      <div class="faq-a">BUY 가격 근처까지 왔을 때 켜두면 좋습니다. 항상 켜두면 배터리 소모가 있으니 진입 대기 중에만 사용하세요.</div>
+    </div>
+    <div class="faq-item">
+      <div class="faq-q">Q. 얼마씩 투자해야 하나요?</div>
+      <div class="faq-a">퀀트 분석 패널의 <b>Kelly 비율</b>을 확인하세요. 예를 들어 15%라고 나오면 전체 투자금의 15% 이하로만 진입하라는 뜻입니다. 절대 한 코인에 50% 이상 넣지 마세요.</div>
+    </div>
+    <div class="faq-item">
+      <div class="faq-q">Q. Breakout 모드는 언제 쓰나요?</div>
+      <div class="faq-a">앱이 자동으로 제안합니다. 현재가가 고점 근처일 때 Breakout 버튼이 주황색으로 강조됩니다. 이때 거래량도 많으면(🔥) 돌파 매수를 고려하세요.</div>
+    </div>
+    <div class="faq-item">
+      <div class="faq-q">Q. 14일 도달 확률이 20%면 진입해야 하나요?</div>
+      <div class="faq-a">BUY 1 기준 20% 미만이면 그 레벨은 건너뛰는 게 낫습니다. 확률이 낮다는 건 그 가격까지 내려올 가능성이 낮다는 뜻입니다. BUY 2, BUY 3는 더 낮아도 괜찮습니다 — 소량이니까요.</div>
+    </div>
+  </div>
+
+  <div class="guide-ver">RANGE CALC v1.0 — 일반인을 위한 코인 매수 계산기</div>
+</div>
 <div class="page" id="page-info">
   <div class="isec"><div class="ittl">타임프레임별 설정</div><div class="itxt"><b style="color:var(--t1)">15M</b> 스캘핑 · ~15일 · 상위TF 1H · Look 3봉<br><b style="color:var(--t1)">1H</b> 단타 · ~62일 · 상위TF 4H · Look 4봉<br><b style="color:var(--t1)">4H</b> 스윙 · 90일 · 상위TF Daily · Look 6봉<br><b style="color:var(--t1)">1D</b> 장기 · 90일 · 상위TF Weekly · Look 5봉</div></div>
   <div class="isec"><div class="ittl">보수적 버퍼 선택</div><div class="fm">rawBuf = argmax(WR × PF × EV) over [3%..10%]</div><div class="fm">annualFills &lt; 12 → buf +1% <span class="fc">// 희귀 진입 보정</span></div><div class="fm">annualFills &lt; 6 → buf +2% <span class="fc">// 극희귀 보정</span></div><div class="fm">cap = min(buf, 8%)</div></div>
@@ -654,11 +800,10 @@ function toast(msg,err){var t=el('toast');t.textContent=msg;t.className='toast'+
 function setLoad(on,msg){el('lov').classList.toggle('on',on);if(msg)el('ltxt').textContent=msg;el('sgo').style.opacity=on?'0.4':'';el('sgo').style.pointerEvents=on?'none':'';}
 
 function switchTab(n){
-  ['calc','history','info'].forEach(function(nm,i){
+  ['calc','guide','info'].forEach(function(nm,i){
     document.querySelectorAll('.tab')[i].classList.toggle('active',nm===n);
     el('page-'+nm).classList.toggle('active',nm===n);
   });
-  if(n==='history')renderH();
 }
 
 function setTF(tf){
@@ -1154,7 +1299,7 @@ function saveH(){
 }
 function getH(){try{return JSON.parse(localStorage.getItem('rc_h'))||[];}catch(e){return[];}}
 function renderH(){
-  var h=getH(),e2=el('hlist');
+  var h=getH(),e2=el('hlist');if(!e2)return;
   if(!h.length){e2.innerHTML='<div class="hempty">📋<br><br>저장된 계산이 없습니다</div>';return;}
   var html='';
   h.forEach(function(item,i){
