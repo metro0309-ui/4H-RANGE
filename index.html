@@ -3,1249 +3,1080 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
-<meta name="theme-color" content="#0a0a0f"/>
+<meta name="theme-color" content="#0b0e11"/>
 <meta name="apple-mobile-web-app-capable" content="yes"/>
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
-<title>4H Range Calc</title>
-<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Syne:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+<title>Range Calc</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Roboto+Mono:wght@400;500;600&display=swap" rel="stylesheet"/>
 <style>
 :root{
-  --bg:#0a0a0f;--bg2:#111118;--bg3:#18181f;--bg4:#1e1e27;
-  --border:rgba(255,255,255,0.07);--border2:rgba(255,255,255,0.12);
-  --text:#f0f0f5;--text2:#8888a0;--text3:#55556a;
-  --green:#00e5a0;--green-dim:rgba(0,229,160,0.12);
-  --red:#ff4d6a;--red-dim:rgba(255,77,106,0.12);
-  --amber:#ffb830;--amber-dim:rgba(255,184,48,0.1);
-  --blue:#4d9fff;--blue-dim:rgba(77,159,255,0.1);
-  --purple:#b06dff;--purple-dim:rgba(176,109,255,0.1);
-  --teal:#00c8d4;--teal-dim:rgba(0,200,212,0.1);
-  --mono:'IBM Plex Mono',monospace;--sans:'Syne',sans-serif;
+  --bg0:#0b0e11;--bg1:#131619;--bg2:#1c2026;--bg3:#22272e;--bg4:#2c3139;
+  --bd:#2c3139;--bd2:#363d47;
+  --t1:#e8eaed;--t2:#848e9c;--t3:#4d5561;
+  --G:#00b140;--Gdk:#009535;--Gd:rgba(0,177,64,0.12);
+  --R:#f04040;--Rd:rgba(240,64,64,0.12);
+  --A:#f0b040;--Ad:rgba(240,176,64,0.10);
+  --B:#3370ff;--Bd:rgba(51,112,255,0.10);
+  --P:#9b59f7;--Pd:rgba(155,89,247,0.10);
+  --ui:'Inter',-apple-system,sans-serif;
+  --num:'Roboto Mono','SF Mono',monospace;
 }
 *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
-html,body{background:var(--bg);color:var(--text);font-family:var(--sans);min-height:100vh;overflow-x:hidden}
+html,body{background:var(--bg0);color:var(--t1);font-family:var(--ui);font-size:13px;min-height:100vh;overflow-x:hidden;-webkit-font-smoothing:antialiased}
 .app{max-width:430px;margin:0 auto;min-height:100vh;display:flex;flex-direction:column}
 
-.topbar{display:flex;align-items:center;justify-content:space-between;padding:16px 20px 12px;border-bottom:0.5px solid var(--border);position:sticky;top:0;background:rgba(10,10,15,0.94);backdrop-filter:blur(12px);z-index:100}
-.topbar-logo{font-size:15px;font-weight:700;letter-spacing:.08em}
-.topbar-logo span{color:var(--green)}
-.topbar-right{display:flex;align-items:center;gap:8px}
-.api-counter{font-family:var(--mono);font-size:11px;padding:3px 9px;border-radius:20px;border:0.5px solid var(--border2);color:var(--text3)}
-.api-counter.warn{border-color:var(--amber);color:var(--amber)}
-.api-counter.full{border-color:var(--red);color:var(--red)}
-.topbar-tag{font-family:var(--mono);font-size:10px;color:var(--text3);border:0.5px solid var(--border2);padding:3px 8px;border-radius:20px}
+/* HEADER */
+.hdr{display:flex;align-items:center;justify-content:space-between;padding:0 16px;height:48px;background:var(--bg1);border-bottom:1px solid var(--bd);position:sticky;top:0;z-index:100}
+.logo{width:28px;height:28px;background:var(--t1);border-radius:4px;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:11px;color:var(--bg0)}
+.hpair{font-size:13px;font-weight:600;margin-left:8px}
+.hpair span{color:var(--t2);font-weight:400}
+.apill{font-family:var(--num);font-size:10px;padding:3px 8px;border-radius:3px;border:1px solid var(--bd2);color:var(--t3);background:var(--bg2)}
+.apill.warn{border-color:var(--A);color:var(--A)}.apill.full{border-color:var(--R);color:var(--R)}
 
-.tabs{display:flex;padding:0 20px;border-bottom:0.5px solid var(--border);background:var(--bg)}
-.tab-btn{flex:1;background:none;border:none;color:var(--text3);font-family:var(--sans);font-size:13px;font-weight:500;padding:14px 0;cursor:pointer;position:relative;transition:color .2s}
-.tab-btn.active{color:var(--green)}
-.tab-btn.active::after{content:'';position:absolute;bottom:0;left:20%;right:20%;height:2px;background:var(--green);border-radius:2px 2px 0 0}
+/* TABS */
+.tabs{display:flex;background:var(--bg1);border-bottom:1px solid var(--bd)}
+.tab{flex:1;background:none;border:none;font-family:var(--ui);font-size:12px;font-weight:500;color:var(--t3);padding:10px 0;cursor:pointer;position:relative;transition:color .15s}
+.tab.active{color:var(--t1)}.tab.active::after{content:'';position:absolute;bottom:0;left:0;right:0;height:2px;background:var(--G)}
 
-.page{display:none;flex:1;padding:20px;overflow-y:auto}
-.page.active{display:block}
-.sec{font-size:11px;font-weight:600;letter-spacing:.1em;color:var(--text3);text-transform:uppercase;margin-bottom:12px}
+.page{display:none;flex:1;overflow-y:auto}.page.active{display:block}
+
+/* TF BAR */
+.tfbar{display:flex;background:var(--bg2);border-bottom:1px solid var(--bd);padding:0 16px}
+.tfbtn{background:none;border:none;font-family:var(--ui);font-size:11px;font-weight:500;color:var(--t3);padding:8px 14px;cursor:pointer;position:relative;text-align:center;line-height:1.2}
+.tfbtn span{display:block;font-size:9px;margin-top:1px;opacity:.7}
+.tfbtn.active{color:var(--G)}.tfbtn.active span{color:var(--G)}
+.tfbtn.active::after{content:'';position:absolute;bottom:0;left:20%;right:20%;height:2px;background:var(--G);border-radius:1px 1px 0 0}
+.tfdiv{width:1px;height:28px;background:var(--bd);margin:auto 0}
 
 /* SEARCH */
-.search-wrap{position:relative;margin-bottom:16px}
-.search-input{width:100%;background:var(--bg3);border:0.5px solid var(--border2);border-radius:12px;padding:14px 50px 14px 16px;font-family:var(--mono);font-size:15px;font-weight:500;color:var(--text);outline:none;text-transform:uppercase;transition:border-color .2s}
-.search-input::placeholder{color:var(--text3);text-transform:none;letter-spacing:0;font-size:13px}
-.search-input:focus{border-color:var(--green)}
-.search-btn{position:absolute;right:8px;top:50%;transform:translateY(-50%);background:var(--green);border:none;width:36px;height:36px;border-radius:8px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:opacity .15s}
-.search-btn:active{opacity:.75}
-.search-btn.locked{background:var(--bg4);cursor:not-allowed}
-.search-btn svg{width:16px;height:16px}
+.srow{display:flex;gap:8px;padding:10px 16px;background:var(--bg1);border-bottom:1px solid var(--bd)}
+.sbox{flex:1;position:relative}
+.sinput{width:100%;background:var(--bg2);border:1px solid var(--bd);border-radius:4px;padding:8px 36px 8px 12px;font-family:var(--num);font-size:13px;font-weight:500;color:var(--t1);outline:none;text-transform:uppercase;transition:border-color .15s}
+.sinput::placeholder{text-transform:none;color:var(--t3);font-size:12px;font-family:var(--ui)}
+.sinput:focus{border-color:var(--G)}
+.sgo{position:absolute;right:6px;top:50%;transform:translateY(-50%);background:var(--G);border:none;width:24px;height:24px;border-radius:3px;cursor:pointer;display:flex;align-items:center;justify-content:center}
+.sgo:active{background:var(--Gdk)}.sgo.locked{background:var(--bg3);cursor:not-allowed}
+.sgo svg{width:12px;height:12px}
 
 /* LOADING */
-.loading-overlay{display:none;flex-direction:column;align-items:center;gap:10px;padding:28px;text-align:center}
-.loading-overlay.visible{display:flex}
-.loader-ring{width:32px;height:32px;border:2px solid var(--border2);border-top-color:var(--green);border-radius:50%;animation:spin .7s linear infinite}
+.lov{display:none;align-items:center;justify-content:center;gap:10px;padding:16px;background:var(--bg1);border-bottom:1px solid var(--bd)}
+.lov.on{display:flex}
+.spin{width:16px;height:16px;border:2px solid var(--bd2);border-top-color:var(--G);border-radius:50%;animation:spin .6s linear infinite}
 @keyframes spin{to{transform:rotate(360deg)}}
-.loading-text{font-family:var(--mono);font-size:12px;color:var(--text3)}
+.ltxt{font-size:12px;color:var(--t2)}
 
-/* BACKTEST BANNER */
-.bt-banner{background:var(--bg3);border:0.5px solid var(--border2);border-radius:14px;padding:14px;margin-bottom:16px;display:none}
-.bt-banner.visible{display:block}
-.bt-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px}
-.bt-title{font-size:12px;font-weight:600;color:var(--text2)}
-.bt-title-sub{font-size:10px;color:var(--text3);font-family:var(--mono);margin-top:2px}
-.bt-badge{font-family:var(--mono);font-size:11px;padding:4px 10px;border-radius:10px;font-weight:600}
-.bt-badge.good{background:var(--green-dim);color:var(--green)}
-.bt-badge.ok{background:var(--amber-dim);color:var(--amber)}
-.bt-badge.bad{background:var(--red-dim);color:var(--red)}
-
-.bt-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:10px}
-.bt-stat{display:flex;flex-direction:column;gap:3px;text-align:center;background:var(--bg4);border-radius:8px;padding:8px 4px}
-.bt-stat-lbl{font-size:9px;color:var(--text3);font-family:var(--mono);letter-spacing:.03em}
-.bt-stat-val{font-family:var(--mono);font-size:13px;font-weight:600}
-
-.bt-filters{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:10px}
-.bt-filter-tag{font-family:var(--mono);font-size:9px;padding:2px 7px;border-radius:4px;border:0.5px solid var(--border2);color:var(--text3)}
-.bt-filter-tag.on{border-color:var(--green);color:var(--green)}
-
-.bt-bar-wrap{margin-top:2px}
-.bt-bar-lbl{font-size:10px;color:var(--text3);font-family:var(--mono);margin-bottom:5px;display:flex;justify-content:space-between}
-.bt-bar-track{width:100%;height:5px;background:var(--bg4);border-radius:3px;overflow:hidden}
-.bt-bar-fill{height:100%;border-radius:3px;transition:width .6s ease}
-
-/* DAILY BIAS */
-.bias-card{border-radius:10px;padding:10px 14px;margin-bottom:16px;display:none;align-items:center;justify-content:space-between}
-.bias-card.visible{display:flex}
-.bias-card.bull{background:var(--green-dim);border:0.5px solid rgba(0,229,160,0.2)}
-.bias-card.bear{background:var(--red-dim);border:0.5px solid rgba(255,77,106,0.2)}
-.bias-card.neut{background:var(--bg3);border:0.5px solid var(--border2)}
-.bias-text{font-size:12px;font-weight:600}
-.bias-card.bull .bias-text{color:var(--green)}
-.bias-card.bear .bias-text{color:var(--red)}
-.bias-card.neut .bias-text{color:var(--text2)}
-.bias-sub{font-size:10px;font-family:var(--mono);margin-top:2px;opacity:.7}
-.bias-val{font-family:var(--mono);font-size:13px;font-weight:600}
-
-/* COIN CARD */
-.coin-card{background:var(--bg3);border:0.5px solid var(--border2);border-radius:14px;padding:16px;margin-bottom:16px;display:none}
-.coin-card.visible{display:block}
-.coin-card-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px}
-.coin-name{display:flex;align-items:center;gap:8px}
-.coin-dot{width:8px;height:8px;border-radius:50%;background:var(--green);box-shadow:0 0 8px var(--green)}
-.coin-symbol{font-size:18px;font-weight:700}
-.coin-fullname{font-size:12px;color:var(--text2);margin-top:2px;font-family:var(--mono)}
-.coin-price-val{font-family:var(--mono);font-size:18px;font-weight:600;color:var(--green);text-align:right}
-.coin-price-chg{font-family:var(--mono);font-size:12px;margin-top:2px;text-align:right}
-.coin-price-chg.up{color:var(--green)}.coin-price-chg.dn{color:var(--red)}
-.candle-row{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;border-top:0.5px solid var(--border);padding-top:12px}
-.candle-item{text-align:center}
-.candle-label{font-size:10px;color:var(--text3);margin-bottom:4px;font-family:var(--mono);letter-spacing:.05em}
-.candle-val{font-family:var(--mono);font-size:13px;font-weight:500}
-.candle-val.high{color:var(--red)}.candle-val.low{color:var(--green)}.candle-val.close{color:var(--text)}
-
-/* INPUTS */
-.input-row{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px}
-.input-group{display:flex;flex-direction:column;gap:6px}
-.input-label{font-size:11px;color:var(--text2);font-family:var(--mono)}
-.price-input{background:var(--bg3);border:0.5px solid var(--border2);border-radius:10px;padding:12px 14px;font-family:var(--mono);font-size:16px;font-weight:500;color:var(--text);outline:none;width:100%;transition:border-color .2s}
-.price-input.h:focus{border-color:var(--red)}
-.price-input.l:focus{border-color:var(--green)}
-.price-input.c:focus{border-color:var(--blue)}
-.calc-btn{width:100%;padding:15px;background:var(--green);border:none;border-radius:12px;font-family:var(--sans);font-size:15px;font-weight:700;letter-spacing:.05em;color:#0a0a0f;cursor:pointer;margin-top:4px;margin-bottom:20px;transition:opacity .15s,transform .1s}
-.calc-btn:active{opacity:.85;transform:scale(.99)}
-
-/* RESULTS */
-.result-section{display:none}
-.result-section.visible{display:block}
-
-/* 3 BUY CARDS */
-.buy-cards{display:flex;flex-direction:column;gap:10px;margin-bottom:16px}
-.buy-card{border-radius:14px;padding:16px;position:relative}
-.buy-card-1{background:rgba(0,229,160,0.06);border:0.5px solid rgba(0,229,160,0.3)}
-.buy-card-2{background:rgba(77,159,255,0.05);border:0.5px solid rgba(77,159,255,0.25)}
-.buy-card-3{background:rgba(176,109,255,0.05);border:0.5px solid rgba(176,109,255,0.2)}
-
-.buy-card-head{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:14px}
-.buy-card-tag{font-size:10px;font-family:var(--mono);font-weight:600;letter-spacing:.07em;text-transform:uppercase;margin-bottom:5px}
-.buy-card-1 .buy-card-tag{color:var(--green)}
-.buy-card-2 .buy-card-tag{color:var(--blue)}
-.buy-card-3 .buy-card-tag{color:var(--purple)}
-.buy-card-name{font-size:15px;font-weight:600;color:var(--text)}
-.buy-card-method{font-size:11px;color:var(--text3);font-family:var(--mono);margin-top:3px}
-.buy-card-price{font-family:var(--mono);font-size:24px;font-weight:600;line-height:1}
-.buy-card-1 .buy-card-price{color:var(--green)}
-.buy-card-2 .buy-card-price{color:var(--blue)}
-.buy-card-3 .buy-card-price{color:var(--purple)}
-.buy-card-gain{font-family:var(--mono);font-size:11px;color:var(--text3);margin-top:4px}
-
-.buy-card-stats{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;border-top:0.5px solid rgba(255,255,255,0.07);padding-top:12px}
-.buy-stat{display:flex;flex-direction:column;gap:3px}
-.buy-stat-lbl{font-size:9px;color:var(--text3);font-family:var(--mono);letter-spacing:.03em;text-transform:uppercase}
-.buy-stat-val{font-family:var(--mono);font-size:12px;font-weight:600}
-
-/* EV BADGE */
-.ev-badge{display:inline-block;font-family:var(--mono);font-size:10px;padding:2px 7px;border-radius:4px;margin-top:4px}
-.ev-pos{background:var(--green-dim);color:var(--green)}
-.ev-neg{background:var(--red-dim);color:var(--red)}
-.ev-neu{background:var(--bg4);color:var(--text3)}
-
-/* SCALE GUIDE */
-.scale-guide{background:var(--bg3);border:0.5px solid var(--border2);border-radius:12px;padding:14px 16px;margin-bottom:16px}
-.scale-title{font-size:11px;color:var(--text3);font-family:var(--mono);letter-spacing:.06em;text-transform:uppercase;margin-bottom:10px}
-.scale-bars{display:flex;gap:4px;height:24px;border-radius:6px;overflow:hidden;margin-bottom:8px}
-.scale-bar{display:flex;align-items:center;justify-content:center;font-family:var(--mono);font-size:10px;font-weight:600;transition:flex .4s ease;min-width:16px}
-.scale-bar-1{background:rgba(0,229,160,0.2);color:var(--green)}
-.scale-bar-2{background:rgba(77,159,255,0.2);color:var(--blue)}
-.scale-bar-3{background:rgba(176,109,255,0.2);color:var(--purple)}
-.scale-labels{display:grid;grid-template-columns:1fr 1fr 1fr;gap:4px}
-.scale-label{font-size:10px;font-family:var(--mono);color:var(--text3);text-align:center}
-
-/* SUMMARY ROW */
-.summary-row{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:16px}
-.mini{background:var(--bg3);border:0.5px solid var(--border2);border-radius:12px;padding:12px;text-align:center}
-.mini-lbl{font-size:9px;color:var(--text3);font-family:var(--mono);text-transform:uppercase;letter-spacing:.05em;margin-bottom:6px}
-.mini-val{font-family:var(--mono);font-size:14px;font-weight:600}
-
-/* RANGE BAR */
-.range-visual{background:var(--bg3);border:0.5px solid var(--border2);border-radius:14px;padding:16px;margin-bottom:16px}
-.range-bar-track{width:100%;height:6px;background:var(--bg4);border-radius:3px;position:relative;margin:22px 0 10px}
-.range-fill{position:absolute;height:100%;border-radius:3px;background:linear-gradient(90deg,var(--green),var(--red))}
-.rmarker{position:absolute;top:50%;transform:translateX(-50%) translateY(-50%);display:flex;flex-direction:column;align-items:center}
-.rmarker-dot{width:12px;height:12px;border-radius:50%;border:2px solid var(--bg);z-index:2}
-.rmarker-lbl{font-family:var(--mono);font-size:9px;position:absolute;top:-18px;white-space:nowrap}
-.rmarker-price{font-family:var(--mono);font-size:9px;position:absolute;bottom:-18px;white-space:nowrap}
-.range-ends{display:flex;justify-content:space-between;font-family:var(--mono);font-size:11px;color:var(--text3);margin-top:4px}
-
-.save-btn{width:100%;padding:13px;background:none;border:0.5px solid var(--border2);border-radius:12px;font-family:var(--sans);font-size:14px;font-weight:600;color:var(--text2);cursor:pointer;margin-bottom:24px;display:flex;align-items:center;justify-content:center;gap:8px;transition:all .2s}
-.save-btn:active{opacity:.7}
-
-/* HISTORY */
-.history-empty{text-align:center;padding:60px 20px;color:var(--text3);font-size:14px;font-family:var(--mono)}
-.hist-item{background:var(--bg3);border:0.5px solid var(--border2);border-radius:14px;padding:14px 16px;margin-bottom:10px;cursor:pointer}
-.hist-item:active{opacity:.8}
-.hist-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}
-.hist-coin{font-size:16px;font-weight:700}
-.hist-meta{display:flex;align-items:center;gap:8px}
-.hist-time{font-family:var(--mono);font-size:11px;color:var(--text3)}
-.hist-wr{font-family:var(--mono);font-size:11px;padding:2px 7px;border-radius:6px}
-.hist-prices{display:grid;grid-template-columns:repeat(5,1fr)}
-.hist-p{display:flex;flex-direction:column;gap:3px}
-.hist-p-lbl{font-size:9px;color:var(--text3);font-family:var(--mono)}
-.hist-p-val{font-family:var(--mono);font-size:12px;font-weight:500}
-.hist-clear{width:100%;padding:12px;background:none;border:0.5px solid var(--red-dim);border-radius:10px;color:var(--red);font-family:var(--sans);font-size:13px;font-weight:600;cursor:pointer;margin-top:8px;opacity:.7}
-
-/* INFO PAGE */
-.info-card{background:var(--bg3);border:0.5px solid var(--border2);border-radius:14px;padding:16px;margin-bottom:12px}
-.info-card-title{font-size:13px;font-weight:600;color:var(--text);margin-bottom:10px;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
-.ib{font-size:10px;font-family:var(--mono);padding:2px 7px;border-radius:4px}
-.ib-g{background:var(--green-dim);color:var(--green)}
-.ib-b{background:var(--blue-dim);color:var(--blue)}
-.ib-p{background:var(--purple-dim);color:var(--purple)}
-.ib-a{background:var(--amber-dim);color:var(--amber)}
-.ib-t{background:var(--teal-dim);color:var(--teal)}
-.info-text{font-size:13px;color:var(--text2);line-height:1.75}
-.fml{font-family:var(--mono);font-size:11px;color:var(--text);background:var(--bg4);border-radius:6px;padding:8px 12px;margin:6px 0;line-height:1.65}
-.fc{color:var(--text3)}
-.ver{text-align:center;font-family:var(--mono);font-size:11px;color:var(--text3);padding:20px 0 8px}
+/* BIAS BAR */
+.bbar{padding:7px 16px;display:none;align-items:center;justify-content:space-between;font-size:11px}
+.bbar.on{display:flex}.bbar.bull{background:rgba(0,177,64,0.08);border-bottom:1px solid rgba(0,177,64,0.2)}.bbar.bear{background:rgba(240,64,64,0.08);border-bottom:1px solid rgba(240,64,64,0.2)}
+.blbl{font-weight:600}.bbar.bull .blbl{color:var(--G)}.bbar.bear .blbl{color:var(--R)}
+.bval{font-family:var(--num);font-size:11px;color:var(--t2)}
 
 /* WARN */
-.warn-box{background:var(--amber-dim);border:0.5px solid rgba(255,184,48,0.25);border-radius:10px;padding:10px 14px;font-size:12px;color:var(--amber);font-family:var(--mono);margin-bottom:16px;display:none}
-.warn-box.visible{display:block}
+.wbar{padding:7px 16px;font-size:11px;line-height:1.5;display:none;border-bottom:1px solid}
+.wbar.on{display:block}.wbar.amber{background:rgba(240,176,64,0.08);border-color:rgba(240,176,64,0.2);color:var(--A)}
 
-.toast{position:fixed;bottom:30px;left:50%;transform:translateX(-50%) translateY(20px);background:var(--bg4);border:0.5px solid var(--border2);border-radius:10px;padding:12px 20px;font-size:13px;font-family:var(--mono);color:var(--text);opacity:0;transition:all .25s;pointer-events:none;z-index:999;white-space:nowrap}
-.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
-.toast.err{border-color:var(--red);color:var(--red)}
+/* BT CARD */
+.btcard{background:var(--bg1);border-bottom:1px solid var(--bd);padding:12px 16px;display:none}
+.btcard.on{display:block}
+.bth{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:10px}
+.bttl{font-size:12px;font-weight:600;color:var(--t1);margin-bottom:3px}
+.btts{font-family:var(--num);font-size:10px;color:var(--t3);line-height:1.65}
+.btts b{color:var(--t2)}
+.btpill{font-family:var(--num);font-size:10px;font-weight:600;padding:3px 8px;border-radius:3px;white-space:nowrap}
+.btpill.good{background:var(--Gd);color:var(--G);border:1px solid rgba(0,177,64,0.25)}.btpill.ok{background:var(--Ad);color:var(--A);border:1px solid rgba(240,176,64,0.25)}.btpill.bad{background:var(--Rd);color:var(--R);border:1px solid rgba(240,64,64,0.25)}
+
+/* FREQ ROW */
+.frow{display:flex;align-items:center;justify-content:space-between;background:var(--bg2);border:1px solid var(--bd);border-radius:4px;padding:7px 10px;margin-bottom:8px}
+.flbl{font-size:11px;color:var(--t2)}
+.fr{display:flex;align-items:center;gap:7px}
+.fval{font-family:var(--num);font-size:12px;font-weight:500}
+.ftag{font-size:10px;padding:1px 6px;border-radius:2px;font-family:var(--num)}
+.ftag.rare{background:var(--Rd);color:var(--R)}.ftag.ok{background:var(--Ad);color:var(--A)}.ftag.good{background:var(--Gd);color:var(--G)}
+
+/* BT GRID */
+.btgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--bd);border-radius:4px;overflow:hidden;margin-bottom:8px}
+.bts{display:flex;flex-direction:column;gap:2px;background:var(--bg2);padding:7px 8px;text-align:center}
+.btsl{font-size:9px;color:var(--t3);text-transform:uppercase;letter-spacing:.03em}
+.btsv{font-family:var(--num);font-size:12px;font-weight:500}
+
+/* FILTER TAGS */
+.ftrow{display:flex;flex-wrap:wrap;gap:4px;margin-bottom:8px}
+.ft{font-size:9px;padding:2px 6px;border-radius:2px;border:1px solid var(--bd2);color:var(--t3);font-family:var(--num)}
+.ft.on{border-color:rgba(0,177,64,0.4);color:var(--G)}
+
+/* BT BAR */
+.btblbl{display:flex;justify-content:space-between;font-size:10px;color:var(--t3);margin-bottom:4px;font-family:var(--num)}
+.btrack{width:100%;height:3px;background:var(--bg3);border-radius:2px;overflow:hidden}
+.bfill{height:100%;border-radius:2px;transition:width .5s ease}
+
+/* TICKER */
+.ticker{background:var(--bg1);border-bottom:1px solid var(--bd);padding:10px 16px;display:none}
+.ticker.on{display:block}
+.tktop{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px}
+.tkdot{width:6px;height:6px;border-radius:50%;background:var(--G);box-shadow:0 0 6px var(--G)}
+.tkname{font-size:13px;font-weight:600;margin-left:6px}
+.tksub{font-size:11px;color:var(--t3);font-family:var(--num)}
+.tkpx{font-family:var(--num);font-size:18px;font-weight:600;color:var(--G)}
+.tkchg{font-family:var(--num);font-size:11px;text-align:right}
+.tkchg.up{color:var(--G)}.tkchg.dn{color:var(--R)}
+.tkcols{display:grid;grid-template-columns:1fr 1fr 1fr;border-top:1px solid var(--bd);padding-top:8px}
+.tc{text-align:center}
+.tcl{font-size:10px;color:var(--t3);margin-bottom:3px;letter-spacing:.03em}
+.tcv{font-family:var(--num);font-size:12px;font-weight:500}
+.tcv.h{color:var(--R)}.tcv.l{color:var(--G)}.tcv.c{color:var(--t1)}
+
+/* INPUT PANEL */
+.inppanel{background:var(--bg1);border-bottom:1px solid var(--bd);padding:10px 16px}
+.inpgrid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px}
+.ig{display:flex;flex-direction:column;gap:4px}
+.igl{font-size:10px;color:var(--t3);letter-spacing:.03em}
+.iginput{background:var(--bg2);border:1px solid var(--bd);border-radius:4px;padding:7px 10px;font-family:var(--num);font-size:13px;font-weight:500;color:var(--t1);outline:none;width:100%;transition:border-color .15s}
+.iginput:focus{border-color:var(--G)}.iginput.hi:focus{border-color:var(--R)}.iginput.lo:focus{border-color:var(--G)}.iginput.cl:focus{border-color:var(--B)}
+.cbtn{width:100%;padding:10px;background:var(--G);border:none;border-radius:4px;font-family:var(--ui);font-size:13px;font-weight:600;color:#fff;cursor:pointer;transition:background .15s}
+.cbtn:hover{background:var(--Gdk)}.cbtn:active{opacity:.9}
+
+/* RESULTS */
+.results{display:none}.results.on{display:block}
+.seclbl{font-size:10px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--t3);padding:10px 16px 6px;border-top:1px solid var(--bd)}
+
+/* BUY LEVELS */
+.buygroup{background:var(--bg1);border-bottom:1px solid var(--bd)}
+.buylv{padding:10px 16px;border-bottom:1px solid var(--bd);position:relative;overflow:hidden}
+.buylv:last-child{border-bottom:none}
+.lvfill{position:absolute;top:0;right:0;bottom:0;opacity:.06;border-radius:2px 0 0 2px}
+.lv1 .lvfill{background:var(--G)}.lv2 .lvfill{background:var(--B)}.lv3 .lvfill{background:var(--P)}
+.lvtop{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:6px;position:relative;z-index:1}
+.lvbadge{font-size:9px;font-family:var(--num);font-weight:600;padding:2px 6px;border-radius:2px;letter-spacing:.04em;margin-right:6px}
+.lv1 .lvbadge{background:var(--Gd);color:var(--G);border:1px solid rgba(0,177,64,0.3)}.lv2 .lvbadge{background:var(--Bd);color:var(--B);border:1px solid rgba(51,112,255,0.3)}.lv3 .lvbadge{background:var(--Pd);color:var(--P);border:1px solid rgba(155,89,247,0.3)}
+.lvname{font-size:11px;color:var(--t2)}
+.lvmethod{font-size:10px;color:var(--t3);font-family:var(--num);margin-top:2px}
+.lvprice{font-family:var(--num);font-size:20px;font-weight:600;line-height:1}
+.lv1 .lvprice{color:var(--G)}.lv2 .lvprice{color:var(--B)}.lv3 .lvprice{color:var(--P)}
+.lvtp{font-family:var(--num);font-size:10px;color:var(--t2);margin-top:2px}
+.lvloss{font-family:var(--num);font-size:10px;color:var(--R);margin-top:2px}
+.lvstats{display:grid;grid-template-columns:repeat(4,1fr);gap:0;border-top:1px solid var(--bd);padding-top:7px;margin-top:6px;position:relative;z-index:1}
+.ls{display:flex;flex-direction:column;gap:2px}
+.lsl{font-size:9px;color:var(--t3);text-transform:uppercase;letter-spacing:.03em}
+.lsv{font-family:var(--num);font-size:11px;font-weight:500}
+.evtag{font-family:var(--num);font-size:9px;padding:1px 5px;border-radius:2px;display:inline-block;margin-top:3px}
+.evp{background:var(--Gd);color:var(--G)}.evn{background:var(--Rd);color:var(--R)}.evz{background:var(--bg3);color:var(--t3)}
+
+/* WEIGHT */
+.wtpanel{background:var(--bg2);border-bottom:1px solid var(--bd);padding:10px 16px}
+.wttitle{font-size:10px;color:var(--t3);text-transform:uppercase;letter-spacing:.06em;margin-bottom:8px}
+.wtbars{display:flex;gap:2px;height:20px;border-radius:3px;overflow:hidden;margin-bottom:6px}
+.wb{display:flex;align-items:center;justify-content:center;font-family:var(--num);font-size:9px;font-weight:600;min-width:12px;transition:flex .4s}
+.wb1{background:rgba(0,177,64,0.25);color:var(--G)}.wb2{background:rgba(51,112,255,0.25);color:var(--B)}.wb3{background:rgba(155,89,247,0.25);color:var(--P)}
+.wtlbls{display:grid;grid-template-columns:1fr 1fr 1fr}
+.wtlbl{font-size:10px;font-family:var(--num);color:var(--t3);text-align:center}
+
+/* SUMMARY */
+.sumstrip{display:grid;grid-template-columns:1fr 1fr 1fr;background:var(--bg1);border-bottom:1px solid var(--bd)}
+.ss{text-align:center;padding:8px 0;border-right:1px solid var(--bd)}.ss:last-child{border-right:none}
+.ssl{font-size:9px;color:var(--t3);text-transform:uppercase;letter-spacing:.04em;margin-bottom:3px}
+.ssv{font-family:var(--num);font-size:12px;font-weight:500}
+
+/* RANGE BAR */
+.rngpanel{background:var(--bg1);border-bottom:1px solid var(--bd);padding:10px 16px}
+.rngtitle{font-size:10px;color:var(--t3);text-transform:uppercase;letter-spacing:.06em;margin-bottom:10px}
+.rngtrack{width:100%;height:4px;background:var(--bg3);border-radius:2px;position:relative;margin:20px 0 8px}
+.rngfill{position:absolute;height:100%;border-radius:2px;background:linear-gradient(90deg,var(--G),var(--R))}
+.rm{position:absolute;top:50%;transform:translateX(-50%) translateY(-50%);display:flex;flex-direction:column;align-items:center}
+.rmdot{width:10px;height:10px;border-radius:50%;border:2px solid var(--bg1);z-index:2}
+.rmlbl{font-family:var(--num);font-size:8px;position:absolute;top:-16px;white-space:nowrap;font-weight:600}
+.rmpx{font-family:var(--num);font-size:8px;position:absolute;bottom:-16px;white-space:nowrap}
+.rngends{display:flex;justify-content:space-between;font-family:var(--num);font-size:10px;color:var(--t3);margin-top:4px}
+
+/* SAVE */
+.saverow{padding:10px 16px;background:var(--bg1);border-bottom:1px solid var(--bd)}
+.savebtn{width:100%;padding:9px;background:none;border:1px solid var(--bd2);border-radius:4px;font-family:var(--ui);font-size:12px;font-weight:500;color:var(--t2);cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px;transition:all .15s}
+.savebtn:hover{border-color:var(--G);color:var(--G)}
+
+/* HISTORY */
+.hempty{text-align:center;padding:60px 20px;color:var(--t3);font-size:13px}
+.hitem{border-bottom:1px solid var(--bd);padding:10px 16px;cursor:pointer;transition:background .1s}
+.hitem:hover{background:var(--bg2)}.hitem:active{opacity:.8}
+.htop{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px}
+.hcoin{font-size:13px;font-weight:600}
+.hmeta{display:flex;align-items:center;gap:6px}
+.htf{font-size:9px;font-family:var(--num);padding:1px 5px;background:var(--bg3);color:var(--t3);border-radius:2px}
+.hwr{font-family:var(--num);font-size:10px;padding:1px 6px;border-radius:2px}
+.htime{font-family:var(--num);font-size:10px;color:var(--t3)}
+.hprices{display:grid;grid-template-columns:repeat(5,1fr)}
+.hp{display:flex;flex-direction:column;gap:2px}
+.hpl{font-size:9px;color:var(--t3);font-family:var(--num)}.hpv{font-family:var(--num);font-size:11px;font-weight:500}
+.hclear{width:100%;padding:9px;background:none;border:1px solid rgba(240,64,64,0.25);border-radius:4px;color:var(--R);font-size:12px;font-weight:500;cursor:pointer;font-family:var(--ui);opacity:.7;margin-top:8px}
+
+/* INFO */
+.isec{border-bottom:1px solid var(--bd);padding:14px 16px}
+.ittl{font-size:12px;font-weight:600;color:var(--t1);margin-bottom:8px;display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+.ib{font-size:9px;padding:2px 6px;border-radius:2px;font-family:var(--num)}
+.ibg{background:var(--Gd);color:var(--G)}.ibb{background:var(--Bd);color:var(--B)}.iba{background:var(--Ad);color:var(--A)}.ibr{background:var(--Rd);color:var(--R)}
+.itxt{font-size:12px;color:var(--t2);line-height:1.7}
+.fm{font-family:var(--num);font-size:11px;color:var(--t1);background:var(--bg2);border-left:2px solid var(--G);border-radius:0 3px 3px 0;padding:6px 10px;margin:5px 0;line-height:1.6}
+.fc{color:var(--t3)}
+.tftbl{width:100%;border-collapse:collapse;font-size:11px;margin-top:8px}
+.tftbl td{padding:6px 0;border-bottom:1px solid var(--bd);color:var(--t2)}
+.tftbl td:first-child{color:var(--G);font-family:var(--num);font-weight:600;width:36px}
+.tftbl tr:last-child td{border-bottom:none}
+.ver{text-align:center;font-family:var(--num);font-size:10px;color:var(--t3);padding:20px}
+
+.toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(16px);background:var(--bg3);border:1px solid var(--bd2);border-radius:4px;padding:10px 16px;font-size:12px;color:var(--t1);opacity:0;transition:all .2s;pointer-events:none;z-index:999;white-space:nowrap}
+.toast.on{opacity:1;transform:translateX(-50%) translateY(0)}.toast.err{border-color:var(--R);color:var(--R)}
 </style>
 </head>
 <body>
 <div class="app">
 
-<div class="topbar">
-  <div class="topbar-logo">4H<span>▲</span>RANGE</div>
-  <div class="topbar-right">
-    <div class="api-counter" id="api-counter">API 6/6</div>
-    <div class="topbar-tag">v0.4 BETA</div>
+<!-- HEADER -->
+<div class="hdr">
+  <div style="display:flex;align-items:center">
+    <div class="logo">RC</div>
+    <div class="hpair">RANGE CALC <span>/ USDT</span></div>
+  </div>
+  <div style="display:flex;align-items:center;gap:8px">
+    <div class="apill" id="apill">API 6/6</div>
+    <div style="font-size:10px;color:var(--t3)">v0.5</div>
   </div>
 </div>
 
+<!-- TABS -->
 <div class="tabs">
-  <button class="tab-btn active" onclick="switchTab('calc')">계산</button>
-  <button class="tab-btn" onclick="switchTab('history')">히스토리</button>
-  <button class="tab-btn" onclick="switchTab('info')">알고리즘</button>
+  <button class="tab active" onclick="switchTab('calc')">계산기</button>
+  <button class="tab" onclick="switchTab('history')">히스토리</button>
+  <button class="tab" onclick="switchTab('info')">알고리즘</button>
 </div>
 
 <!-- CALC PAGE -->
 <div class="page active" id="page-calc">
 
-  <div class="search-wrap">
-    <input class="search-input" id="coin-input" type="text"
-      placeholder="코인(BTC) 검색 — 백테스트로 최적 매수가 추천"
-      maxlength="10" autocomplete="off" autocorrect="off" spellcheck="false"/>
-    <button class="search-btn" id="search-btn" onclick="searchCoin()">
-      <svg viewBox="0 0 24 24" fill="none" stroke="#0a0a0f" stroke-width="2.5" stroke-linecap="round">
-        <circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
-      </svg>
-    </button>
+  <div class="tfbar">
+    <button class="tfbtn" data-tf="15m" onclick="setTF('15m')">15M<span>스캘핑</span></button>
+    <div class="tfdiv"></div>
+    <button class="tfbtn" data-tf="1h" onclick="setTF('1h')">1H<span>단타</span></button>
+    <div class="tfdiv"></div>
+    <button class="tfbtn active" data-tf="4h" onclick="setTF('4h')">4H<span>스윙</span></button>
+    <div class="tfdiv"></div>
+    <button class="tfbtn" data-tf="1d" onclick="setTF('1d')">1D<span>장기</span></button>
   </div>
 
-  <div class="loading-overlay" id="loading-overlay">
-    <div class="loader-ring"></div>
-    <div class="loading-text" id="loading-text">데이터 수집 중...</div>
-  </div>
-
-  <!-- DAILY BIAS -->
-  <div class="bias-card" id="bias-card">
-    <div>
-      <div class="bias-text" id="bias-text">—</div>
-      <div class="bias-sub" id="bias-sub">Daily 20MA 기준</div>
-    </div>
-    <div class="bias-val" id="bias-val">—</div>
-  </div>
-
-  <!-- BACKTEST BANNER -->
-  <div class="bt-banner" id="bt-banner">
-    <div class="bt-head">
-      <div>
-        <div class="bt-title">백테스트 결과 (현실 보정)</div>
-        <div class="bt-title-sub" id="bt-sub-title">3개월 4H · 수수료 · 슬리피지 반영</div>
-      </div>
-      <div class="bt-badge" id="bt-badge">—</div>
-    </div>
-
-    <div class="bt-filters" id="bt-filters"></div>
-
-    <div class="bt-grid">
-      <div class="bt-stat">
-        <span class="bt-stat-lbl">실거래수</span>
-        <span class="bt-stat-val" id="bt-trades" style="color:var(--text)">—</span>
-      </div>
-      <div class="bt-stat">
-        <span class="bt-stat-lbl">순승률</span>
-        <span class="bt-stat-val" id="bt-wr" style="color:var(--green)">—</span>
-      </div>
-      <div class="bt-stat">
-        <span class="bt-stat-lbl">프로핏팩터</span>
-        <span class="bt-stat-val" id="bt-pf" style="color:var(--blue)">—</span>
-      </div>
-      <div class="bt-stat">
-        <span class="bt-stat-lbl">최적버퍼</span>
-        <span class="bt-stat-val" id="bt-buf" style="color:var(--amber)">—</span>
-      </div>
-      <div class="bt-stat">
-        <span class="bt-stat-lbl">기대값</span>
-        <span class="bt-stat-val" id="bt-ev" style="color:var(--purple)">—</span>
-      </div>
-      <div class="bt-stat">
-        <span class="bt-stat-lbl">최대연속손실</span>
-        <span class="bt-stat-val" id="bt-streak" style="color:var(--red)">—</span>
-      </div>
-    </div>
-
-    <div class="bt-bar-wrap">
-      <div class="bt-bar-lbl"><span>BUY1 실승률</span><span id="bt-bar-pct">0%</span></div>
-      <div class="bt-bar-track">
-        <div class="bt-bar-fill" id="bt-bar-fill" style="width:0%"></div>
-      </div>
+  <div class="srow">
+    <div class="sbox">
+      <input class="sinput" id="coin-input" type="text"
+        placeholder="코인(BTC) 검색 — 백테스트로 최적 매수가 추천"
+        maxlength="10" autocomplete="off" autocorrect="off" spellcheck="false"/>
+      <button class="sgo" id="sgo" onclick="searchCoin()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round">
+          <circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+        </svg>
+      </button>
     </div>
   </div>
 
-  <!-- WARN BOX -->
-  <div class="warn-box" id="warn-box"></div>
+  <div class="lov" id="lov"><div class="spin"></div><div class="ltxt" id="ltxt">데이터 수집 중...</div></div>
 
-  <!-- COIN CARD -->
-  <div class="coin-card" id="coin-card">
-    <div class="coin-card-top">
-      <div class="coin-name">
-        <div class="coin-dot"></div>
-        <div>
-          <div class="coin-symbol" id="cc-symbol">—</div>
-          <div class="coin-fullname" id="cc-pair">—</div>
-        </div>
+  <div class="bbar" id="bbar">
+    <div><span class="blbl" id="blbl">—</span><span style="font-size:10px;color:var(--t3);margin-left:6px" id="bsub">—</span></div>
+    <div class="bval" id="bval">—</div>
+  </div>
+  <div class="wbar" id="wbar"></div>
+
+  <div class="btcard" id="btcard">
+    <div class="bth">
+      <div><div class="bttl" id="bttl">백테스트 결과</div><div class="btts" id="btts">—</div></div>
+      <div class="btpill" id="btpill">—</div>
+    </div>
+    <div class="frow">
+      <div class="flbl">BUY1 연간 예상 진입 횟수</div>
+      <div class="fr"><span class="fval" id="fval">—</span><span class="ftag" id="ftag2">—</span></div>
+    </div>
+    <div class="btgrid">
+      <div class="bts"><span class="btsl">실거래</span><span class="btsv" id="bttr" style="color:var(--t1)">—</span></div>
+      <div class="bts"><span class="btsl">순승률</span><span class="btsv" id="btwr" style="color:var(--G)">—</span></div>
+      <div class="bts"><span class="btsl">PF</span><span class="btsv" id="btpf" style="color:var(--B)">—</span></div>
+      <div class="bts"><span class="btsl">기대값</span><span class="btsv" id="btev" style="color:var(--P)">—</span></div>
+      <div class="bts"><span class="btsl">최적버퍼</span><span class="btsv" id="btbuf" style="color:var(--A)">—</span></div>
+      <div class="bts"><span class="btsl">최대연속손</span><span class="btsv" id="btsk" style="color:var(--R)">—</span></div>
+    </div>
+    <div class="ftrow" id="ftrow"></div>
+    <div class="btblbl"><span>BUY1 실승률</span><span id="btbpct">0%</span></div>
+    <div class="btrack"><div class="bfill" id="btbfill" style="width:0%"></div></div>
+  </div>
+
+  <div class="ticker" id="ticker">
+    <div class="tktop">
+      <div style="display:flex;align-items:center">
+        <div class="tkdot"></div>
+        <div><div class="tkname" id="tkname">—</div><div class="tksub" id="tksub">—</div></div>
       </div>
-      <div>
-        <div class="coin-price-val" id="cc-price">—</div>
-        <div class="coin-price-chg" id="cc-chg">—</div>
-      </div>
+      <div><div class="tkpx" id="tkpx">—</div><div class="tkchg" id="tkchg">—</div></div>
     </div>
-    <div class="candle-row">
-      <div class="candle-item"><div class="candle-label">4H HIGH</div><div class="candle-val high" id="cc-high">—</div></div>
-      <div class="candle-item"><div class="candle-label">4H CLOSE</div><div class="candle-val close" id="cc-close">—</div></div>
-      <div class="candle-item"><div class="candle-label">4H LOW</div><div class="candle-val low" id="cc-low">—</div></div>
+    <div class="tkcols">
+      <div class="tc"><div class="tcl" id="tch">HIGH</div><div class="tcv h" id="tkhigh">—</div></div>
+      <div class="tc"><div class="tcl" id="tcc">CLOSE</div><div class="tcv c" id="tkclose">—</div></div>
+      <div class="tc"><div class="tcl" id="tcl2">LOW</div><div class="tcv l" id="tklow">—</div></div>
     </div>
   </div>
 
-  <!-- MANUAL INPUTS -->
-  <div class="sec">수동 입력</div>
-  <div class="input-row">
-    <div class="input-group">
-      <span class="input-label">4H 최고가 ($)</span>
-      <input class="price-input h" id="inp-high" type="number" placeholder="최고가" step="0.0001" value="131.98"/>
+  <div class="inppanel">
+    <div style="font-size:10px;color:var(--t3);text-transform:uppercase;letter-spacing:.06em;margin-bottom:8px">수동 입력</div>
+    <div class="inpgrid">
+      <div class="ig"><span class="igl">최고가 ($)</span><input class="iginput hi" id="ih" type="number" placeholder="High" step="0.0001" value="131.98"/></div>
+      <div class="ig"><span class="igl">최저가 ($)</span><input class="iginput lo" id="il" type="number" placeholder="Low" step="0.0001" value="103.68"/></div>
     </div>
-    <div class="input-group">
-      <span class="input-label">4H 최저가 ($)</span>
-      <input class="price-input l" id="inp-low" type="number" placeholder="최저가" step="0.0001" value="103.68"/>
-    </div>
-  </div>
-  <div class="input-row">
-    <div class="input-group">
-      <span class="input-label">4H 종가 ($) — Pivot 계산용</span>
-      <input class="price-input c" id="inp-close" type="number" placeholder="종가 (선택)" step="0.0001" value="118.50"/>
-    </div>
-    <div class="input-group" style="justify-content:flex-end">
-      <span class="input-label">&nbsp;</span>
-      <button class="calc-btn" style="margin:0;padding:12px 0" onclick="calculate()">계산하기</button>
+    <div class="inpgrid" style="margin-bottom:8px">
+      <div class="ig"><span class="igl">종가 ($) — Pivot 계산용</span><input class="iginput cl" id="ic" type="number" placeholder="Close" step="0.0001" value="118.50"/></div>
+      <div class="ig" style="justify-content:flex-end"><span class="igl">&nbsp;</span><button class="cbtn" onclick="calculate()">계산하기</button></div>
     </div>
   </div>
 
-  <div style="height:8px"></div>
+  <div class="results" id="results">
+    <div class="seclbl">추천 매수가 3단계 — 분할매수 전략</div>
+    <div class="buygroup">
 
-  <!-- RESULTS -->
-  <div class="result-section" id="result-section">
-
-    <div class="sec">추천 매수가 3단계 · 분할매수 전략</div>
-    <div class="buy-cards">
-
-      <div class="buy-card buy-card-1">
-        <div class="buy-card-head">
+      <div class="buylv lv1">
+        <div class="lvfill" id="lf1" style="width:60%"></div>
+        <div class="lvtop">
           <div>
-            <div class="buy-card-tag">BUY 1 · 즉시진입</div>
-            <div class="buy-card-name">ATR 최적버퍼</div>
-            <div class="buy-card-method" id="b1-method">—</div>
+            <div style="display:flex;align-items:center;margin-bottom:3px"><span class="lvbadge">BUY 1</span><span class="lvname">즉시진입 · 보수적 최적버퍼</span></div>
+            <div class="lvmethod" id="b1m">—</div>
           </div>
           <div style="text-align:right">
-            <div class="buy-card-price" id="b1-price">—</div>
-            <div class="buy-card-gain" id="b1-gain">—</div>
-            <div class="ev-badge" id="b1-ev">EV —</div>
+            <div class="lvprice" id="b1p">—</div>
+            <div class="lvtp" id="b1g">—</div>
+            <div class="lvloss" id="b1l">—</div>
           </div>
         </div>
-        <div class="buy-card-stats">
-          <div class="buy-stat"><span class="buy-stat-lbl">실승률</span><span class="buy-stat-val" id="b1-wr" style="color:var(--green)">—</span></div>
-          <div class="buy-stat"><span class="buy-stat-lbl">Fill률</span><span class="buy-stat-val" id="b1-fill" style="color:var(--text2)">—</span></div>
-          <div class="buy-stat"><span class="buy-stat-lbl">PF</span><span class="buy-stat-val" id="b1-pf" style="color:var(--blue)">—</span></div>
-          <div class="buy-stat"><span class="buy-stat-lbl">비중</span><span class="buy-stat-val" id="b1-wt" style="color:var(--green)">—</span></div>
+        <div class="lvstats">
+          <div class="ls"><span class="lsl">실승률</span><span class="lsv" id="b1wr" style="color:var(--G)">—</span></div>
+          <div class="ls"><span class="lsl">Fill률</span><span class="lsv" id="b1fr" style="color:var(--t2)">—</span></div>
+          <div class="ls"><span class="lsl">PF</span><span class="lsv" id="b1pf" style="color:var(--B)">—</span></div>
+          <div class="ls"><span class="lsl">비중</span><span class="lsv" id="b1wt" style="color:var(--G)">—</span></div>
         </div>
+        <div class="evtag" id="b1ev">EV —</div>
       </div>
 
-      <div class="buy-card buy-card-2">
-        <div class="buy-card-head">
+      <div class="buylv lv2">
+        <div class="lvfill" id="lf2" style="width:40%"></div>
+        <div class="lvtop">
           <div>
-            <div class="buy-card-tag">BUY 2 · 지지선 대기</div>
-            <div class="buy-card-name">Pivot S1 지지</div>
-            <div class="buy-card-method" id="b2-method">—</div>
+            <div style="display:flex;align-items:center;margin-bottom:3px"><span class="lvbadge">BUY 2</span><span class="lvname">지지선 대기 · Pivot S1</span></div>
+            <div class="lvmethod" id="b2m">—</div>
           </div>
           <div style="text-align:right">
-            <div class="buy-card-price" id="b2-price">—</div>
-            <div class="buy-card-gain" id="b2-gain">—</div>
-            <div class="ev-badge" id="b2-ev">EV —</div>
+            <div class="lvprice" id="b2p">—</div>
+            <div class="lvtp" id="b2g">—</div>
+            <div class="lvloss" id="b2l">—</div>
           </div>
         </div>
-        <div class="buy-card-stats">
-          <div class="buy-stat"><span class="buy-stat-lbl">실승률</span><span class="buy-stat-val" id="b2-wr" style="color:var(--blue)">—</span></div>
-          <div class="buy-stat"><span class="buy-stat-lbl">Fill률</span><span class="buy-stat-val" id="b2-fill" style="color:var(--text2)">—</span></div>
-          <div class="buy-stat"><span class="buy-stat-lbl">PF</span><span class="buy-stat-val" id="b2-pf" style="color:var(--blue)">—</span></div>
-          <div class="buy-stat"><span class="buy-stat-lbl">비중</span><span class="buy-stat-val" id="b2-wt" style="color:var(--blue)">—</span></div>
+        <div class="lvstats">
+          <div class="ls"><span class="lsl">실승률</span><span class="lsv" id="b2wr" style="color:var(--B)">—</span></div>
+          <div class="ls"><span class="lsl">Fill률</span><span class="lsv" id="b2fr" style="color:var(--t2)">—</span></div>
+          <div class="ls"><span class="lsl">PF</span><span class="lsv" id="b2pf" style="color:var(--B)">—</span></div>
+          <div class="ls"><span class="lsl">비중</span><span class="lsv" id="b2wt" style="color:var(--B)">—</span></div>
         </div>
+        <div class="evtag" id="b2ev">EV —</div>
       </div>
 
-      <div class="buy-card buy-card-3">
-        <div class="buy-card-head">
+      <div class="buylv lv3">
+        <div class="lvfill" id="lf3" style="width:25%"></div>
+        <div class="lvtop">
           <div>
-            <div class="buy-card-tag">BUY 3 · 딥바이</div>
-            <div class="buy-card-name">ATR 딥바이</div>
-            <div class="buy-card-method" id="b3-method">—</div>
+            <div style="display:flex;align-items:center;margin-bottom:3px"><span class="lvbadge">BUY 3</span><span class="lvname">딥바이 · ATR 하방</span></div>
+            <div class="lvmethod" id="b3m">—</div>
           </div>
           <div style="text-align:right">
-            <div class="buy-card-price" id="b3-price">—</div>
-            <div class="buy-card-gain" id="b3-gain">—</div>
-            <div class="ev-badge" id="b3-ev">EV —</div>
+            <div class="lvprice" id="b3p">—</div>
+            <div class="lvtp" id="b3g">—</div>
+            <div class="lvloss" id="b3l">—</div>
           </div>
         </div>
-        <div class="buy-card-stats">
-          <div class="buy-stat"><span class="buy-stat-lbl">실승률</span><span class="buy-stat-val" id="b3-wr" style="color:var(--purple)">—</span></div>
-          <div class="buy-stat"><span class="buy-stat-lbl">Fill률</span><span class="buy-stat-val" id="b3-fill" style="color:var(--text2)">—</span></div>
-          <div class="buy-stat"><span class="buy-stat-lbl">PF</span><span class="buy-stat-val" id="b3-pf" style="color:var(--blue)">—</span></div>
-          <div class="buy-stat"><span class="buy-stat-lbl">비중</span><span class="buy-stat-val" id="b3-wt" style="color:var(--purple)">—</span></div>
+        <div class="lvstats">
+          <div class="ls"><span class="lsl">실승률</span><span class="lsv" id="b3wr" style="color:var(--P)">—</span></div>
+          <div class="ls"><span class="lsl">Fill률</span><span class="lsv" id="b3fr" style="color:var(--t2)">—</span></div>
+          <div class="ls"><span class="lsl">PF</span><span class="lsv" id="b3pf" style="color:var(--B)">—</span></div>
+          <div class="ls"><span class="lsl">비중</span><span class="lsv" id="b3wt" style="color:var(--P)">—</span></div>
         </div>
+        <div class="evtag" id="b3ev">EV —</div>
       </div>
     </div>
 
-    <div class="scale-guide">
-      <div class="scale-title">분할매수 비중 가이드</div>
-      <div class="scale-bars">
-        <div class="scale-bar scale-bar-1" id="sg-b1" style="flex:3">B1</div>
-        <div class="scale-bar scale-bar-2" id="sg-b2" style="flex:4">B2</div>
-        <div class="scale-bar scale-bar-3" id="sg-b3" style="flex:3">B3</div>
+    <div class="wtpanel">
+      <div class="wttitle">분할매수 비중 가이드</div>
+      <div class="wtbars">
+        <div class="wb wb1" id="wg1" style="flex:3">B1</div>
+        <div class="wb wb2" id="wg2" style="flex:4">B2</div>
+        <div class="wb wb3" id="wg3" style="flex:3">B3</div>
       </div>
-      <div class="scale-labels">
-        <div class="scale-label" id="sg-l1">—</div>
-        <div class="scale-label" id="sg-l2">—</div>
-        <div class="scale-label" id="sg-l3">—</div>
-      </div>
-    </div>
-
-    <div class="sec">요약</div>
-    <div class="summary-row">
-      <div class="mini"><div class="mini-lbl">목표가 TP</div><div class="mini-val" id="r-tp" style="color:var(--amber)">—</div></div>
-      <div class="mini"><div class="mini-lbl">동적 Stop</div><div class="mini-val" id="r-stop" style="color:var(--red)">—</div></div>
-      <div class="mini"><div class="mini-lbl">변동성</div><div class="mini-val" id="r-vol" style="color:var(--purple)">—</div></div>
-    </div>
-
-    <div class="range-visual">
-      <div class="sec" style="margin-bottom:4px">가격 위치</div>
-      <div class="range-bar-track" id="range-track">
-        <div class="range-fill" id="range-fill"></div>
-      </div>
-      <div class="range-ends">
-        <span id="bar-low-lbl" style="color:var(--green)">Low</span>
-        <span id="bar-high-lbl" style="color:var(--red)">High</span>
+      <div class="wtlbls">
+        <div class="wtlbl" id="wl1">—</div>
+        <div class="wtlbl" id="wl2">—</div>
+        <div class="wtlbl" id="wl3">—</div>
       </div>
     </div>
 
-    <button class="save-btn" onclick="saveToHistory()">
-      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
-        <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/>
-        <polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/>
-      </svg>
-      히스토리에 저장
-    </button>
+    <div class="sumstrip">
+      <div class="ss"><div class="ssl">목표가 TP</div><div class="ssv" id="rtp" style="color:var(--A)">—</div></div>
+      <div class="ss"><div class="ssl">동적 Stop</div><div class="ssv" id="rstop" style="color:var(--R)">—</div></div>
+      <div class="ss"><div class="ssl">ATR 변동성</div><div class="ssv" id="rvol" style="color:var(--P)">—</div></div>
+    </div>
+
+    <div class="rngpanel">
+      <div class="rngtitle">가격 위치</div>
+      <div class="rngtrack" id="rtrack"><div class="rngfill" id="rfill"></div></div>
+      <div class="rngends"><span id="rlow" style="color:var(--G)">Low</span><span id="rhigh" style="color:var(--R)">High</span></div>
+    </div>
+
+    <div class="saverow">
+      <button class="savebtn" onclick="saveH()">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+          <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/>
+          <polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/>
+        </svg>
+        히스토리에 저장
+      </button>
+    </div>
   </div>
 </div>
 
 <!-- HISTORY PAGE -->
-<div class="page" id="page-history"><div id="hist-list"></div></div>
+<div class="page" id="page-history"><div id="hlist"></div></div>
 
 <!-- INFO PAGE -->
 <div class="page" id="page-info">
-
-  <div class="info-card">
-    <div class="info-card-title">① 백테스트 엔진 완전 재설계 <span class="ib ib-g">핵심</span></div>
-    <div class="info-text">기존: 다음 3봉 High가 TP 위크만 스쳐도 Win → 과낙관<br/>
-    <b style="color:var(--text)">개선:</b></div>
-    <div class="fml">Step 1: 매수가(Low+buf)에 LOW가 실제 닿아야 체결</div>
-    <div class="fml">Step 2: 체결 후 캔들마다 Stop vs TP 순서 체크</div>
-    <div class="fml">Step 3: 같은 캔들에서 둘 다 닿으면 → 보수적으로 LOSS</div>
-    <div class="fml">Step 4: 최대 6봉(24시간) 내 미결 = 타임아웃 제외</div>
-    <div class="info-text" style="margin-top:6px">수수료+슬리피지 0.15% 차감 후 순수익 계산</div>
+  <div class="isec">
+    <div class="ittl">타임프레임별 설정</div>
+    <table class="tftbl">
+      <tr><td>15M</td><td>스캘핑 · 14일 · 상위TF 1H · Look 3봉(45분)</td></tr>
+      <tr><td>1H</td><td>단타 · 45일 · 상위TF 4H · Look 4봉(4시간)</td></tr>
+      <tr><td>4H</td><td>스윙 · 90일 · 상위TF Daily · Look 6봉(24시간)</td></tr>
+      <tr><td>1D</td><td>장기 · 180일 · 상위TF Weekly · Look 5봉(5일)</td></tr>
+    </table>
   </div>
-
-  <div class="info-card">
-    <div class="info-card-title">② ATR14 동적 Stop <span class="ib ib-a">변동성 반영</span></div>
-    <div class="fml">TrueRange = max(H−L, |H−Cprev|, |L−Cprev|)</div>
-    <div class="fml">ATR14 = EMA of TrueRange over 14 periods</div>
-    <div class="fml">Stop = BuyPrice − (ATR14 × 1.5) <span class="fc">// 동적</span></div>
-    <div class="info-text" style="margin-top:6px">고정 Range×5% 대신 실제 변동성 기반. BTC/고변동 코인은 Stop이 더 넓게, 저변동 코인은 좁게 자동 적용</div>
+  <div class="isec">
+    <div class="ittl">보수적 버퍼 선택 <span class="ib ibr">핵심</span></div>
+    <div class="fm">rawBuf = argmax(WR x PF x EV) over [3%..10%]</div>
+    <div class="fm">if annualFills &lt; 12 then buf += 1%</div>
+    <div class="fm">if annualFills &lt; 6  then buf += 2%</div>
+    <div class="fm">cap = min(buf, 8%)</div>
+    <div class="itxt" style="margin-top:6px">연간 진입이 적을수록 버퍼 상향 → 더 낮은 가격에 매수 → R:R 개선</div>
   </div>
-
-  <div class="info-card">
-    <div class="info-card-title">③ Volume 필터 <span class="ib ib-b">False Breakout 방지</span></div>
-    <div class="fml">avgVol20 = 20봉 평균 거래량</div>
-    <div class="fml">진입 조건: 신호봉 Volume ≥ avgVol20 × 0.8</div>
-    <div class="info-text" style="margin-top:6px">저거래량 구간의 Range는 신뢰도 낮음. 거래량 충분한 봉의 Range만 백테스트에 포함</div>
+  <div class="isec">
+    <div class="ittl">백테스트 엔진</div>
+    <div class="fm">Fill: 다음봉 LOW &lt;= buyPrice 여야 체결</div>
+    <div class="fm">Stop/TP: 체결 후 캔들별 순차 확인</div>
+    <div class="fm">동시충돌: 같은 봉 Stop+TP → 보수적 LOSS</div>
+    <div class="fm">수수료+슬리피지: 0.15% 차감</div>
+    <div class="fm">Volume: 신호봉 Vol >= 20MA * 80%</div>
+    <div class="fm">Close: Close >= Low + Range * 20%</div>
   </div>
-
-  <div class="info-card">
-    <div class="info-card-title">④ Close 확인 로직 <span class="ib ib-b">Wick false signal 방지</span></div>
-    <div class="fml">신호 유효 조건: Close ≥ Low + Range × 0.20</div>
-    <div class="info-text" style="margin-top:6px">신호봉이 하단 20% 이하에서 종가 마감 = 하락 모멘텀. 이 경우 Range를 신뢰할 수 없으므로 해당 봉 백테스트 제외</div>
+  <div class="isec">
+    <div class="ittl">감내 손실</div>
+    <div class="fm">Stop = BuyPrice - ATR14 x 1.5</div>
+    <div class="itxt" style="margin-top:6px">각 매수카드에 "↓ 감내손실 X.XX%" 표시. 체결 후 이 이상 하락 시 손절.</div>
   </div>
-
-  <div class="info-card">
-    <div class="info-card-title">⑤ Daily MTF Bias <span class="ib ib-t">추세 필터</span></div>
-    <div class="fml">Daily 20MA = 20일 종가 단순이동평균</div>
-    <div class="fml">강세 = Daily Close > Daily 20MA</div>
-    <div class="fml">백테: 강세 구간 진입만 카운트</div>
-    <div class="info-text" style="margin-top:6px">일봉 추세 역행 매수는 체결 후에도 Stop까지 밀릴 확률이 높음. Daily API 데이터 병렬 fetch</div>
-  </div>
-
-  <div class="info-card">
-    <div class="info-card-title">최적 버퍼 선택 기준 <span class="ib ib-p">복합점수</span></div>
-    <div class="fml">Score = WinRate × ProfitFactor × ExpectedValue</div>
-    <div class="info-text" style="margin-top:6px">단순 승률 최고값이 아닌, 수익성(PF)과 기대값(EV)까지 복합 평가. 승률 60%라도 PF가 낮으면 탈락</div>
-  </div>
-
-  <div class="ver">4H▲RANGE v0.4 BETA · 현실 보정 백테스트</div>
+  <div class="ver">RANGE CALC v0.5 · OKX Style</div>
 </div>
 
 </div>
 <div class="toast" id="toast"></div>
 
 <script>
-// ═══════════════════════════════════════════════════════════════════
-//  GLOBALS
-// ═══════════════════════════════════════════════════════════════════
-var G = {
-  coin: 'AAVE',
-  btData: null,
-  dailyBiasMap: null,  // Map: dayKey → {bullish, sma20, close}
-  lastResult: null,
-  RATE_KEY: '4hrange_v4',
-  RATE_MAX: 6,
-  FEE_SLIP: 0.0015,    // 0.15% round-trip fees + slippage
-  ATR_PERIOD: 14,
-  VOL_PERIOD: 20,
-  LOOK_MAX: 6,         // max candles to wait after fill (24h)
-  CLOSE_CONFIRM: 0.20, // close must be above Low + Range×20%
-  VOL_MIN_RATIO: 0.80, // volume must be ≥ 80% of 20-period avg
-  ATR_STOP_MULT: 1.5,  // stop = buy - ATR × 1.5
+var TF_CFG = {
+  '15m': {interval:'15m', limit:1400, htf:'1h',  htfLimit:200, look:3, label:'15M 스캘핑'},
+  '1h':  {interval:'1h',  limit:1080, htf:'4h',  htfLimit:200, look:4, label:'1H 단타'},
+  '4h':  {interval:'4h',  limit:540,  htf:'1d',  htfLimit:110, look:6, label:'4H 스윙'},
+  '1d':  {interval:'1d',  limit:365,  htf:'1w',  htfLimit:52,  look:5, label:'1D 장기'}
 };
 
-// ═══════════════════════════════════════════════════════════════════
-//  RATE LIMIT
-// ═══════════════════════════════════════════════════════════════════
+var G = {
+  coin:'AAVE', tf:'4h', btData:null, biasMap:null, lastRes:null,
+  RK:'rc_v5', RM:6,
+  FEE:0.0015, AP:14, VP:20, AS:1.5, CC:0.20, VR:0.80
+};
+
+function el(id) { return document.getElementById(id); }
+
+/* ── RATE LIMIT ─────────────────────────────────────── */
 function getRD() {
   try {
-    var d = JSON.parse(localStorage.getItem(G.RATE_KEY)) || {};
-    var today = new Date().toDateString();
-    if (d.date !== today) return { date: today, count: 0 };
+    var d = JSON.parse(localStorage.getItem(G.RK)) || {};
+    var t = new Date().toDateString();
+    if (d.date !== t) return {date:t, count:0};
     return d;
-  } catch(e) { return { date: new Date().toDateString(), count: 0 }; }
+  } catch(e) { return {date:new Date().toDateString(), count:0}; }
 }
-function saveRD(d) { localStorage.setItem(G.RATE_KEY, JSON.stringify(d)); }
-function canAPI() { return getRD().count < G.RATE_MAX; }
-function useAPI() { var d = getRD(); d.count++; saveRD(d); updateRateUI(); }
-function updateRateUI() {
-  var d = getRD(); var rem = G.RATE_MAX - d.count;
-  var el = document.getElementById('api-counter');
-  el.textContent = 'API ' + rem + '/' + G.RATE_MAX;
-  el.className = 'api-counter' + (rem <= 0 ? ' full' : rem <= 2 ? ' warn' : '');
-  var btn = document.getElementById('search-btn');
+function saveRD(d) { localStorage.setItem(G.RK, JSON.stringify(d)); }
+function canAPI() { return getRD().count < G.RM; }
+function useAPI() { var d = getRD(); d.count++; saveRD(d); updateRUI(); }
+function updateRUI() {
+  var d = getRD(), rem = G.RM - d.count;
+  var e = el('apill');
+  e.textContent = 'API ' + rem + '/' + G.RM;
+  e.className = 'apill' + (rem <= 0 ? ' full' : rem <= 2 ? ' warn' : '');
+  var btn = el('sgo');
   if (rem <= 0) {
     btn.classList.add('locked');
-    btn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="var(--text3)" stroke-width="2.5" width="16" height="16"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>';
+    btn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="var(--t3)" stroke-width="2.5" width="12" height="12"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>';
   }
 }
 
-// ═══════════════════════════════════════════════════════════════════
-//  TAB / TOAST / LOADING
-// ═══════════════════════════════════════════════════════════════════
+/* ── UI HELPERS ─────────────────────────────────────── */
 function switchTab(name) {
   var names = ['calc','history','info'];
-  document.querySelectorAll('.tab-btn').forEach(function(b,i){ b.classList.toggle('active', names[i]===name); });
-  document.querySelectorAll('.page').forEach(function(p){ p.classList.remove('active'); });
-  document.getElementById('page-'+name).classList.add('active');
-  if (name==='history') renderHistory();
-}
-function showToast(msg, isErr) {
-  var t = document.getElementById('toast');
-  t.textContent = msg; t.className = 'toast'+(isErr?' err':''); t.classList.add('show');
-  setTimeout(function(){ t.classList.remove('show'); }, 2400);
-}
-function setLoading(on, msg) {
-  document.getElementById('loading-overlay').classList.toggle('visible', on);
-  if (msg) document.getElementById('loading-text').textContent = msg;
-  var btn = document.getElementById('search-btn');
-  btn.style.opacity = on ? '0.4' : ''; btn.style.pointerEvents = on ? 'none' : '';
+  document.querySelectorAll('.tab').forEach(function(b,i) { b.classList.toggle('active', names[i]===name); });
+  document.querySelectorAll('.page').forEach(function(p) { p.classList.remove('active'); });
+  el('page-' + name).classList.add('active');
+  if (name === 'history') renderH();
 }
 
-// ═══════════════════════════════════════════════════════════════════
-//  SEARCH
-// ═══════════════════════════════════════════════════════════════════
-document.getElementById('coin-input').addEventListener('keydown', function(e){ if(e.key==='Enter') searchCoin(); });
+function showToast(msg, isErr) {
+  var t = el('toast');
+  t.textContent = msg;
+  t.className = 'toast' + (isErr ? ' err' : '');
+  t.classList.add('on');
+  setTimeout(function() { t.classList.remove('on'); }, 2400);
+}
+
+function setLoading(on, msg) {
+  el('lov').classList.toggle('on', on);
+  if (msg) el('ltxt').textContent = msg;
+  var btn = el('sgo');
+  btn.style.opacity = on ? '0.4' : '';
+  btn.style.pointerEvents = on ? 'none' : '';
+}
+
+function fmtDT(ms) {
+  var d = new Date(ms);
+  var mo = String(d.getMonth()+1).padStart(2,'0');
+  var da = String(d.getDate()).padStart(2,'0');
+  var hr = String(d.getHours()).padStart(2,'0');
+  var mi = String(d.getMinutes()).padStart(2,'0');
+  return d.getFullYear() + '.' + mo + '.' + da + ' ' + hr + ':' + mi;
+}
+
+function trimZ(s) {
+  return s.replace(/\.?0+$/, '');
+}
+
+function fp(n) {
+  if (n == null || isNaN(n)) return '—';
+  var v = Math.abs(n);
+  var r;
+  if (v >= 10000) r = n.toFixed(0);
+  else if (v >= 1000) r = n.toFixed(1);
+  else if (v >= 1) r = n.toFixed(4).replace(/\.?0+$/, '');
+  else if (v >= 0.01) r = n.toFixed(5);
+  else r = n.toFixed(8);
+  return r;
+}
+
+function pad2(n) { return n < 10 ? '0' + n : '' + n; }
+
+/* ── TIMEFRAME ──────────────────────────────────────── */
+function setTF(tf) {
+  G.tf = tf; G.btData = null; G.biasMap = null;
+  document.querySelectorAll('.tfbtn').forEach(function(b) { b.classList.toggle('active', b.dataset.tf===tf); });
+  var L = tf.toUpperCase();
+  el('tch').textContent = L + ' HIGH';
+  el('tcc').textContent = L + ' CLOSE';
+  el('tcl2').textContent = L + ' LOW';
+  el('btcard').classList.remove('on');
+  el('ticker').classList.remove('on');
+  el('results').classList.remove('on');
+  el('bbar').classList.remove('on');
+  el('wbar').classList.remove('on');
+}
+
+/* ── SEARCH ─────────────────────────────────────────── */
+el('coin-input').addEventListener('keydown', function(e) { if (e.key === 'Enter') searchCoin(); });
+
 function searchCoin() {
   if (!canAPI()) { showToast('오늘 API 한도 소진 · 수동 입력 사용', true); return; }
-  var val = document.getElementById('coin-input').value.trim().toUpperCase();
-  if (!val) { showToast('코인 심볼을 입력하세요'); return; }
-  G.coin = val; doFetch(val);
+  var v = el('coin-input').value.trim().toUpperCase();
+  if (!v) { showToast('코인 심볼을 입력하세요'); return; }
+  G.coin = v;
+  doFetch(v);
 }
 
-function doFetch(symbol) {
+function doFetch(sym) {
   useAPI();
-  setLoading(true, symbol + ' 4H + Daily 데이터 수집 중...');
-  var pair = symbol + 'USDT';
-  var url4h  = 'https://api.binance.com/api/v3/klines?symbol='+pair+'&interval=4h&limit=540';
-  var url1d  = 'https://api.binance.com/api/v3/klines?symbol='+pair+'&interval=1d&limit=110';
+  var cfg = TF_CFG[G.tf];
+  var pair = sym + 'USDT';
+  setLoading(true, sym + ' ' + cfg.label + ' 데이터 수집 중...');
+  var u1 = 'https://api.binance.com/api/v3/klines?symbol=' + pair + '&interval=' + cfg.interval + '&limit=' + cfg.limit;
+  var u2 = 'https://api.binance.com/api/v3/klines?symbol=' + pair + '&interval=' + cfg.htf + '&limit=' + cfg.htfLimit;
 
-  Promise.all([fetch(url4h), fetch(url1d)])
+  Promise.all([fetch(u1), fetch(u2)])
     .then(function(rs) {
       return Promise.all([
-        rs[0].ok ? rs[0].json() : Promise.reject('4h fail'),
-        rs[1].ok ? rs[1].json() : Promise.resolve([]) // daily optional
+        rs[0].ok ? rs[0].json() : Promise.reject('fail'),
+        rs[1].ok ? rs[1].json() : Promise.resolve([])
       ]);
     })
-    .then(function(results) {
-      var candles4h = results[0];
-      var candles1d = results[1];
-      if (!candles4h || candles4h.length < 30) throw new Error('insufficient');
-
-      setLoading(true, '현실 보정 백테스트 계산 중 ('+candles4h.length+'봉)...');
-
+    .then(function(res) {
+      var c4 = res[0], ch = res[1];
+      if (!c4 || c4.length < 30) throw new Error();
+      setLoading(true, cfg.label + ' 백테스트 실행 중 (' + c4.length + '봉)...');
       setTimeout(function() {
-        // Build daily bias map
-        G.dailyBiasMap = buildDailyBiasMap(candles1d);
-
-        var bt = runBacktest(candles4h, G.dailyBiasMap);
+        G.biasMap = buildBM(ch);
+        var bt = runBT(c4, G.biasMap, cfg);
         G.btData = bt;
 
-        // Fill UI with latest completed candle
-        var last = candles4h[candles4h.length - 2];
+        var last = c4[c4.length - 2];
         var h = parseFloat(last[2]), l = parseFloat(last[3]), cl = parseFloat(last[4]);
-        var prev = candles4h.length > 2 ? parseFloat(candles4h[candles4h.length-3][4]) : parseFloat(last[1]);
+        var prev = c4.length > 2 ? parseFloat(c4[c4.length-3][4]) : parseFloat(last[1]);
         var chg = (cl - prev) / prev * 100;
 
-        document.getElementById('inp-high').value  = trimZ(h.toFixed(8));
-        document.getElementById('inp-low').value   = trimZ(l.toFixed(8));
-        document.getElementById('inp-close').value = trimZ(cl.toFixed(8));
+        el('ih').value = trimZ(h.toFixed(8));
+        el('il').value = trimZ(l.toFixed(8));
+        el('ic').value = trimZ(cl.toFixed(8));
 
-        document.getElementById('cc-symbol').textContent = symbol;
-        document.getElementById('cc-pair').textContent   = pair + ' · 4H · ' + candles4h.length + '봉';
-        document.getElementById('cc-price').textContent  = '$' + fp(cl);
-        var ce = document.getElementById('cc-chg');
-        ce.textContent = (chg>=0?'+':'')+chg.toFixed(2)+'%';
-        ce.className = 'coin-price-chg '+(chg>=0?'up':'dn');
-        document.getElementById('cc-high').textContent  = '$'+fp(h);
-        document.getElementById('cc-low').textContent   = '$'+fp(l);
-        document.getElementById('cc-close').textContent = '$'+fp(cl);
-        document.getElementById('coin-card').classList.add('visible');
+        el('tkname').textContent = sym;
+        el('tksub').textContent = pair + ' · ' + cfg.label + ' · ' + c4.length + '봉';
+        el('tkpx').textContent = '$' + fp(cl);
+        var ce = el('tkchg');
+        ce.textContent = (chg >= 0 ? '+' : '') + chg.toFixed(2) + '%';
+        ce.className = 'tkchg ' + (chg >= 0 ? 'up' : 'dn');
+        el('tkhigh').textContent = '$' + fp(h);
+        el('tklow').textContent = '$' + fp(l);
+        el('tkclose').textContent = '$' + fp(cl);
+        el('ticker').classList.add('on');
 
-        // Daily bias UI
-        renderDailyBias(G.dailyBiasMap, parseInt(last[0]));
-        renderBtBanner(bt);
+        renderBias(G.biasMap, parseInt(last[0]), cfg);
+        renderBT(bt, cfg);
         setLoading(false);
-        showToast(symbol + ' 완료 · 실승률 ' + bt.b1WR.toFixed(1) + '%');
-        document.getElementById('coin-input').blur();
+        showToast(sym + ' 완료 · 실승률 ' + bt.b1WR.toFixed(1) + '% · 연' + bt.af.toFixed(0) + '회');
+        el('coin-input').blur();
         calculate();
       }, 30);
     })
-    .catch(function(e) {
-      setLoading(false);
-      showToast(symbol + 'USDT 마켓 없음', true);
-    });
+    .catch(function() { setLoading(false); showToast(sym + 'USDT 없음', true); });
 }
 
-// ═══════════════════════════════════════════════════════════════════
-//  DAILY BIAS MAP
-// ═══════════════════════════════════════════════════════════════════
-function buildDailyBiasMap(candles1d) {
-  if (!candles1d || candles1d.length < 21) return null;
-  var map = {};
-  var period = 20;
-  for (var i = period; i < candles1d.length; i++) {
-    // SMA20 of closes
-    var sum = 0;
-    for (var k = i - period; k < i; k++) sum += parseFloat(candles1d[k][4]);
-    var sma20 = sum / period;
-    var close = parseFloat(candles1d[i][4]);
-    var openTime = parseInt(candles1d[i][0]);
-    var dayKey = Math.floor(openTime / 86400000); // day bucket
-    map[dayKey] = { bullish: close > sma20, sma20: sma20, close: close };
+/* ── BIAS MAP ───────────────────────────────────────── */
+function buildBM(c) {
+  if (!c || c.length < 21) return null;
+  var m = {}, p = 20;
+  for (var i = p; i < c.length; i++) {
+    var s = 0;
+    for (var k = i-p; k < i; k++) s += parseFloat(c[k][4]);
+    var sma = s/p, cl = parseFloat(c[i][4]);
+    m[String(parseInt(c[i][0]))] = {bull: cl > sma, sma: sma, cl: cl};
   }
-  return map;
+  return m;
 }
 
-function getBias(biasMap, timestampMs) {
-  if (!biasMap) return null;
-  var dayKey = Math.floor(timestampMs / 86400000);
-  // Look back up to 1 day for the closest bias
-  return biasMap[dayKey] || biasMap[dayKey-1] || null;
+function getBias(m, ts) {
+  if (!m) return null;
+  var ks = Object.keys(m).map(Number).sort(function(a,b) { return b-a; });
+  for (var i = 0; i < ks.length; i++) { if (ks[i] <= ts) return m[String(ks[i])]; }
+  return null;
 }
 
-function renderDailyBias(biasMap, latestTs) {
-  var card = document.getElementById('bias-card');
-  var bias = getBias(biasMap, latestTs);
-  if (!bias) { card.classList.remove('visible'); return; }
-  card.className = 'bias-card visible ' + (bias.bullish ? 'bull' : 'bear');
-  document.getElementById('bias-text').textContent = bias.bullish ? '강세 (Bullish Bias)' : '약세 (Bearish Bias)';
-  document.getElementById('bias-sub').textContent  = 'Daily Close ' + (bias.bullish ? '>' : '<') + ' 20MA · 진입 신중';
-  document.getElementById('bias-val').textContent  = '$' + fp(bias.sma20);
-  card.classList.add('visible');
-
-  // Warning if bearish
-  var warn = document.getElementById('warn-box');
-  if (!bias.bullish) {
-    warn.textContent = '⚠ Daily 약세 구간 — 매수 신중. BUY3(딥바이) 비중 축소 권장.';
-    warn.classList.add('visible');
+function renderBias(m, ts, cfg) {
+  var bar = el('bbar'), b = getBias(m, ts);
+  if (!b) { bar.classList.remove('on'); return; }
+  bar.className = 'bbar on ' + (b.bull ? 'bull' : 'bear');
+  el('blbl').textContent = (b.bull ? '▲ 강세' : '▼ 약세') + ' (' + cfg.htf.toUpperCase() + ' 20MA)';
+  el('bsub').textContent = cfg.htf.toUpperCase() + ' ' + (b.bull ? '> 20MA · 진입 유리' : '< 20MA · 신중');
+  el('bval').textContent = '20MA $' + fp(b.sma);
+  var w = el('wbar');
+  if (!b.bull) {
+    w.textContent = '⚠ ' + cfg.htf.toUpperCase() + ' 약세 구간 — 매수 신중. BUY3 비중 줄이고 BUY1 소량 진입 권장';
+    w.className = 'wbar on amber';
   } else {
-    warn.classList.remove('visible');
+    w.classList.remove('on');
   }
 }
 
-// ═══════════════════════════════════════════════════════════════════
-//  ATR (EMA-based True Range)
-// ═══════════════════════════════════════════════════════════════════
-function calcATR(candles, idx, period) {
-  if (idx < 1) return parseFloat(candles[0][2]) - parseFloat(candles[0][3]);
-  // Use simple avg for first window, then approximate EMA
-  var start = Math.max(1, idx - period * 3);
-  var trArr = [];
-  for (var i = start; i <= idx; i++) {
-    var h = parseFloat(candles[i][2]);
-    var l = parseFloat(candles[i][3]);
-    var pc = parseFloat(candles[i-1][4]);
-    trArr.push(Math.max(h-l, Math.abs(h-pc), Math.abs(l-pc)));
+/* ── ATR ────────────────────────────────────────────── */
+function calcATR(c, idx, p) {
+  if (idx < 1) return parseFloat(c[0][2]) - parseFloat(c[0][3]);
+  var st = Math.max(1, idx - p*3), tr = [];
+  for (var i = st; i <= idx; i++) {
+    var h = parseFloat(c[i][2]), l = parseFloat(c[i][3]), pc = parseFloat(c[i-1][4]);
+    tr.push(Math.max(h-l, Math.abs(h-pc), Math.abs(l-pc)));
   }
-  // Wilder EMA
-  var atr = trArr[0];
-  for (var j = 1; j < trArr.length; j++) {
-    atr = (atr * (period-1) + trArr[j]) / period;
-  }
+  var atr = tr[0];
+  for (var j = 1; j < tr.length; j++) atr = (atr*(p-1) + tr[j]) / p;
   return atr;
 }
 
-function calcAvgVol(candles, idx, period) {
-  var sum = 0; var cnt = 0;
-  for (var i = Math.max(0, idx-period); i < idx; i++) {
-    sum += parseFloat(candles[i][5]); cnt++;
-  }
-  return cnt > 0 ? sum / cnt : 0;
+function calcAV(c, idx, p) {
+  var s = 0, n = 0;
+  for (var i = Math.max(0, idx-p); i < idx; i++) { s += parseFloat(c[i][5]); n++; }
+  return n > 0 ? s/n : 0;
 }
 
-// ═══════════════════════════════════════════════════════════════════
-//  BACKTEST ENGINE — FULL REALISTIC SIMULATION
-// ═══════════════════════════════════════════════════════════════════
-function runBacktest(candles, biasMap) {
-  var buffers = [0.03, 0.04, 0.05, 0.06, 0.07, 0.08, 0.10];
-
-  // Per-buffer accumulators
-  var bAcc = buffers.map(function(b) {
-    return {
-      buf: b,
-      wins: 0, losses: 0, timeouts: 0, noFill: 0,
-      grossProfit: 0, grossLoss: 0,
-      maxStreak: 0, curStreak: 0,
-      filteredByVol: 0, filteredByClose: 0, filteredByBias: 0
-    };
+/* ── BACKTEST ENGINE ────────────────────────────────── */
+function runBT(candles, bm, cfg) {
+  var bufs = [0.03, 0.04, 0.05, 0.06, 0.07, 0.08, 0.10];
+  var bA = bufs.map(function(b) {
+    return {buf:b, w:0, l:0, nf:0, to:0, gp:0, gl:0, s:0, ms:0, f:0, fv:0, fc:0, fb:0};
   });
+  var p2 = {f:0, w:0, l:0, t:0, gp:0, gl:0};
+  var p3 = {f:0, w:0, l:0, t:0, gp:0, gl:0};
+  var st = Math.max(G.AP+2, G.VP+1), LK = cfg.look;
 
-  // Per-level type accumulators (BUY1=optBuf, BUY2=pivot, BUY3=ATR deep)
-  // We'll compute BUY2/BUY3 stats separately after finding opt buf
-  var pivotAcc = { fills: 0, wins: 0, losses: 0, gp: 0, gl: 0, total: 0 };
-  var deepAcc  = { fills: 0, wins: 0, losses: 0, gp: 0, gl: 0, total: 0 };
-
-  var start = Math.max(G.ATR_PERIOD + 2, G.VOL_PERIOD + 1);
-
-  for (var i = start; i < candles.length - G.LOOK_MAX - 2; i++) {
-    var c  = candles[i];
-    var h  = parseFloat(c[2]);
-    var l  = parseFloat(c[3]);
-    var cl = parseFloat(c[4]);
-    var vol = parseFloat(c[5]);
-    var ts  = parseInt(c[0]);
-    var range = h - l;
-    if (range <= 0) continue;
-
-    var atr    = calcATR(candles, i, G.ATR_PERIOD);
-    var avgVol = calcAvgVol(candles, i, G.VOL_PERIOD);
-
-    // ── FILTER 1: Volume ────────────────────────────────────────────
-    var volOK = avgVol <= 0 || vol >= avgVol * G.VOL_MIN_RATIO;
-
-    // ── FILTER 2: Close confirmation (no bearish close at bottom) ──
-    var closeOK = cl >= l + range * G.CLOSE_CONFIRM;
-
-    // ── FILTER 3: Daily bias (bullish preferred) ────────────────────
-    var bias = getBias(biasMap, ts);
-    var biasOK = !bias || bias.bullish; // pass if no daily data
-
-    // Pivot S1/S2 for BUY2
-    var pivot    = (h + l + cl) / 3;
-    var ps1      = 2 * pivot - h;
-    var ps2      = pivot - range;
-    var pivotBuy = ps1 < l ? ps1 : ps2;
-
-    // ATR deep buy
-    var deepBuy = l - atr * 0.35;
-
-    // TP (Fib 0.618 of range from low — common target)
-    var tp = l + range * 0.618;
-
-    // Gather future candle data
-    var future = [];
-    for (var j = 1; j <= G.LOOK_MAX + 4; j++) {
-      if (i + j < candles.length) {
-        future.push({
-          h: parseFloat(candles[i+j][2]),
-          l: parseFloat(candles[i+j][3]),
-          cl: parseFloat(candles[i+j][4])
-        });
-      }
+  for (var i = st; i < candles.length - LK - 3; i++) {
+    var c = candles[i];
+    var h = parseFloat(c[2]), l = parseFloat(c[3]), cl = parseFloat(c[4]), vol = parseFloat(c[5]), ts = parseInt(c[0]);
+    var rng = h - l;
+    if (rng <= 0) continue;
+    var atr = calcATR(candles, i, G.AP), av = calcAV(candles, i, G.VP);
+    var vok = av <= 0 || vol >= av * G.VR;
+    var cok = cl >= l + rng * G.CC;
+    var bias = getBias(bm, ts), bok = !bias || bias.bull;
+    var pv = (h+l+cl)/3, ps1 = 2*pv-h, ps2 = pv-rng;
+    var pb = ps1 < l ? ps1 : ps2;
+    var db = l - atr * 0.35;
+    var tp = l + rng * 0.618;
+    var fut = [];
+    for (var j = 1; j <= LK+4; j++) {
+      if (i+j < candles.length) fut.push({h: parseFloat(candles[i+j][2]), l: parseFloat(candles[i+j][3])});
     }
 
-    // ── Per-buffer simulation ───────────────────────────────────────
-    buffers.forEach(function(buf, bi) {
-      var acc = bAcc[bi];
-      if (!volOK)   { acc.filteredByVol++;   }
-      if (!closeOK) { acc.filteredByClose++; }
-      if (!biasOK)  { acc.filteredByBias++;  }
-      if (!volOK || !closeOK || !biasOK) return;
-
-      var buyP  = l + range * buf;
-      var stopP = buyP - atr * G.ATR_STOP_MULT; // dynamic ATR stop
-
-      if (buyP >= h || buyP <= 0 || tp <= buyP || stopP >= buyP) return;
-
-      // Simulate fill: next candles' LOW must reach buyP
-      var filled = false;
-      var fillCandle = -1;
-      for (var k = 0; k < Math.min(G.LOOK_MAX, future.length); k++) {
-        if (future[k].l <= buyP) { filled = true; fillCandle = k; break; }
+    bufs.forEach(function(buf, bi) {
+      var a = bA[bi];
+      if (!vok) { a.fv++; return; }
+      if (!cok) { a.fc++; return; }
+      if (!bok) { a.fb++; return; }
+      var buy = l + rng * buf, stop = buy - atr * G.AS;
+      if (buy >= h || buy <= 0 || tp <= buy || stop >= buy) return;
+      var fd = false, fc = -1;
+      for (var k = 0; k < Math.min(LK, fut.length); k++) {
+        if (fut[k].l <= buy) { fd = true; fc = k; break; }
       }
-
-      if (!filled) { acc.noFill++; return; }
-
-      // After fill, check stop vs TP sequentially
-      var outcome = null;
-      for (var k = fillCandle; k < Math.min(fillCandle + G.LOOK_MAX, future.length); k++) {
-        var fh = future[k].h, fl = future[k].l;
-        var stopHit = fl <= stopP;
-        var tpHit   = fh >= tp;
-
-        if (stopHit && tpHit) {
-          // Both in same candle: conservative → LOSS
-          outcome = 'loss'; break;
-        }
-        if (tpHit)   { outcome = 'win';  break; }
-        if (stopHit) { outcome = 'loss'; break; }
+      if (!fd) { a.nf++; return; }
+      a.f++;
+      var out = null;
+      for (var k = fc; k < Math.min(fc+LK, fut.length); k++) {
+        var sh = fut[k].h, sl = fut[k].l;
+        if (sl <= stop && sh >= tp) { out = 'l'; break; }
+        if (sh >= tp) { out = 'w'; break; }
+        if (sl <= stop) { out = 'l'; break; }
       }
-
-      if (outcome === null) { acc.timeouts++; return; } // timeout, exclude
-
-      acc.wins   += outcome === 'win'  ? 1 : 0;
-      acc.losses += outcome === 'loss' ? 1 : 0;
-
-      // Deduct fees & slippage
-      if (outcome === 'win') {
-        var pnl = (tp - buyP) / buyP - G.FEE_SLIP;
-        acc.grossProfit += pnl;
-        acc.curStreak = 0;
-      } else {
-        var pnl = Math.abs((stopP - buyP) / buyP) + G.FEE_SLIP;
-        acc.grossLoss += pnl;
-        acc.curStreak++;
-        acc.maxStreak = Math.max(acc.maxStreak, acc.curStreak);
-      }
+      if (out === null) { a.to++; return; }
+      if (out === 'w') { a.w++; a.gp += (tp-buy)/buy - G.FEE; a.s = 0; }
+      else { a.l++; a.gl += Math.abs((stop-buy)/buy) + G.FEE; a.s++; a.ms = Math.max(a.ms, a.s); }
     });
 
-    // ── Pivot BUY2 simulation (always with all filters) ────────────
-    if (volOK && closeOK && biasOK && pivotBuy < l && pivotBuy > 0) {
-      var stopP2 = pivotBuy - atr * G.ATR_STOP_MULT;
-      pivotAcc.total++;
-      var filled2 = false, fill2C = -1;
-      for (var k = 0; k < Math.min(G.LOOK_MAX, future.length); k++) {
-        if (future[k].l <= pivotBuy) { filled2 = true; fill2C = k; break; }
-      }
-      if (filled2) {
-        pivotAcc.fills++;
-        var out2 = null;
-        for (var k = fill2C; k < Math.min(fill2C + G.LOOK_MAX, future.length); k++) {
-          var fh = future[k].h, fl = future[k].l;
-          if (fl<=stopP2 && fh>=tp) { out2='loss'; break; }
-          if (fh>=tp)   { out2='win';  break; }
-          if (fl<=stopP2) { out2='loss'; break; }
+    if (vok && cok && bok && pb < l && pb > 0) {
+      var s2 = pb - atr * G.AS; p2.t++;
+      var f2 = false, fc2 = -1;
+      for (var k = 0; k < Math.min(LK, fut.length); k++) { if (fut[k].l <= pb) { f2 = true; fc2 = k; break; } }
+      if (f2) {
+        p2.f++;
+        var o2 = null;
+        for (var k = fc2; k < Math.min(fc2+LK, fut.length); k++) {
+          if (fut[k].l <= s2 && fut[k].h >= tp) { o2 = 'l'; break; }
+          if (fut[k].h >= tp) { o2 = 'w'; break; }
+          if (fut[k].l <= s2) { o2 = 'l'; break; }
         }
-        if (out2==='win') {
-          pivotAcc.wins++; pivotAcc.gp += (tp-pivotBuy)/pivotBuy - G.FEE_SLIP;
-        } else if (out2==='loss') {
-          pivotAcc.losses++; pivotAcc.gl += Math.abs((stopP2-pivotBuy)/pivotBuy) + G.FEE_SLIP;
-        }
+        if (o2 === 'w') { p2.w++; p2.gp += (tp-pb)/pb - G.FEE; }
+        else if (o2 === 'l') { p2.l++; p2.gl += Math.abs((s2-pb)/pb) + G.FEE; }
       }
     }
 
-    // ── ATR Deep BUY3 simulation ───────────────────────────────────
-    if (volOK && closeOK && biasOK && deepBuy > 0) {
-      var stopP3 = deepBuy - atr * G.ATR_STOP_MULT;
-      deepAcc.total++;
-      var filled3 = false, fill3C = -1;
-      for (var k = 0; k < Math.min(G.LOOK_MAX, future.length); k++) {
-        if (future[k].l <= deepBuy) { filled3 = true; fill3C = k; break; }
-      }
-      if (filled3) {
-        deepAcc.fills++;
-        var out3 = null;
-        for (var k = fill3C; k < Math.min(fill3C + G.LOOK_MAX, future.length); k++) {
-          var fh = future[k].h, fl = future[k].l;
-          if (fl<=stopP3 && fh>=tp) { out3='loss'; break; }
-          if (fh>=tp)   { out3='win';  break; }
-          if (fl<=stopP3) { out3='loss'; break; }
+    if (vok && cok && bok && db > 0) {
+      var s3 = db - atr * G.AS; p3.t++;
+      var f3 = false, fc3 = -1;
+      for (var k = 0; k < Math.min(LK, fut.length); k++) { if (fut[k].l <= db) { f3 = true; fc3 = k; break; } }
+      if (f3) {
+        p3.f++;
+        var o3 = null;
+        for (var k = fc3; k < Math.min(fc3+LK, fut.length); k++) {
+          if (fut[k].l <= s3 && fut[k].h >= tp) { o3 = 'l'; break; }
+          if (fut[k].h >= tp) { o3 = 'w'; break; }
+          if (fut[k].l <= s3) { o3 = 'l'; break; }
         }
-        if (out3==='win') {
-          deepAcc.wins++; deepAcc.gp += (tp-deepBuy)/deepBuy - G.FEE_SLIP;
-        } else if (out3==='loss') {
-          deepAcc.losses++; deepAcc.gl += Math.abs((stopP3-deepBuy)/deepBuy) + G.FEE_SLIP;
-        }
+        if (o3 === 'w') { p3.w++; p3.gp += (tp-db)/db - G.FEE; }
+        else if (o3 === 'l') { p3.l++; p3.gl += Math.abs((s3-db)/db) + G.FEE; }
       }
     }
   }
 
-  // ── Find optimal buffer via composite score ─────────────────────
-  var bestBuf = bAcc[2]; var bestScore = -Infinity;
-  bAcc.forEach(function(acc) {
-    var trades = acc.wins + acc.losses;
-    if (trades < 10) return;
-    var wr = acc.wins / trades;
-    var pf = acc.grossLoss > 0 ? acc.grossProfit / acc.grossLoss : (acc.grossProfit > 0 ? 99 : 0);
-    var ev = (wr * (acc.grossProfit / Math.max(acc.wins,1))) - ((1-wr) * (acc.grossLoss / Math.max(acc.losses,1)));
-    var score = wr * Math.min(pf, 5) * (ev > 0 ? 1 : 0.5);
-    if (score > bestScore) { bestScore = score; bestBuf = acc; }
+  var best = bA[2], bs = -Infinity;
+  bA.forEach(function(a) {
+    var tr = a.w + a.l; if (tr < 8) return;
+    var wr = a.w/tr;
+    var pf = a.gl > 0 ? a.gp/a.gl : (a.gp > 0 ? 9 : 0);
+    var ev = (a.gp - a.gl) / tr;
+    var sc = wr * Math.min(pf, 5) * (ev > 0 ? 1.2 : 0.6);
+    if (sc > bs) { bs = sc; best = a; }
   });
 
-  var trades1 = bestBuf.wins + bestBuf.losses;
-  var wr1  = trades1 > 0 ? bestBuf.wins / trades1 * 100 : 0;
-  var pf1  = bestBuf.grossLoss > 0 ? bestBuf.grossProfit / bestBuf.grossLoss : 0;
-  var ev1  = trades1 > 0 ? ((bestBuf.grossProfit - bestBuf.grossLoss) / trades1 * 100) : 0;
+  var sTs = parseInt(candles[G.AP+2][0]);
+  var eTs = parseInt(candles[candles.length-2][0]);
+  var bd = (eTs - sTs) / 86400000;
+  var af = bd > 0 ? best.f / (bd/365) : 0;
+  var rb = best.buf, ab = rb;
+  if (af < 6) ab = Math.min(rb + 0.02, 0.10);
+  else if (af < 12) ab = Math.min(rb + 0.01, 0.09);
+  ab = Math.min(ab, 0.08);
 
-  var trades2 = pivotAcc.wins + pivotAcc.losses;
-  var wr2  = trades2 > 0 ? pivotAcc.wins / trades2 * 100 : 0;
-  var pf2  = pivotAcc.gl > 0 ? pivotAcc.gp / pivotAcc.gl : 0;
-  var fr2  = pivotAcc.total > 0 ? pivotAcc.fills / pivotAcc.total * 100 : 0;
-  var ev2  = trades2 > 0 ? ((pivotAcc.gp - pivotAcc.gl) / trades2 * 100) : 0;
+  var tr1 = best.w + best.l;
+  var wr1 = tr1 > 0 ? best.w/tr1*100 : 0;
+  var pf1 = best.gl > 0 ? best.gp/best.gl : 0;
+  var ev1 = tr1 > 0 ? (best.gp - best.gl)/tr1*100 : 0;
+  var fr1 = (tr1 + best.nf) > 0 ? tr1/(tr1+best.nf)*100 : 0;
 
-  var trades3 = deepAcc.wins + deepAcc.losses;
-  var wr3  = trades3 > 0 ? deepAcc.wins / trades3 * 100 : 0;
-  var pf3  = deepAcc.gl > 0 ? deepAcc.gp / deepAcc.gl : 0;
-  var fr3  = deepAcc.total > 0 ? deepAcc.fills / deepAcc.total * 100 : 0;
-  var ev3  = trades3 > 0 ? ((deepAcc.gp - deepAcc.gl) / trades3 * 100) : 0;
+  var tr2 = p2.w + p2.l;
+  var wr2 = tr2 > 0 ? p2.w/tr2*100 : 0;
+  var pf2 = p2.gl > 0 ? p2.gp/p2.gl : 0;
+  var fr2 = p2.t > 0 ? p2.f/p2.t*100 : 0;
+  var ev2 = tr2 > 0 ? (p2.gp-p2.gl)/tr2*100 : 0;
 
-  var fr1  = (trades1 + bestBuf.noFill) > 0 ? trades1 / (trades1 + bestBuf.noFill) * 100 : 85;
+  var tr3 = p3.w + p3.l;
+  var wr3 = tr3 > 0 ? p3.w/tr3*100 : 0;
+  var pf3 = p3.gl > 0 ? p3.gp/p3.gl : 0;
+  var fr3 = p3.t > 0 ? p3.f/p3.t*100 : 0;
+  var ev3 = tr3 > 0 ? (p3.gp-p3.gl)/tr3*100 : 0;
 
-  var lastATR = calcATR(candles, candles.length - 2, G.ATR_PERIOD);
-  var lastPrice = parseFloat(candles[candles.length-2][4]);
-  var atrRatio = lastATR / lastPrice * 100;
-  var volGrade = atrRatio > 5 ? '고변동' : atrRatio > 2.5 ? '중변동' : '저변동';
+  var la = calcATR(candles, candles.length-2, G.AP);
 
   return {
-    optBuf: bestBuf.buf,
-    lastATR, volGrade, atrRatio,
-    // BUY1
-    b1Trades: trades1, b1WR: wr1, b1PF: pf1, b1EV: ev1, b1FR: fr1, b1Streak: bestBuf.maxStreak,
-    // BUY2
-    b2Trades: trades2, b2WR: wr2, b2PF: pf2, b2EV: ev2, b2FR: fr2,
-    // BUY3
-    b3Trades: trades3, b3WR: wr3, b3PF: pf3, b3EV: ev3, b3FR: fr3,
-    // Filters applied
-    volFiltered: bestBuf.filteredByVol,
-    closeFiltered: bestBuf.filteredByClose,
-    biasFiltered: bestBuf.filteredByBias,
+    rb:rb, ab:ab, af:af, bd:bd, sTs:sTs, eTs:eTs, vc:tr1,
+    b1WR:wr1, b1PF:pf1, b1EV:ev1, b1FR:fr1, b1SK:best.ms, b1T:tr1,
+    b2WR:wr2, b2PF:pf2, b2EV:ev2, b2FR:fr2, b2T:tr2,
+    b3WR:wr3, b3PF:pf3, b3EV:ev3, b3FR:fr3, b3T:tr3,
+    la:la, fv:best.fv, fc:best.fc, fb:best.fb
   };
 }
 
-// ═══════════════════════════════════════════════════════════════════
-//  RENDER BACKTEST BANNER
-// ═══════════════════════════════════════════════════════════════════
-function renderBtBanner(bt) {
-  document.getElementById('bt-trades').textContent = bt.b1Trades + '회';
-  document.getElementById('bt-wr').textContent     = bt.b1WR.toFixed(1) + '%';
-  document.getElementById('bt-pf').textContent     = bt.b1PF.toFixed(2);
-  document.getElementById('bt-buf').textContent    = (bt.optBuf*100).toFixed(0) + '%';
-  document.getElementById('bt-ev').textContent     = (bt.b1EV >= 0 ? '+' : '') + bt.b1EV.toFixed(2) + '%';
-  document.getElementById('bt-streak').textContent = bt.b1Streak + '연속';
-  document.getElementById('bt-bar-pct').textContent = bt.b1WR.toFixed(1) + '%';
+/* ── RENDER BT CARD ─────────────────────────────────── */
+function renderBT(bt, cfg) {
+  el('btts').innerHTML = '<b>' + fmtDT(bt.sTs) + '</b> ~ <b>' + fmtDT(bt.eTs) + '</b><br/>총 <b>' + Math.round(bt.bd) + '일</b> · 유효봉 <b>' + bt.vc + '회</b>';
+  el('bttl').textContent = '백테스트 (' + cfg.label + ') — 현실 보정';
 
-  var fillPct = Math.min(100, bt.b1WR);
-  var fillEl = document.getElementById('bt-bar-fill');
-  fillEl.style.width = fillPct + '%';
-  fillEl.style.background = bt.b1WR >= 60 ? 'var(--green)' : bt.b1WR >= 45 ? 'var(--amber)' : 'var(--red)';
+  el('fval').textContent = '연 약 ' + bt.af.toFixed(1) + '회';
+  var ft = el('ftag2');
+  if (bt.af < 6) { ft.textContent = '극희귀'; ft.className = 'ftag rare'; }
+  else if (bt.af < 12) { ft.textContent = '희귀'; ft.className = 'ftag ok'; }
+  else if (bt.af < 24) { ft.textContent = '보통'; ft.className = 'ftag ok'; }
+  else { ft.textContent = '잦음'; ft.className = 'ftag good'; }
 
-  var badge = document.getElementById('bt-badge');
-  var score = bt.b1WR * 0.4 + Math.min(bt.b1PF, 5) * 10 + (bt.b1EV > 0 ? 10 : 0);
-  if (score >= 42)      { badge.textContent='우량'; badge.className='bt-badge good'; }
-  else if (score >= 30) { badge.textContent='적정'; badge.className='bt-badge ok'; }
-  else                  { badge.textContent='주의'; badge.className='bt-badge bad'; }
+  el('bttr').textContent = bt.b1T + '회';
+  el('btwr').textContent = bt.b1WR.toFixed(1) + '%';
+  el('btpf').textContent = bt.b1PF.toFixed(2);
+  el('btev').textContent = (bt.b1EV >= 0 ? '+' : '') + bt.b1EV.toFixed(2) + '%';
+  el('btbuf').textContent = (bt.rb*100).toFixed(0) + '%→' + (bt.ab*100).toFixed(0) + '%';
+  el('btsk').textContent = bt.b1SK + '연속';
 
-  // Filter tags
+  el('btbpct').textContent = bt.b1WR.toFixed(1) + '%';
+  var fi = el('btbfill');
+  fi.style.width = Math.min(100, bt.b1WR) + '%';
+  fi.style.background = bt.b1WR >= 58 ? 'var(--G)' : bt.b1WR >= 44 ? 'var(--A)' : 'var(--R)';
+
+  var score = bt.b1WR * 0.35 + Math.min(bt.b1PF, 5) * 8 + (bt.b1EV > 0 ? 10 : 0) - (bt.af < 6 ? 10 : 0);
+  var pill = el('btpill');
+  if (score >= 42) { pill.textContent = '우량'; pill.className = 'btpill good'; }
+  else if (score >= 28) { pill.textContent = '적정'; pill.className = 'btpill ok'; }
+  else { pill.textContent = '주의'; pill.className = 'btpill bad'; }
+
   var tags = [
-    { lbl: 'Fill 체결 시뮬', on: true },
-    { lbl: 'Stop 순차체크', on: true },
-    { lbl: 'ATR14 동적Stop', on: true },
-    { lbl: 'Volume 필터', on: bt.volFiltered > 0 },
-    { lbl: 'Close 확인', on: bt.closeFiltered > 0 },
-    { lbl: 'Daily MTF', on: bt.biasFiltered > 0 },
-    { lbl: '수수료+슬리피지', on: true },
+    {l:'Fill 체결 시뮬', o:true}, {l:'Stop 순차체크', o:true}, {l:'ATR14 동적Stop', o:true},
+    {l:'수수료 0.15%', o:true},
+    {l:'Volume (' + bt.fv + '제외)', o:bt.fv > 0},
+    {l:'Close 확인 (' + bt.fc + '제외)', o:bt.fc > 0},
+    {l:'MTF Bias (' + bt.fb + '제외)', o:bt.fb > 0},
+    {l:'버퍼보정 +' + ((bt.ab - bt.rb)*100).toFixed(0) + '%', o:bt.ab > bt.rb}
   ];
-  document.getElementById('bt-filters').innerHTML = tags.map(function(t) {
-    return '<span class="bt-filter-tag' + (t.on ? ' on' : '') + '">' + t.lbl + '</span>';
+  el('ftrow').innerHTML = tags.map(function(t) {
+    return '<span class="ft' + (t.o ? ' on' : '') + '">' + t.l + '</span>';
   }).join('');
 
-  document.getElementById('bt-banner').classList.add('visible');
+  el('btcard').classList.add('on');
 }
 
-// ═══════════════════════════════════════════════════════════════════
-//  CALCULATE — 3 BUY LEVELS
-// ═══════════════════════════════════════════════════════════════════
+/* ── CALCULATE ──────────────────────────────────────── */
 function calculate() {
-  var high  = parseFloat(document.getElementById('inp-high').value);
-  var low   = parseFloat(document.getElementById('inp-low').value);
-  var close = parseFloat(document.getElementById('inp-close').value);
+  var high  = parseFloat(el('ih').value);
+  var low   = parseFloat(el('il').value);
+  var close = parseFloat(el('ic').value);
   if (isNaN(high) || isNaN(low) || high <= low) { showToast('최고가 > 최저가 이어야 합니다', true); return; }
-  if (isNaN(close) || close <= 0) close = (high+low)/2;
+  if (isNaN(close) || close <= 0) close = (high + low) / 2;
 
-  var range = high - low;
-  var buf   = G.btData ? G.btData.optBuf : 0.05;
-  var atr   = G.btData ? G.btData.lastATR : range * 0.28;
+  var rng = high - low;
+  var buf = G.btData ? G.btData.ab : 0.06;
+  var atr = G.btData ? G.btData.la : rng * 0.28;
 
-  // Pivot S1/S2
-  var pivot = (high + low + close) / 3;
-  var ps1   = 2*pivot - high;
-  var ps2   = pivot - range;
-  var pivotBuy = ps1 < low ? ps1 : ps2;
+  var pv = (high + low + close) / 3, ps1 = 2*pv - high, ps2 = pv - rng;
+  var pb = ps1 < low ? ps1 : ps2;
+  var b1 = low + rng * buf, b2 = pb, b3 = low - atr * 0.35;
+  var s1 = b1 - atr * G.AS, s2 = b2 - atr * G.AS, s3 = b3 - atr * G.AS;
+  var tp = low + rng * 0.618;
+  var l1 = atr * G.AS / b1 * 100;
+  var l2 = atr * G.AS / b2 * 100;
+  var l3 = atr * G.AS / b3 * 100;
 
-  // 3 Buy levels
-  var buy1 = low + range * buf;
-  var buy2 = pivotBuy;
-  var buy3 = low - atr * 0.35;
+  var d = G.btData || {b1WR:0, b1PF:0, b1EV:0, b1FR:0, b2WR:0, b2PF:0, b2EV:0, b2FR:0, b3WR:0, b3PF:0, b3EV:0, b3FR:0};
+  var hb = !!G.btData;
 
-  // Dynamic ATR stops per level
-  var stop1 = buy1 - atr * G.ATR_STOP_MULT;
-  var stop2 = buy2 - atr * G.ATR_STOP_MULT;
-  var stop3 = buy3 - atr * G.ATR_STOP_MULT;
+  function evCls(v) { return v > 0 ? 'evtag evp' : v < 0 ? 'evtag evn' : 'evtag evz'; }
+  function evTxt(v, h) { return h ? ('EV ' + (v >= 0 ? '+' : '') + v.toFixed(2) + '%') : 'EV —'; }
 
-  // TP = Fib 0.618
-  var tp = low + range * 0.618;
+  var s1s = Math.max(0.1, d.b1FR * d.b1WR * Math.min(d.b1PF, 4)) || 25;
+  var s2s = Math.max(0.1, d.b2FR * d.b2WR * Math.min(d.b2PF, 4)) || 12;
+  var s3s = Math.max(0.1, d.b3FR * d.b3WR * Math.min(d.b3PF, 4)) || 8;
+  var st = s1s + s2s + s3s;
+  var w1 = Math.round(s1s/st*100), w2 = Math.round(s2s/st*100), w3 = Math.max(0, 100-w1-w2);
 
-  var b1WR = G.btData ? G.btData.b1WR : 0;
-  var b1FR = G.btData ? G.btData.b1FR : 0;
-  var b1PF = G.btData ? G.btData.b1PF : 0;
-  var b1EV = G.btData ? G.btData.b1EV : 0;
-  var b2WR = G.btData ? G.btData.b2WR : 0;
-  var b2FR = G.btData ? G.btData.b2FR : 0;
-  var b2PF = G.btData ? G.btData.b2PF : 0;
-  var b2EV = G.btData ? G.btData.b2EV : 0;
-  var b3WR = G.btData ? G.btData.b3WR : 0;
-  var b3FR = G.btData ? G.btData.b3FR : 0;
-  var b3PF = G.btData ? G.btData.b3PF : 0;
-  var b3EV = G.btData ? G.btData.b3EV : 0;
+  el('b1p').textContent = '$' + fp(b1);
+  el('b1m').textContent = 'Low + Range x ' + (buf*100).toFixed(0) + '% (보수적 최적버퍼)';
+  el('b1g').textContent = '↑ ' + ((tp-b1)/b1*100).toFixed(2) + '% → TP';
+  el('b1l').textContent = '↓ 감내손실 ' + l1.toFixed(2) + '% (ATR x 1.5)';
+  el('b1wr').textContent = hb ? d.b1WR.toFixed(1) + '%' : '—';
+  el('b1fr').textContent = hb ? d.b1FR.toFixed(1) + '%' : '—';
+  el('b1pf').textContent = hb ? d.b1PF.toFixed(2) : '—';
+  el('b1wt').textContent = w1 + '%';
+  el('b1ev').textContent = evTxt(d.b1EV, hb); el('b1ev').className = evCls(d.b1EV);
+  el('lf1').style.width = Math.max(20, hb ? d.b1FR : 60) + '%';
 
-  // Composite score for weight
-  var sc1 = Math.max(0.1, b1FR * b1WR * Math.min(b1PF, 4)) || 30;
-  var sc2 = Math.max(0.1, b2FR * b2WR * Math.min(b2PF, 4)) || 15;
-  var sc3 = Math.max(0.1, b3FR * b3WR * Math.min(b3PF, 4)) || 10;
-  var scT = sc1 + sc2 + sc3;
-  var w1 = Math.round(sc1 / scT * 100);
-  var w2 = Math.round(sc2 / scT * 100);
-  var w3 = Math.max(0, 100 - w1 - w2);
+  el('b2p').textContent = '$' + fp(b2);
+  el('b2m').textContent = ps1 < low ? 'S1 = 2×Pivot−High' : 'S2 = Pivot−Range';
+  el('b2g').textContent = '↑ ' + ((tp-b2)/b2*100).toFixed(2) + '% → TP';
+  el('b2l').textContent = '↓ 감내손실 ' + l2.toFixed(2) + '%';
+  el('b2wr').textContent = hb ? d.b2WR.toFixed(1) + '%' : '—';
+  el('b2fr').textContent = hb ? d.b2FR.toFixed(1) + '%' : '—';
+  el('b2pf').textContent = hb ? d.b2PF.toFixed(2) : '—';
+  el('b2wt').textContent = w2 + '%';
+  el('b2ev').textContent = evTxt(d.b2EV, hb); el('b2ev').className = evCls(d.b2EV);
+  el('lf2').style.width = Math.max(10, hb ? d.b2FR : 40) + '%';
 
-  function evClass(ev) { return ev > 0 ? 'ev-badge ev-pos' : ev < 0 ? 'ev-badge ev-neg' : 'ev-badge ev-neu'; }
-  function evTxt(ev, hasBt) { return hasBt ? 'EV '+(ev>=0?'+':'')+ev.toFixed(2)+'%' : 'EV —'; }
-  var hasBt = !!G.btData;
+  el('b3p').textContent = '$' + fp(b3);
+  el('b3m').textContent = 'Low - ATR14 x 0.35 = -$' + fp(atr * 0.35);
+  el('b3g').textContent = '↑ ' + ((tp-b3)/b3*100).toFixed(2) + '% → TP';
+  el('b3l').textContent = '↓ 감내손실 ' + l3.toFixed(2) + '%';
+  el('b3wr').textContent = hb ? d.b3WR.toFixed(1) + '%' : '—';
+  el('b3fr').textContent = hb ? d.b3FR.toFixed(1) + '%' : '—';
+  el('b3pf').textContent = hb ? d.b3PF.toFixed(2) : '—';
+  el('b3wt').textContent = w3 + '%';
+  el('b3ev').textContent = evTxt(d.b3EV, hb); el('b3ev').className = evCls(d.b3EV);
+  el('lf3').style.width = Math.max(5, hb ? d.b3FR : 25) + '%';
 
-  // BUY 1
-  document.getElementById('b1-price').textContent   = '$'+fp(buy1);
-  document.getElementById('b1-method').textContent  = 'Low + Range × '+(buf*100).toFixed(0)+'% (백테 최적화)';
-  document.getElementById('b1-gain').textContent    = '↑ '+((tp-buy1)/buy1*100).toFixed(2)+'% → TP';
-  document.getElementById('b1-ev').textContent      = evTxt(b1EV, hasBt);
-  document.getElementById('b1-ev').className        = evClass(b1EV);
-  document.getElementById('b1-wr').textContent      = hasBt ? b1WR.toFixed(1)+'%' : '—';
-  document.getElementById('b1-fill').textContent    = hasBt ? b1FR.toFixed(1)+'%' : '—';
-  document.getElementById('b1-pf').textContent      = hasBt ? b1PF.toFixed(2) : '—';
-  document.getElementById('b1-wt').textContent      = w1+'%';
+  el('wg1').style.flex = Math.max(w1, 5);
+  el('wg2').style.flex = Math.max(w2, 5);
+  el('wg3').style.flex = Math.max(w3, 5);
+  el('wl1').textContent = 'BUY1 ' + w1 + '%';
+  el('wl2').textContent = 'BUY2 ' + w2 + '%';
+  el('wl3').textContent = 'BUY3 ' + w3 + '%';
 
-  // BUY 2
-  var b2label = ps1 < low ? 'S1 = 2×Pivot−High (강한지지)' : 'S2 = Pivot−Range (약한지지)';
-  document.getElementById('b2-price').textContent   = '$'+fp(buy2);
-  document.getElementById('b2-method').textContent  = b2label;
-  document.getElementById('b2-gain').textContent    = '↑ '+((tp-buy2)/buy2*100).toFixed(2)+'% → TP';
-  document.getElementById('b2-ev').textContent      = evTxt(b2EV, hasBt);
-  document.getElementById('b2-ev').className        = evClass(b2EV);
-  document.getElementById('b2-wr').textContent      = hasBt ? b2WR.toFixed(1)+'%' : '—';
-  document.getElementById('b2-fill').textContent    = hasBt ? b2FR.toFixed(1)+'%' : '—';
-  document.getElementById('b2-pf').textContent      = hasBt ? b2PF.toFixed(2) : '—';
-  document.getElementById('b2-wt').textContent      = w2+'%';
+  el('rtp').textContent = '$' + fp(tp);
+  el('rstop').textContent = '$' + fp(s1);
+  el('rvol').textContent = fp(atr) + ' / ' + (atr/low*100).toFixed(1) + '%';
 
-  // BUY 3
-  document.getElementById('b3-price').textContent   = '$'+fp(buy3);
-  document.getElementById('b3-method').textContent  = 'Low − ATR14×0.35 = −$'+fp(atr*0.35);
-  document.getElementById('b3-gain').textContent    = '↑ '+((tp-buy3)/buy3*100).toFixed(2)+'% → TP';
-  document.getElementById('b3-ev').textContent      = evTxt(b3EV, hasBt);
-  document.getElementById('b3-ev').className        = evClass(b3EV);
-  document.getElementById('b3-wr').textContent      = hasBt ? b3WR.toFixed(1)+'%' : '—';
-  document.getElementById('b3-fill').textContent    = hasBt ? b3FR.toFixed(1)+'%' : '—';
-  document.getElementById('b3-pf').textContent      = hasBt ? b3PF.toFixed(2) : '—';
-  document.getElementById('b3-wt').textContent      = w3+'%';
+  renderBar(high, low, b1, b2, b3, tp, s1);
 
-  // Scale guide
-  document.getElementById('sg-b1').style.flex = Math.max(w1, 5);
-  document.getElementById('sg-b2').style.flex = Math.max(w2, 5);
-  document.getElementById('sg-b3').style.flex = Math.max(w3, 5);
-  document.getElementById('sg-l1').textContent = 'BUY1 '+w1+'%';
-  document.getElementById('sg-l2').textContent = 'BUY2 '+w2+'%';
-  document.getElementById('sg-l3').textContent = 'BUY3 '+w3+'%';
-
-  // Summary
-  document.getElementById('r-tp').textContent   = '$'+fp(tp);
-  document.getElementById('r-stop').textContent = '$'+fp(stop1)+' (ATR×1.5)';
-  document.getElementById('r-vol').textContent  = (range/low*100).toFixed(1)+'%';
-
-  // Bar
-  renderBar(high, low, buy1, buy2, buy3, tp, stop1);
-
-  G.lastResult = {
-    coin: G.coin, high, low, close, buy1, buy2, buy3, tp, stop1,
-    buf, atr: G.btData ? G.btData.lastATR : atr,
-    ts: Date.now(), b1WR: hasBt ? b1WR : null, b1EV: hasBt ? b1EV : null
+  G.lastRes = {
+    coin:G.coin, tf:G.tf, high:high, low:low, close:close,
+    buy1:b1, buy2:b2, buy3:b3, tp:tp, stop1:s1,
+    buf:buf, atr:atr, ts:Date.now(),
+    b1WR: hb ? d.b1WR : null,
+    b1EV: hb ? d.b1EV : null,
+    annualFills: hb ? G.btData.af : null
   };
 
-  document.getElementById('result-section').classList.add('visible');
-  setTimeout(function() {
-    document.getElementById('result-section').scrollIntoView({ behavior: 'smooth', block: 'start' });
-  }, 80);
+  el('results').classList.add('on');
+  setTimeout(function() { el('results').scrollIntoView({behavior:'smooth', block:'start'}); }, 80);
 }
 
-function renderBar(high, low, b1, b2, b3, tp, stop) {
-  var track = document.getElementById('range-track');
-  track.querySelectorAll('.rmarker').forEach(function(m){ m.remove(); });
-  var pad = (high-low)*0.5;
-  var mn = Math.min(b3, stop) - pad*0.05;
-  var mx = high + pad*0.2;
+function renderBar(high, low, b1, b2, b3, tp, sl) {
+  var track = el('rtrack');
+  track.querySelectorAll('.rm').forEach(function(m) { m.remove(); });
+  var pad = (high-low) * 0.5;
+  var mn = Math.min(b3, sl) - pad * 0.05;
+  var mx = high + pad * 0.2;
   var span = mx - mn;
-  function pct(p){ return Math.max(1,Math.min(99,(p-mn)/span*100)); }
-  document.getElementById('bar-low-lbl').textContent  = '$'+fp(low);
-  document.getElementById('bar-high-lbl').textContent = '$'+fp(high);
-  document.getElementById('range-fill').style.left  = pct(low)+'%';
-  document.getElementById('range-fill').style.width = (pct(high)-pct(low))+'%';
-  [
-    { p:stop, c:'var(--red)',   lbl:'SL'  },
-    { p:b3,   c:'var(--purple)',lbl:'B3'  },
-    { p:b2,   c:'var(--blue)',  lbl:'B2'  },
-    { p:b1,   c:'var(--green)', lbl:'B1'  },
-    { p:tp,   c:'var(--amber)', lbl:'TP'  },
-  ].forEach(function(m){
-    var el = document.createElement('div');
-    el.className = 'rmarker'; el.style.left = pct(m.p)+'%';
-    el.innerHTML =
-      '<span class="rmarker-lbl" style="color:'+m.c+'">'+m.lbl+'</span>'+
-      '<div class="rmarker-dot" style="background:'+m.c+';box-shadow:0 0 5px '+m.c+'"></div>'+
-      '<span class="rmarker-price" style="color:'+m.c+'">$'+fp(m.p)+'</span>';
-    track.appendChild(el);
+  function pct(p) { return Math.max(1, Math.min(99, (p-mn)/span*100)); }
+  el('rlow').textContent = '$' + fp(low);
+  el('rhigh').textContent = '$' + fp(high);
+  el('rfill').style.left = pct(low) + '%';
+  el('rfill').style.width = (pct(high) - pct(low)) + '%';
+  [{p:sl, c:'var(--R)', l:'SL'}, {p:b3, c:'var(--P)', l:'B3'},
+   {p:b2, c:'var(--B)', l:'B2'}, {p:b1, c:'var(--G)', l:'B1'}, {p:tp, c:'var(--A)', l:'TP'}]
+  .forEach(function(m) {
+    var e = document.createElement('div');
+    e.className = 'rm'; e.style.left = pct(m.p) + '%';
+    e.innerHTML = '<span class="rmlbl" style="color:' + m.c + '">' + m.l + '</span>' +
+      '<div class="rmdot" style="background:' + m.c + ';box-shadow:0 0 4px ' + m.c + '"></div>' +
+      '<span class="rmpx" style="color:' + m.c + '">$' + fp(m.p) + '</span>';
+    track.appendChild(e);
   });
 }
 
-// ═══════════════════════════════════════════════════════════════════
-//  HISTORY
-// ═══════════════════════════════════════════════════════════════════
-function saveToHistory() {
-  if (!G.lastResult) { showToast('먼저 계산하세요'); return; }
-  var h = getHist(); h.unshift(G.lastResult);
-  if (h.length > 50) h = h.slice(0,50);
-  localStorage.setItem('4hrange_hist', JSON.stringify(h));
-  showToast(G.lastResult.coin + ' 저장 완료');
+/* ── HISTORY ────────────────────────────────────────── */
+function saveH() {
+  if (!G.lastRes) { showToast('먼저 계산하세요'); return; }
+  var h = getH(); h.unshift(G.lastRes);
+  if (h.length > 50) h = h.slice(0, 50);
+  localStorage.setItem('rc_hist', JSON.stringify(h));
+  showToast(G.lastRes.coin + ' 저장 완료');
 }
-function getHist() { try { return JSON.parse(localStorage.getItem('4hrange_hist'))||[]; } catch(e){ return []; } }
-function renderHistory() {
-  var h = getHist(), el = document.getElementById('hist-list');
-  if (!h.length) { el.innerHTML='<div class="history-empty"><div style="font-size:32px;opacity:.4;margin-bottom:12px">📋</div>저장된 계산이 없습니다</div>'; return; }
-  var html='';
-  h.forEach(function(item,i){
+
+function getH() {
+  try { return JSON.parse(localStorage.getItem('rc_hist')) || []; }
+  catch(e) { return []; }
+}
+
+function renderH() {
+  var h = getH(), e = el('hlist');
+  if (!h.length) {
+    e.innerHTML = '<div class="hempty"><div style="font-size:28px;opacity:.3;margin-bottom:10px">📋</div>저장된 계산이 없습니다</div>';
+    return;
+  }
+  var html = '';
+  h.forEach(function(item, i) {
     var d = new Date(item.ts);
-    var ts = (d.getMonth()+1)+'/'+d.getDate()+' '+pad2(d.getHours())+':'+pad2(d.getMinutes());
-    var wrStyle = item.b1WR ? (item.b1WR>=55 ? 'background:var(--green-dim);color:var(--green)' : item.b1WR>=42 ? 'background:var(--amber-dim);color:var(--amber)' : 'background:var(--red-dim);color:var(--red)') : '';
-    html += '<div class="hist-item" onclick="loadHistory('+i+')">'+
-      '<div class="hist-top"><span class="hist-coin">'+(item.coin||'—')+'</span>'+
-      '<div class="hist-meta">'+
-      (item.b1WR ? '<span class="hist-wr" style="'+wrStyle+'">'+item.b1WR.toFixed(1)+'%</span>' : '')+
-      '<span class="hist-time">'+ts+'</span></div></div>'+
-      '<div class="hist-prices">'+
-      '<div class="hist-p"><span class="hist-p-lbl">HIGH</span><span class="hist-p-val" style="color:var(--red)">$'+fp(item.high)+'</span></div>'+
-      '<div class="hist-p"><span class="hist-p-lbl">LOW</span><span class="hist-p-val" style="color:var(--green)">$'+fp(item.low)+'</span></div>'+
-      '<div class="hist-p"><span class="hist-p-lbl">B1</span><span class="hist-p-val" style="color:var(--green)">$'+fp(item.buy1)+'</span></div>'+
-      '<div class="hist-p"><span class="hist-p-lbl">B2</span><span class="hist-p-val" style="color:var(--blue)">$'+fp(item.buy2)+'</span></div>'+
-      '<div class="hist-p"><span class="hist-p-lbl">B3</span><span class="hist-p-val" style="color:var(--purple)">$'+fp(item.buy3)+'</span></div>'+
+    var ts = (d.getMonth()+1) + '/' + d.getDate() + ' ' + pad2(d.getHours()) + ':' + pad2(d.getMinutes());
+    var ws = item.b1WR
+      ? (item.b1WR >= 55 ? 'background:var(--Gd);color:var(--G)' : item.b1WR >= 42 ? 'background:var(--Ad);color:var(--A)' : 'background:var(--Rd);color:var(--R)')
+      : '';
+    html += '<div class="hitem" onclick="loadH(' + i + ')">' +
+      '<div class="htop"><span class="hcoin">' + (item.coin || '—') + '</span>' +
+      '<div class="hmeta">' +
+      (item.tf ? '<span class="htf">' + item.tf.toUpperCase() + '</span>' : '') +
+      (item.b1WR ? '<span class="hwr" style="' + ws + '">' + item.b1WR.toFixed(1) + '%</span>' : '') +
+      (item.annualFills ? '<span class="htf">연' + item.annualFills.toFixed(0) + '회</span>' : '') +
+      '<span class="htime">' + ts + '</span></div></div>' +
+      '<div class="hprices">' +
+      '<div class="hp"><span class="hpl">HIGH</span><span class="hpv" style="color:var(--R)">$' + fp(item.high) + '</span></div>' +
+      '<div class="hp"><span class="hpl">LOW</span><span class="hpv" style="color:var(--G)">$' + fp(item.low) + '</span></div>' +
+      '<div class="hp"><span class="hpl">B1</span><span class="hpv" style="color:var(--G)">$' + fp(item.buy1) + '</span></div>' +
+      '<div class="hp"><span class="hpl">B2</span><span class="hpv" style="color:var(--B)">$' + fp(item.buy2) + '</span></div>' +
+      '<div class="hp"><span class="hpl">B3</span><span class="hpv" style="color:var(--P)">$' + fp(item.buy3) + '</span></div>' +
       '</div></div>';
   });
-  html += '<button class="hist-clear" onclick="clearHistory()">전체 삭제</button>';
-  el.innerHTML = html;
+  html += '<div style="padding:8px 16px"><button class="hclear" onclick="clearH()">전체 삭제</button></div>';
+  e.innerHTML = html;
 }
-function loadHistory(i) {
-  var item = getHist()[i]; if(!item) return;
-  G.coin = item.coin||'COIN';
-  G.btData = item.b1WR ? { optBuf:item.buf||0.05, lastATR:item.atr||0, b1WR:item.b1WR, b1FR:0, b1PF:0, b1EV:item.b1EV||0, b2WR:0,b2FR:0,b2PF:0,b2EV:0,b3WR:0,b3FR:0,b3PF:0,b3EV:0,volGrade:'—',volFiltered:0,closeFiltered:0,biasFiltered:0 } : null;
-  document.getElementById('inp-high').value  = item.high;
-  document.getElementById('inp-low').value   = item.low;
-  document.getElementById('inp-close').value = item.close || (item.high+item.low)/2;
+
+function loadH(i) {
+  var item = getH()[i]; if (!item) return;
+  G.coin = item.coin || 'COIN';
+  if (item.tf && item.tf !== G.tf) setTF(item.tf);
+  G.btData = item.b1WR ? {
+    ab: item.buf || 0.05, rb: item.buf || 0.05, la: item.atr || 0,
+    af: item.annualFills || 0, b1WR: item.b1WR, b1FR: 0, b1PF: 0,
+    b1EV: item.b1EV || 0, b2WR: 0, b2FR: 0, b2PF: 0, b2EV: 0,
+    b3WR: 0, b3FR: 0, b3PF: 0, b3EV: 0, fv: 0, fc: 0, fb: 0,
+    b1SK: 0, b1T: 0, bd: 0, sTs: 0, eTs: 0, vc: 0
+  } : null;
+  el('ih').value = item.high;
+  el('il').value = item.low;
+  el('ic').value = item.close || (item.high + item.low) / 2;
   switchTab('calc');
   setTimeout(calculate, 80);
   showToast(item.coin + ' 불러옴');
 }
-function clearHistory() {
-  if (confirm('히스토리 전체 삭제?')) { localStorage.removeItem('4hrange_hist'); renderHistory(); }
+
+function clearH() {
+  if (confirm('히스토리 전체 삭제?')) { localStorage.removeItem('rc_hist'); renderH(); }
 }
 
-// ═══════════════════════════════════════════════════════════════════
-//  UTILS
-// ═══════════════════════════════════════════════════════════════════
-function fp(n) {
-  if (n == null || isNaN(n)) return '—';
-  if (n >= 10000) return n.toFixed(0);
-  if (n >= 1000)  return n.toFixed(1);
-  if (n >= 1)     return n.toFixed(4).replace(/\.?0+$/,'');
-  if (n >= 0.01)  return n.toFixed(5);
-  return n.toFixed(8);
-}
-function pad2(n) { return n<10?'0'+n:''+n; }
-function trimZ(s) { return s.replace(/\.?0+$/,''); }
-
-// ── INIT ─────────────────────────────────────────────────────────
-updateRateUI();
+/* ── INIT ───────────────────────────────────────────── */
+setTF('4h');
+updateRUI();
 calculate();
 </script>
 </body>
