@@ -170,6 +170,45 @@ html,body{background:var(--bg0);color:var(--t1);font-family:var(--ui);font-size:
 .dirverdict.bull{background:var(--Gd);color:var(--G)}.dirverdict.bear{background:var(--Rd);color:var(--R)}.dirverdict.neut{background:var(--bg3);color:var(--t2)}
 .toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(16px);background:var(--bg3);border:1px solid var(--bd2);border-radius:4px;padding:10px 16px;font-size:12px;color:var(--t1);opacity:0;transition:all .2s;pointer-events:none;z-index:999;white-space:nowrap;max-width:90vw;overflow:hidden;text-overflow:ellipsis}
 .toast.on{opacity:1;transform:translateX(-50%) translateY(0)}.toast.err{border-color:var(--R);color:var(--R)}
+
+/* ── WS TOGGLE ── */
+.ws-bar{display:flex;align-items:center;justify-content:space-between;padding:7px 16px;background:var(--bg2);border-bottom:1px solid var(--bd);font-size:11px}
+.ws-left{display:flex;align-items:center;gap:7px;color:var(--t2)}
+.ws-dot{width:6px;height:6px;border-radius:50%;background:var(--t3);transition:all .3s}
+.ws-dot.live{background:var(--G);box-shadow:0 0 6px var(--G);animation:pulse 1.5s ease-in-out infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.5}}
+.ws-lbl{font-family:var(--num);font-size:10px}
+.ws-right{display:flex;align-items:center;gap:8px}
+.ws-toggle{position:relative;width:36px;height:20px;cursor:pointer}
+.ws-toggle input{opacity:0;width:0;height:0}
+.ws-slider{position:absolute;top:0;left:0;right:0;bottom:0;background:var(--bg3);border-radius:20px;border:1px solid var(--bd2);transition:.3s}
+.ws-slider::before{content:'';position:absolute;width:14px;height:14px;left:2px;top:2px;background:var(--t3);border-radius:50%;transition:.3s}
+.ws-toggle input:checked+.ws-slider{background:var(--Gd);border-color:rgba(0,177,64,.4)}
+.ws-toggle input:checked+.ws-slider::before{transform:translateX(16px);background:var(--G)}
+.refresh-btn{background:none;border:1px solid var(--bd2);border-radius:3px;padding:3px 8px;font-family:var(--num);font-size:9px;color:var(--t3);cursor:pointer;transition:all .15s}
+.refresh-btn:hover{border-color:var(--G);color:var(--G)}
+/* ── EXPIRY BAR ── */
+.expiry-bar{padding:0 16px;background:var(--bg1);border-bottom:1px solid var(--bd);display:none}
+.expiry-bar.on{display:block}
+.expiry-track{width:100%;height:3px;background:var(--bg3);border-radius:2px;overflow:hidden;margin-bottom:0}
+.expiry-fill{height:100%;border-radius:2px;transition:width 1s linear;background:var(--G)}
+.expiry-fill.warn{background:var(--A)}.expiry-fill.crit{background:var(--R)}
+.expiry-lbl{font-family:var(--num);font-size:9px;color:var(--t3);padding:4px 0 3px;display:flex;justify-content:space-between}
+.expiry-lbl.warn{color:var(--A)}.expiry-lbl.crit{color:var(--R)}
+/* ── PCT BADGE (상대가격) ── */
+.pct-badge{font-family:var(--num);font-size:10px;color:var(--t2);margin-top:1px;text-align:right}
+.pct-badge.neg{color:var(--G)}.pct-badge.pos{color:var(--R)}
+/* ── HYBRID BADGE ── */
+.hybrid-tag{font-size:9px;font-family:var(--num);padding:1px 6px;border-radius:2px;background:var(--Ad);color:var(--A);border:1px solid rgba(240,176,64,.3);margin-left:4px}
+.hybrid-tag.boost{background:rgba(255,100,0,.12);color:#ff6400;border-color:rgba(255,100,0,.3)}
+/* ── MULTI-TF BADGE ── */
+.mtf-badge{display:none;padding:6px 16px;background:rgba(0,177,64,.08);border-bottom:1px solid rgba(0,177,64,.2);font-size:11px;color:var(--G);font-weight:600}
+.mtf-badge.on{display:block}
+/* ── EXPIRED OVERLAY ── */
+.expired-banner{display:none;padding:10px 16px;background:rgba(240,64,64,.1);border-bottom:1px solid rgba(240,64,64,.3);color:var(--R);font-size:12px;font-weight:600}
+.expired-banner.on{display:flex;align-items:center;justify-content:space-between}
+.re-btn{background:var(--R);border:none;border-radius:3px;padding:5px 12px;font-family:var(--ui);font-size:11px;font-weight:600;color:#fff;cursor:pointer}
+
 </style>
 </head>
 <body>
@@ -203,6 +242,30 @@ html,body{background:var(--bg0);color:var(--t1);font-family:var(--ui);font-size:
         <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
       </button>
     </div>
+  </div>
+
+  <!-- WS REALTIME BAR -->
+  <div class="ws-bar">
+    <div class="ws-left">
+      <div class="ws-dot" id="ws-dot"></div>
+      <span class="ws-lbl" id="ws-lbl">실시간 OFF</span>
+    </div>
+    <div class="ws-right">
+      <button class="refresh-btn" onclick="manualRefresh()" id="refresh-btn" style="display:none">↻ 새로고침</button>
+      <label class="ws-toggle"><input type="checkbox" id="ws-toggle" onchange="toggleWS(this.checked)"><span class="ws-slider"></span></label>
+    </div>
+  </div>
+  <!-- MTF CONFIRM BADGE -->
+  <div class="mtf-badge" id="mtf-badge">★ Multi-TF 강추 — 현재 TF + 상위 TF 모두 BUY 신호</div>
+  <!-- EXPIRY BAR -->
+  <div class="expiry-bar" id="expiry-bar">
+    <div class="expiry-lbl" id="expiry-lbl"><span id="expiry-txt">—</span><span id="expiry-pct">—</span></div>
+    <div class="expiry-track"><div class="expiry-fill" id="expiry-fill" style="width:100%"></div></div>
+  </div>
+  <!-- EXPIRED BANNER -->
+  <div class="expired-banner" id="expired-banner">
+    ⚠ 캔들 만료 — BUY가 기준 갱신 필요
+    <button class="re-btn" onclick="manualRefresh()">즉시 갱신</button>
   </div>
   <div class="lov" id="lov"><div class="spin"></div><div class="ltxt" id="ltxt">데이터 수집 중...</div></div>
   <div class="bbar" id="bbar"><div><span class="blbl" id="blbl">—</span><span style="font-size:10px;color:var(--t3);margin-left:6px" id="bsub">—</span></div><div class="bval" id="bval">—</div></div>
@@ -254,7 +317,7 @@ html,body{background:var(--bg0);color:var(--t1);font-family:var(--ui);font-size:
         <div class="lvbg" id="lb1" style="width:60%"></div>
         <div class="lvtop">
           <div><div style="display:flex;align-items:center;margin-bottom:3px"><span class="lvbadge">BUY 1</span><span class="lvname">즉시진입 · 최적버퍼</span></div><div class="lvmethod" id="b1m">—</div></div>
-          <div><div class="lvprice" id="b1p">—</div><div class="lvtp" id="b1g">—</div><div class="lvloss" id="b1l">—</div></div>
+          <div><div class="lvprice" id="b1p">—</div><div class="pct-badge" id="b1pct">—</div><div class="lvtp" id="b1g">—</div><div class="lvloss" id="b1l">—</div></div>
         </div>
         <div class="lvstats">
           <div class="ls"><span class="lsl">실승률</span><span class="lsv" id="b1wr" style="color:var(--G)">—</span></div>
@@ -272,7 +335,7 @@ html,body{background:var(--bg0);color:var(--t1);font-family:var(--ui);font-size:
         <div class="lvbg" id="lb2" style="width:40%"></div>
         <div class="lvtop">
           <div><div style="display:flex;align-items:center;margin-bottom:3px"><span class="lvbadge">BUY 2</span><span class="lvname">지지선 대기 · Pivot</span></div><div class="lvmethod" id="b2m">—</div></div>
-          <div><div class="lvprice" id="b2p">—</div><div class="lvtp" id="b2g">—</div><div class="lvloss" id="b2l">—</div></div>
+          <div><div class="lvprice" id="b2p">—</div><div class="pct-badge" id="b2pct">—</div><div class="lvtp" id="b2g">—</div><div class="lvloss" id="b2l">—</div></div>
         </div>
         <div class="lvstats">
           <div class="ls"><span class="lsl">실승률</span><span class="lsv" id="b2wr" style="color:var(--B)">—</span></div>
@@ -290,7 +353,7 @@ html,body{background:var(--bg0);color:var(--t1);font-family:var(--ui);font-size:
         <div class="lvbg" id="lb3" style="width:25%"></div>
         <div class="lvtop">
           <div><div style="display:flex;align-items:center;margin-bottom:3px"><span class="lvbadge">BUY 3</span><span class="lvname">딥바이 · ATR 하방</span></div><div class="lvmethod" id="b3m">—</div></div>
-          <div><div class="lvprice" id="b3p">—</div><div class="lvtp" id="b3g">—</div><div class="lvloss" id="b3l">—</div></div>
+          <div><div class="lvprice" id="b3p">—</div><div class="pct-badge" id="b3pct">—</div><div class="lvtp" id="b3g">—</div><div class="lvloss" id="b3l">—</div></div>
         </div>
         <div class="lvstats">
           <div class="ls"><span class="lsl">실승률</span><span class="lsv" id="b3wr" style="color:var(--P)">—</span></div>
@@ -367,7 +430,9 @@ var TFC={
   '4h': {iv:'4h', lim:540, htf:'1d',hl:110,look:6,lbl:'4H 스윙'},
   '1d': {iv:'1d', lim:90, htf:'1w',hl:52, look:5,lbl:'1D 장기'}
 };
-var G={coin:'AAVE',tf:'4h',bt:null,bm:null,res:null,liveTimer:null,livePair:null,liveTF:null,FEE:0.0015,AP:14,VP:20,AS:2.5,CC:0.20,VR:0.80};
+var G={coin:'AAVE',tf:'4h',bt:null,bm:null,res:null,liveTimer:null,livePair:null,liveTF:null,
+  ws:null,wsOn:false,lastClosedTs:null,livePrice:null,candleCloseTs:null,expiryTimer:null,
+  FEE:0.0015,AP:14,VP:20,AS:2.5,CC:0.20,VR:0.80};
 
 function el(id){return document.getElementById(id);}
 function fp(n){
@@ -394,9 +459,13 @@ function switchTab(n){
 }
 
 function setTF(tf){
-  G.tf=tf;G.bt=null;G.bm=null;
-  // 타임프레임 변경 시 실시간 갱신 중지
+  G.tf=tf;G.bt=null;G.bm=null;G.lastClosedTs=null;G.livePrice=null;
   if(G.liveTimer){clearInterval(G.liveTimer);G.liveTimer=null;}
+  stopWS();
+  if(G.expiryTimer){clearInterval(G.expiryTimer);G.expiryTimer=null;}
+  el('expiry-bar').classList.remove('on');
+  el('expired-banner').classList.remove('on');
+  el('mtf-badge').classList.remove('on');
   document.querySelectorAll('.tfbtn').forEach(function(b){b.classList.toggle('active',b.dataset.tf===tf);});
   var L=tf.toUpperCase();
   el('tclh').textContent=L+' HIGH';el('tclc').textContent=L+' CLOSE';el('tcll').textContent=L+' LOW';
@@ -469,6 +538,13 @@ function doSearch(){
         if(G.liveTimer)clearInterval(G.liveTimer);
         G.livePair=pair;G.liveTF=G.tf;
         G.liveTimer=setInterval(function(){liveUpdate(G.livePair,G.liveTF);},300000);
+        G.candleCloseTs=parseInt(cur[0])+({'15m':15*60000,'1h':60*60000,'4h':4*60*60000,'1d':24*60*60000}[G.tf]||0);
+        G.lastClosedTs=parseInt(c4[c4.length-2][0]);
+        G.livePrice=livePrice;
+        startExpiry();
+        checkMTF(G.bm,parseInt(cur[0]),cfg);
+        if(el('ws-toggle').checked) startWS(pair,G.tf);
+        el('refresh-btn').style.display='';
 
         setLoad(false);toast(sym+' 완료 · 실승률 '+bt.b1WR.toFixed(1)+'% · 연'+bt.af.toFixed(0)+'회 · 🔴LIVE');
         el('sinput').blur();calculate();
@@ -617,7 +693,23 @@ function calculate(){
   function et(v,h){return h?('EV '+(v>=0?'+':'')+v.toFixed(2)+'%'):'EV —';}
   var s1s=Math.max(0.1,d.b1FR*d.b1WR*Math.min(d.b1PF,4))||25,s2s=Math.max(0.1,d.b2FR*d.b2WR*Math.min(d.b2PF,4))||12,s3s=Math.max(0.1,d.b3FR*d.b3WR*Math.min(d.b3PF,4))||8;
   var st=s1s+s2s+s3s,w1=Math.round(s1s/st*100),w2=Math.round(s2s/st*100),w3=Math.max(0,100-w1-w2);
-  el('b1p').textContent='$'+fp(b1);el('b1m').textContent='Low + Range × '+(buf*100).toFixed(0)+'%';el('b1g').textContent='↑'+((tp-b1)/b1*100).toFixed(2)+'% → TP';el('b1l').textContent='↓ 감내손실 '+l1.toFixed(2)+'%';el('b1wr').textContent=hb?d.b1WR.toFixed(1)+'%':'—';el('b1fr').textContent=hb?d.b1FR.toFixed(1)+'%':'—';el('b1pf').textContent=hb?d.b1PF.toFixed(2):'—';el('b1wt').textContent=w1+'%';el('b1ev').textContent=et(d.b1EV,hb);el('b1ev').className=ec(d.b1EV);el('lb1').style.width=Math.max(15,hb?d.b1FR:60)+'%';
+  el('b1p').textContent='$'+fp(b1);el('b1m').textContent='Low + Range × '+(buf*100).toFixed(0)+'%';
+  var lp=G.livePrice||close;
+  var p1=((b1-lp)/lp*100),p2pct=((b2-lp)/lp*100),p3pct=((b3-lp)/lp*100);
+  function pctStr(p){return (p>=0?'+':'')+p.toFixed(2)+'% (현재가 대비)';}
+  el('b1pct').textContent=pctStr(p1);el('b1pct').className='pct-badge '+(p1<0?'neg':'pos');
+  el('b2pct').textContent=pctStr(p2pct);el('b2pct').className='pct-badge '+(p2pct<0?'neg':'pos');
+  el('b3pct').textContent=pctStr(p3pct);el('b3pct').className='pct-badge '+(p3pct<0?'neg':'pos');
+  // 하이브리드 버퍼 표시
+  var curATR=G.bt?G.bt.la:atr;
+  var avgATR=G.bt?G.bt.la:atr; // avgATR 근사 (실제 백테스트에서 avg 따로 구하면 더 정확)
+  var atrRatio=curATR>0?(curATR/avgATR):1;
+  if(atrRatio>1.2){
+    el('b1m').textContent+=' +하이브리드';
+    el('b1m').style.color='var(--A)';
+  } else {
+    el('b1m').style.color='';
+  }el('b1g').textContent='↑'+((tp-b1)/b1*100).toFixed(2)+'% → TP';el('b1l').textContent='↓ 감내손실 '+l1.toFixed(2)+'%';el('b1wr').textContent=hb?d.b1WR.toFixed(1)+'%':'—';el('b1fr').textContent=hb?d.b1FR.toFixed(1)+'%':'—';el('b1pf').textContent=hb?d.b1PF.toFixed(2):'—';el('b1wt').textContent=w1+'%';el('b1ev').textContent=et(d.b1EV,hb);el('b1ev').className=ec(d.b1EV);el('lb1').style.width=Math.max(15,hb?d.b1FR:60)+'%';
   el('b2p').textContent='$'+fp(b2);el('b2m').textContent=ps1<low?'S1 = 2×Pivot−High':'S2 = Pivot−Range';el('b2g').textContent='↑'+((tp-b2)/b2*100).toFixed(2)+'% → TP';el('b2l').textContent='↓ 감내손실 '+l2.toFixed(2)+'%';el('b2wr').textContent=hb?d.b2WR.toFixed(1)+'%':'—';el('b2fr').textContent=hb?d.b2FR.toFixed(1)+'%':'—';el('b2pf').textContent=hb?d.b2PF.toFixed(2):'—';el('b2wt').textContent=w2+'%';el('b2ev').textContent=et(d.b2EV,hb);el('b2ev').className=ec(d.b2EV);el('lb2').style.width=Math.max(8,hb?d.b2FR:40)+'%';
   el('b3p').textContent='$'+fp(b3);el('b3m').textContent='Low − ATR14×0.35';el('b3g').textContent='↑'+((tp-b3)/b3*100).toFixed(2)+'% → TP';el('b3l').textContent='↓ 감내손실 '+l3.toFixed(2)+'%';el('b3wr').textContent=hb?d.b3WR.toFixed(1)+'%':'—';el('b3fr').textContent=hb?d.b3FR.toFixed(1)+'%':'—';el('b3pf').textContent=hb?d.b3PF.toFixed(2):'—';el('b3wt').textContent=w3+'%';el('b3ev').textContent=et(d.b3EV,hb);el('b3ev').className=ec(d.b3EV);el('lb3').style.width=Math.max(4,hb?d.b3FR:25)+'%';
   el('wg1').style.flex=Math.max(w1,5);el('wg2').style.flex=Math.max(w2,5);el('wg3').style.flex=Math.max(w3,5);el('wl1').textContent='BUY1 '+w1+'%';el('wl2').textContent='BUY2 '+w2+'%';el('wl3').textContent='BUY3 '+w3+'%';
@@ -764,6 +856,145 @@ function loadH(i){
   switchTab('calc');setTimeout(calculate,80);toast(item.coin+' 불러옴');
 }
 function clearH(){if(confirm('히스토리 전체 삭제?')){localStorage.removeItem('rc_h');renderH();}}
+
+
+// ══════════════════════════════════════════════
+//  EXPIRY BAR (유효기간)
+// ══════════════════════════════════════════════
+function startExpiry(){
+  if(G.expiryTimer)clearInterval(G.expiryTimer);
+  el('expiry-bar').classList.add('on');
+  el('expired-banner').classList.remove('on');
+  function tick(){
+    if(!G.candleCloseTs)return;
+    var now=Date.now();
+    var openTs=G.candleCloseTs-({'15m':15*60000,'1h':60*60000,'4h':4*60*60000,'1d':24*60*60000}[G.tf]||0);
+    var total=G.candleCloseTs-openTs;
+    var remain=Math.max(0,G.candleCloseTs-now);
+    var pct=remain/total*100;
+    var remM=Math.floor(remain/60000),remS=Math.floor((remain%60000)/1000);
+    var fill=el('expiry-fill'),lbl=el('expiry-lbl'),txt=el('expiry-txt'),pctEl=el('expiry-pct');
+    fill.style.width=pct+'%';
+    if(pct>40){fill.className='expiry-fill';lbl.className='expiry-lbl';}
+    else if(pct>15){fill.className='expiry-fill warn';lbl.className='expiry-lbl warn';}
+    else{fill.className='expiry-fill crit';lbl.className='expiry-lbl crit';}
+    txt.textContent='봉 유효기간: '+remM+'m '+pad2(remS)+'s 남음';
+    pctEl.textContent=pct.toFixed(0)+'%';
+    if(remain<=0){
+      clearInterval(G.expiryTimer);
+      el('expired-banner').classList.add('on');
+      toast('⚠ 캔들 마감 — BUY가 갱신 필요. 새로고침 버튼을 누르세요.',true);
+    }
+  }
+  tick();
+  G.expiryTimer=setInterval(tick,1000);
+}
+
+// ══════════════════════════════════════════════
+//  MANUAL REFRESH
+// ══════════════════════════════════════════════
+function manualRefresh(){
+  if(!G.livePair){toast('먼저 코인을 검색하세요');return;}
+  el('expired-banner').classList.remove('on');
+  el('sinput').value=G.coin;
+  doSearch();
+}
+
+// ══════════════════════════════════════════════
+//  WEBSOCKET 실시간
+// ══════════════════════════════════════════════
+function startWS(pair,tf){
+  stopWS();
+  var stream=pair.toLowerCase()+'@kline_'+tf;
+  var url='wss://stream.binance.com:9443/ws/'+stream;
+  try{
+    var ws=new WebSocket(url);
+    G.ws=ws;
+    var lastPrice=0,lastCalc=0;
+    ws.onopen=function(){
+      el('ws-dot').className='ws-dot live';
+      el('ws-lbl').textContent='WebSocket LIVE';
+      G.wsOn=true;
+    };
+    ws.onmessage=function(evt){
+      try{
+        var d=JSON.parse(evt.data);
+        if(!d.k)return;
+        var k=d.k;
+        var liveClose=parseFloat(k.c);
+        var h=parseFloat(k.h),l=parseFloat(k.l),cl=parseFloat(k.c);
+        var now=Date.now();
+        // 현재가 티커 업데이트 (항상)
+        G.livePrice=liveClose;
+        el('tkpx').textContent='$'+fp(liveClose);
+        el('tkc').textContent='$'+fp(liveClose);
+        var prevCl=parseFloat(el('ic').value)||liveClose;
+        var chg=(liveClose-prevCl)/prevCl*100;
+        var ce=el('tkchg');ce.textContent=(chg>=0?'+':'')+chg.toFixed(2)+'%';ce.className='tkchg '+(chg>=0?'up':'dn');
+        // 봉 마감 감지 → BUY가 기준 갱신
+        if(k.x){
+          el('ih').value=parseFloat(h.toFixed(6));
+          el('il').value=parseFloat(l.toFixed(6));
+          el('ic').value=parseFloat(cl.toFixed(6));
+          G.lastClosedTs=parseInt(k.T);
+          G.candleCloseTs=parseInt(k.T)+({'15m':15*60000,'1h':60*60000,'4h':4*60*60000,'1d':24*60*60000}[G.tf]||0);
+          startExpiry();
+          toast('🕯 새 봉 마감 — BUY가 기준 업데이트됨');
+          setTimeout(calculate,50);
+          return;
+        }
+        // 0.1% 이상 변동 OR 5초 경과 → % 배지만 갱신 (BUY가는 고정)
+        var priceMoved=Math.abs(liveClose-lastPrice)/Math.max(lastPrice,0.0001)>0.001;
+        var timeElapsed=now-lastCalc>5000;
+        if(priceMoved||timeElapsed){
+          lastPrice=liveClose;lastCalc=now;
+          // % 배지 업데이트 (BUY가 고정, 현재가 대비 % 갱신)
+          if(G.res){
+            var b1=G.res.buy1,b2=G.res.buy2,b3=G.res.buy3;
+            function pS(p){return (p>=0?'+':'')+p.toFixed(2)+'% (현재가 대비)';}
+            var p1=(b1-liveClose)/liveClose*100,p2=(b2-liveClose)/liveClose*100,p3=(b3-liveClose)/liveClose*100;
+            el('b1pct').textContent=pS(p1);el('b1pct').className='pct-badge '+(p1<0?'neg':'pos');
+            el('b2pct').textContent=pS(p2);el('b2pct').className='pct-badge '+(p2<0?'neg':'pos');
+            el('b3pct').textContent=pS(p3);el('b3pct').className='pct-badge '+(p3<0?'neg':'pos');
+            checkAbandon(liveClose,parseFloat(el('il').value),parseFloat(el('ih').value),b1,b2,b3);
+          }
+        }
+      }catch(e){}
+    };
+    ws.onerror=function(){stopWS();toast('WebSocket 오류 — 재연결 시도',true);setTimeout(function(){if(G.wsOn)startWS(pair,tf);},3000);};
+    ws.onclose=function(){
+      el('ws-dot').className='ws-dot';
+      el('ws-lbl').textContent='실시간 OFF';
+      G.wsOn=false;G.ws=null;
+    };
+  }catch(e){toast('WebSocket 미지원',true);}
+}
+
+function stopWS(){
+  if(G.ws){try{G.ws.close();}catch(e){}G.ws=null;}
+  G.wsOn=false;
+  el('ws-dot').className='ws-dot';
+  el('ws-lbl').textContent='실시간 OFF';
+}
+
+function toggleWS(on){
+  if(on){
+    if(G.livePair)startWS(G.livePair,G.liveTF||G.tf);
+    else toast('먼저 코인을 검색하세요');
+  } else {
+    stopWS();
+  }
+}
+
+// ══════════════════════════════════════════════
+//  MTF CONFIRMATION CHECK
+// ══════════════════════════════════════════════
+function checkMTF(bm,ts,cfg){
+  var b=getBias(bm,ts);
+  var badge=el('mtf-badge');
+  if(b&&b.bull){badge.classList.add('on');}
+  else{badge.classList.remove('on');}
+}
 
 setTF('4h');
 calculate();
