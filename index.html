@@ -251,8 +251,8 @@ html,body{background:var(--bg0);color:var(--t1);font-family:var(--ui);font-size:
         </div>
         <div class="evtag" id="b1ev">EV —</div>
         <div class="mcwrap">
-          <div class="mcrow"><span class="mclbl">14일 도달</span><div class="mctrack"><div class="mcbar" id="b1b14" style="background:var(--G)"></div></div><span class="mcpct" id="b1p14" style="color:var(--G)">—</span></div>
-          <div class="mcrow"><span class="mclbl">30일 도달</span><div class="mctrack"><div class="mcbar" id="b1b30" style="background:var(--t3)"></div></div><span class="mcpct" id="b1p30" style="color:var(--t2)">—</span></div>
+          <div class="mcrow"><span class="mclbl">7일 도달</span><div class="mctrack"><div class="mcbar" id="b1b14" style="background:var(--G)"></div></div><span class="mcpct" id="b1p14" style="color:var(--G)">—</span></div>
+          <div class="mcrow"><span class="mclbl">14일 도달</span><div class="mctrack"><div class="mcbar" id="b1b30" style="background:var(--t3)"></div></div><span class="mcpct" id="b1p30" style="color:var(--t2)">—</span></div>
         </div>
       </div>
       <div class="buylv lv2">
@@ -269,8 +269,8 @@ html,body{background:var(--bg0);color:var(--t1);font-family:var(--ui);font-size:
         </div>
         <div class="evtag" id="b2ev">EV —</div>
         <div class="mcwrap">
-          <div class="mcrow"><span class="mclbl">14일 도달</span><div class="mctrack"><div class="mcbar" id="b2b14" style="background:var(--B)"></div></div><span class="mcpct" id="b2p14" style="color:var(--B)">—</span></div>
-          <div class="mcrow"><span class="mclbl">30일 도달</span><div class="mctrack"><div class="mcbar" id="b2b30" style="background:var(--t3)"></div></div><span class="mcpct" id="b2p30" style="color:var(--t2)">—</span></div>
+          <div class="mcrow"><span class="mclbl">7일 도달</span><div class="mctrack"><div class="mcbar" id="b2b14" style="background:var(--B)"></div></div><span class="mcpct" id="b2p14" style="color:var(--B)">—</span></div>
+          <div class="mcrow"><span class="mclbl">14일 도달</span><div class="mctrack"><div class="mcbar" id="b2b30" style="background:var(--t3)"></div></div><span class="mcpct" id="b2p30" style="color:var(--t2)">—</span></div>
         </div>
       </div>
       <div class="buylv lv3">
@@ -287,8 +287,8 @@ html,body{background:var(--bg0);color:var(--t1);font-family:var(--ui);font-size:
         </div>
         <div class="evtag" id="b3ev">EV —</div>
         <div class="mcwrap">
-          <div class="mcrow"><span class="mclbl">14일 도달</span><div class="mctrack"><div class="mcbar" id="b3b14" style="background:var(--P)"></div></div><span class="mcpct" id="b3p14" style="color:var(--P)">—</span></div>
-          <div class="mcrow"><span class="mclbl">30일 도달</span><div class="mctrack"><div class="mcbar" id="b3b30" style="background:var(--t3)"></div></div><span class="mcpct" id="b3p30" style="color:var(--t2)">—</span></div>
+          <div class="mcrow"><span class="mclbl">7일 도달</span><div class="mctrack"><div class="mcbar" id="b3b14" style="background:var(--P)"></div></div><span class="mcpct" id="b3p14" style="color:var(--P)">—</span></div>
+          <div class="mcrow"><span class="mclbl">14일 도달</span><div class="mctrack"><div class="mcbar" id="b3b30" style="background:var(--t3)"></div></div><span class="mcpct" id="b3p30" style="color:var(--t2)">—</span></div>
         </div>
       </div>
     </div>
@@ -321,7 +321,7 @@ html,body{background:var(--bg0);color:var(--t1);font-family:var(--ui);font-size:
   <div class="isec"><div class="ittl">타임프레임별 설정</div><div class="itxt"><b style="color:var(--t1)">15M</b> 스캘핑 · 14일 · 상위TF 1H · Look 3봉<br><b style="color:var(--t1)">1H</b> 단타 · 45일 · 상위TF 4H · Look 4봉<br><b style="color:var(--t1)">4H</b> 스윙 · 90일 · 상위TF Daily · Look 6봉<br><b style="color:var(--t1)">1D</b> 장기 · 180일 · 상위TF Weekly · Look 5봉</div></div>
   <div class="isec"><div class="ittl">보수적 버퍼 선택</div><div class="fm">rawBuf = argmax(WR × PF × EV) over [3%..10%]</div><div class="fm">annualFills &lt; 12 → buf +1% <span class="fc">// 희귀 진입 보정</span></div><div class="fm">annualFills &lt; 6 → buf +2% <span class="fc">// 극희귀 보정</span></div><div class="fm">cap = min(buf, 8%)</div></div>
   <div class="isec"><div class="ittl">백테스트 엔진</div><div class="fm">Fill: 다음봉 LOW ≤ buyPrice 여야 체결</div><div class="fm">Stop/TP: 체결 후 캔들별 순차 확인</div><div class="fm">동시충돌: 같은 봉 → 보수적 LOSS</div><div class="fm">수수료+슬리피지: 0.15% 차감</div><div class="fm">Volume ≥ 20MA×80% · Close ≥ Low+Range×20%</div></div>
-  <div class="isec"><div class="ittl">Monte Carlo 확률</div><div class="fm">2,000회 · hourly GBM · drift=0 (보수적)</div><div class="fm">14일 / 30일 내 각 BUY 도달 확률 계산</div></div>
+  <div class="isec"><div class="ittl">Monte Carlo 확률</div><div class="fm">2,000회 · hourly GBM · drift=0 (보수적)</div><div class="fm">7일 / 14일 내 각 BUY 도달 확률 계산</div></div>
   <div class="iver">RANGE CALC v1.0</div>
 </div>
 </div>
@@ -551,7 +551,7 @@ function randN(){var u=0,v=0;while(u===0)u=Math.random();while(v===0)v=Math.rand
 function startMC(S0,dv,b1,b2,b3){
   var mc=el('mcstatus');mc.textContent='⏳ Monte Carlo 2,000회 계산 중...';mc.classList.add('on');
   ['b1p14','b1p30','b2p14','b2p30','b3p14','b3p30'].forEach(function(id){el(id).textContent='…';});
-  var N=2000,hv=dv/Math.sqrt(24),s14=14*24,s30=30*24;
+  var N=2000,hv=dv/Math.sqrt(24),s14=7*24,s30=14*24;
   var r14=[0,0,0],r30=[0,0,0],done=0,CHK=250,tgts=[b1,b2,b3];
   function chunk(){
     var end=Math.min(done+CHK,N);
