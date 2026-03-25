@@ -437,6 +437,22 @@ html,body{background:var(--bg0);color:var(--t1);font-family:var(--ui);font-size:
 .mtf-sum-val{font-family:var(--num);font-size:12px;font-weight:700}
 .mtf-sum-sub{font-size:9px;color:var(--t3);margin-top:2px}
 
+
+/* ── 위험도 보정 ── */
+.risk-card{background:var(--bg2);border:1px solid var(--bd);border-radius:4px;padding:10px 12px;margin-bottom:8px;display:none}
+.risk-card.on{display:block}
+.risk-title{font-size:10px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--t3);margin-bottom:8px}
+.risk-rows{display:flex;flex-direction:column;gap:5px;margin-bottom:10px}
+.risk-row{display:flex;align-items:center;gap:8px}
+.risk-icon{font-size:13px;flex-shrink:0;width:18px;text-align:center}
+.risk-lbl{font-size:11px;color:var(--t2);flex:1}
+.risk-val{font-family:var(--num);font-size:11px;font-weight:600;flex-shrink:0}
+.risk-val.ok{color:var(--G)}.risk-val.warn{color:var(--A)}.risk-val.bad{color:var(--R)}
+.risk-divider{height:1px;background:var(--bd);margin:8px 0}
+.risk-final{padding:8px 10px;border-radius:4px;font-size:12px;font-weight:600;text-align:center;line-height:1.55}
+.risk-final.safe{background:var(--Gd);color:var(--G)}.risk-final.caution{background:var(--Ad);color:var(--A)}.risk-final.danger{background:var(--Rd);color:var(--R)}
+.adj-kelly{font-family:var(--num);font-size:20px;font-weight:700;display:block;margin-bottom:3px}
+
 </style>
 </head>
 <body>
@@ -687,6 +703,38 @@ html,body{background:var(--bg0);color:var(--t1);font-family:var(--ui);font-size:
         </div>
         <div class="kelly-bar-wrap"><div class="kelly-bar" id="kelly-bar" style="width:0%"></div></div>
         <div class="kelly-example" id="kelly-example" style="display:none;margin-top:8px;padding:7px 10px;background:var(--bg3);border-radius:4px;font-size:11px;color:var(--t2);line-height:1.7"></div>
+      </div>
+
+      <!-- 위험도 보정 -->
+      <div class="risk-card" id="risk-card">
+        <div class="risk-title">⚠ 위험도 보정 — 실제 투자 권장 금액</div>
+        <div class="risk-rows">
+          <div class="risk-row">
+            <span class="risk-icon">📊</span>
+            <span class="risk-lbl">ATR 변동성 (현재 vs 평균)</span>
+            <span class="risk-val" id="risk-atr-val">—</span>
+          </div>
+          <div class="risk-row">
+            <span class="risk-icon">📉</span>
+            <span class="risk-lbl">24시간 급락 여부</span>
+            <span class="risk-val" id="risk-drop-val">—</span>
+          </div>
+          <div class="risk-row">
+            <span class="risk-icon">😨</span>
+            <span class="risk-lbl">시장 공포탐욕 지수</span>
+            <span class="risk-val" id="risk-fg-val">불러오는 중...</span>
+          </div>
+          <div class="risk-row">
+            <span class="risk-icon">🔢</span>
+            <span class="risk-lbl">보정 계수</span>
+            <span class="risk-val" id="risk-mult-val">—</span>
+          </div>
+        </div>
+        <div class="risk-divider"></div>
+        <div class="risk-final" id="risk-final">
+          <span class="adj-kelly" id="risk-adj-kelly">—</span>
+          <span id="risk-adj-desc">—</span>
+        </div>
       </div>
 
       <!-- EV Combined (MC × BT) -->
@@ -981,7 +1029,8 @@ function setTF(tf){
   document.querySelectorAll('.tfbtn').forEach(function(b){b.classList.toggle('active',b.dataset.tf===tf);});
   var L=tf.toUpperCase();
   el('tclh').textContent=L+' HIGH';el('tclc').textContent=L+' CLOSE';el('tcll').textContent=L+' LOW';
-  ['btcard','ticker','results','bbar','wbar','vol-panel'].forEach(function(id){el(id).classList.remove('on');});
+  ['btcard','ticker','results','bbar','wbar','vol-panel','risk-card'].forEach(function(id){el(id).classList.remove('on');});
+  G._riskData=null;
   G.curVolRatio=null;G._candles=null;
 }
 
@@ -1810,6 +1859,194 @@ function renderDiagnosis() {
   el('diag-action').className = 'diag-action ' + actionCls;
 }
 
+
+// ════════════════════════════════════════════════
+//  위험도 보정 Kelly (악재·변동성·공포탐욕 반영)
+// ════════════════════════════════════════════════
+var G_FG = {value:null, label:null, fetched:false};
+
+// 공포탐욕 지수 가져오기 (Alternative.me API)
+function fetchFearGreed() {
+  if(G_FG.fetched) return;
+  fetch('https://api.alternative.me/fng/?limit=1')
+  .then(function(r){return r.json();})
+  .then(function(d){
+    var v=parseInt(d.data[0].value);
+    var lbl=d.data[0].value_classification;
+    G_FG.value=v; G_FG.label=lbl; G_FG.fetched=true;
+    // 이미 renderQuant가 실행됐으면 위험도 카드 업데이트
+    if(el('risk-card').classList.contains('on')){
+      el('risk-fg-val').textContent=v+' ('+translateFG(lbl)+')';
+      el('risk-fg-val').className='risk-val '+(v>=50?'ok':v>=25?'warn':'bad');
+      // 보정 재계산
+      updateRiskFinal();
+    }
+  })
+  .catch(function(){
+    G_FG.value=50; G_FG.label='Neutral'; G_FG.fetched=true;
+    el('risk-fg-val').textContent='불러오기 실패 (중립 적용)';
+    el('risk-fg-val').className='risk-val warn';
+  });
+}
+
+function translateFG(lbl){
+  var map={
+    'Extreme Fear':'극도 공포','Fear':'공포','Neutral':'중립',
+    'Greed':'탐욕','Extreme Greed':'극도 탐욕'
+  };
+  return map[lbl]||lbl;
+}
+
+// 위험도 보정 계수 계산
+function calcRiskMult(halfKelly, curATR, avgATR, chg24h, fgValue) {
+  var mult = 1.0;
+  var reasons = [];
+
+  // 1. ATR 변동성 보정
+  var atrRatio = curATR > 0 ? curATR/avgATR : 1;
+  var atrMult, atrCls, atrTxt;
+  if(atrRatio >= 2.0){
+    atrMult=0.3; atrCls='bad';
+    atrTxt=atrRatio.toFixed(1)+'배 (평소의 2배↑ → 70% 축소)';
+    reasons.push('변동성 급등');
+  } else if(atrRatio >= 1.5){
+    atrMult=0.5; atrCls='warn';
+    atrTxt=atrRatio.toFixed(1)+'배 (평소보다 높음 → 50% 축소)';
+    reasons.push('변동성 높음');
+  } else if(atrRatio >= 1.2){
+    atrMult=0.7; atrCls='warn';
+    atrTxt=atrRatio.toFixed(1)+'배 (약간 높음 → 30% 축소)';
+  } else {
+    atrMult=1.0; atrCls='ok';
+    atrTxt=atrRatio.toFixed(1)+'배 (정상)';
+  }
+  mult *= atrMult;
+
+  // 2. 24시간 급락 보정
+  var dropMult, dropCls, dropTxt;
+  if(chg24h <= -10){
+    dropMult=0.2; dropCls='bad';
+    dropTxt=chg24h.toFixed(1)+'% (급락 — 80% 축소, 악재 가능성)';
+    reasons.push('급락 감지');
+  } else if(chg24h <= -5){
+    dropMult=0.5; dropCls='warn';
+    dropTxt=chg24h.toFixed(1)+'% (하락 — 50% 축소)';
+    reasons.push('큰 하락');
+  } else if(chg24h >= 10){
+    dropMult=0.7; dropCls='warn';
+    dropTxt='+'+chg24h.toFixed(1)+'% (급등 후 — 30% 축소, 되돌림 주의)';
+    reasons.push('급등 후 되돌림 주의');
+  } else {
+    dropMult=1.0; dropCls='ok';
+    dropTxt=(chg24h>=0?'+':'')+chg24h.toFixed(1)+'% (정상)';
+  }
+  mult *= dropMult;
+
+  // 3. 공포탐욕 보정
+  var fgMult, fgCls, fgTxt;
+  var fg = fgValue !== null ? fgValue : 50;
+  if(fg <= 20){
+    fgMult=0.5; fgCls='bad';
+    fgTxt=fg+' — 극도 공포 (50% 축소, 패닉 매도 주의)';
+    reasons.push('극도 공포');
+  } else if(fg <= 35){
+    fgMult=0.7; fgCls='warn';
+    fgTxt=fg+' — 공포 (30% 축소)';
+  } else if(fg >= 80){
+    fgMult=0.6; fgCls='warn';
+    fgTxt=fg+' — 극도 탐욕 (40% 축소, 과열 주의)';
+    reasons.push('시장 과열');
+  } else {
+    fgMult=1.0; fgCls='ok';
+    fgTxt=fg+' — '+(fg>=50?'탐욕':'중립')+' (정상)';
+  }
+  mult *= fgMult;
+
+  return {
+    mult:Math.max(0.1, Math.min(1.0, mult)),
+    atrTxt:atrTxt, atrCls:atrCls,
+    dropTxt:dropTxt, dropCls:dropCls,
+    fgTxt:fgTxt, fgCls:fgCls,
+    reasons:reasons
+  };
+}
+
+function updateRiskFinal() {
+  // 현재 저장된 값으로 최종 보정 재계산
+  if(!G.bt||!G._riskData) return;
+  var rd = G._riskData;
+  var fg = G_FG.fetched ? G_FG.value : 50;
+  var risk = calcRiskMult(rd.halfKelly, rd.curATR, rd.avgATR, rd.chg24h, fg);
+  var adjKelly = rd.halfKelly * risk.mult;
+  var adjPct = (adjKelly*100).toFixed(1);
+  var ex100 = Math.round(adjKelly*100);
+  var ex500 = Math.round(adjKelly*500);
+
+  el('risk-mult-val').textContent = (risk.mult*100).toFixed(0)+'% 적용';
+  el('risk-mult-val').className = 'risk-val '+(risk.mult>=0.8?'ok':risk.mult>=0.5?'warn':'bad');
+
+  var finalEl = el('risk-final');
+  var adjK = el('risk-adj-kelly');
+  var adjD = el('risk-adj-desc');
+  adjK.textContent = adjPct+'%';
+
+  if(risk.reasons.length===0){
+    finalEl.className='risk-final safe';
+    adjK.style.color='var(--G)';
+    adjD.innerHTML='✅ 악재 없음 — 기본 Kelly 그대로 적용<br><span style="font-size:10px;font-weight:400">100만원 → '+ex100+'만원 / 500만원 → '+ex500+'만원</span>';
+  } else {
+    finalEl.className='risk-final '+(risk.mult<0.4?'danger':'caution');
+    adjK.style.color=risk.mult<0.4?'var(--R)':'var(--A)';
+    adjD.innerHTML='⚠ '+risk.reasons.join(' · ')+' 감지<br>'
+      +'<span style="font-size:11px">기본 '+rd.basePct+'% → 보정 후 <b>'+adjPct+'%</b></span><br>'
+      +'<span style="font-size:10px;font-weight:400">100만원 → '+ex100+'만원 / 500만원 → '+ex500+'만원</span>';
+  }
+  // 공포탐욕 업데이트
+  if(G_FG.fetched){
+    el('risk-fg-val').textContent = G_FG.value+' ('+translateFG(G_FG.label)+')';
+    el('risk-fg-val').className = 'risk-val '+(G_FG.value>=50?'ok':G_FG.value>=25?'warn':'bad');
+  }
+}
+
+function renderRiskAdjustment(halfKelly, close, high, low, atr) {
+  var rng = high-low;
+  // avgATR 근사: Range의 22% (실제 백테스트 평균값)
+  var avgATR = rng * 0.22;
+  // 24시간 변화율 = G.livePrice 변화 (또는 ticker 변화)
+  var chg24h = G.bt ? (G.bt.b1EV||0) : 0; // 실제론 ticker 24h 변화율 사용
+  // ticker에서 24h chg 가져오기
+  var chgEl = el('tkchg');
+  if(chgEl && chgEl.textContent && chgEl.textContent!=='—'){
+    var parsed = parseFloat(chgEl.textContent);
+    if(!isNaN(parsed)) chg24h = parsed;
+  }
+
+  // 데이터 저장 (공포탐욕 API 완료 후 재계산용)
+  G._riskData = {
+    halfKelly:halfKelly, curATR:atr, avgATR:avgATR,
+    chg24h:chg24h, basePct:(halfKelly*100).toFixed(1)
+  };
+
+  var risk = calcRiskMult(halfKelly, atr, avgATR, chg24h, G_FG.fetched?G_FG.value:50);
+
+  // 카드 표시
+  el('risk-card').classList.add('on');
+  el('risk-atr-val').textContent = risk.atrTxt;
+  el('risk-atr-val').className = 'risk-val '+risk.atrCls;
+  el('risk-drop-val').textContent = risk.dropTxt;
+  el('risk-drop-val').className = 'risk-val '+risk.dropCls;
+
+  if(!G_FG.fetched){
+    el('risk-fg-val').textContent = '불러오는 중...';
+    el('risk-fg-val').className = 'risk-val warn';
+    fetchFearGreed(); // 비동기 로딩
+  } else {
+    el('risk-fg-val').textContent = G_FG.value+' ('+translateFG(G_FG.label)+')';
+    el('risk-fg-val').className = 'risk-val '+(G_FG.value>=50?'ok':G_FG.value>=25?'warn':'bad');
+  }
+
+  updateRiskFinal();
+}
 // ════════════════════════════════════════════════
 //  QUANT ENGINE
 // ════════════════════════════════════════════════
@@ -1900,18 +2137,20 @@ function renderQuant(b1, b2, b3, tp, s1, close, low, high) {
     msg='투자금의 '+kpct+'%가 안전한 금액입니다. 예: 100만원 중 '+Math.round(halfKelly*100)+'만원';
   }
   kEl.className=colorCls; kBar.className=barCls;
-  el('kelly-sub').textContent='내 투자금의 '+kpct+'%를 이 코인에 투자 권장';
+  el('kelly-sub').textContent='내 투자금의 '+kpct+'%가 통계적 기준 (위험도 보정 전)';
 
-  // 예시 카드 표시
+  // 기본 예시
   var exEl=el('kelly-example');
   if(exEl){
     exEl.style.display='block';
     var ex100=Math.round(halfKelly*100), ex500=Math.round(halfKelly*500);
     exEl.innerHTML=
-      '💰 예시 — 투자금이 <b style="color:var(--t1)">100만원</b>이면 → <b style="color:var(--G)">'+ex100+'만원</b> 투자<br>'
-      +'💰 예시 — 투자금이 <b style="color:var(--t1)">500만원</b>이면 → <b style="color:var(--G)">'+ex500+'만원</b> 투자<br>'
-      +'<span style="color:var(--t3);font-size:9px">※ 나머지는 현금 보유 — 추가 하락 시 BUY2 대응용</span>';
+      '📊 통계 기준: 100만원 → <b style="color:var(--t1)">'+ex100+'만원</b> / 500만원 → <b style="color:var(--t1)">'+ex500+'만원</b><br>'
+      +'<span style="color:var(--t3);font-size:9px">↓ 아래 위험도 보정을 반드시 확인하세요</span>';
   }
+
+  // 위험도 보정 실행
+  renderRiskAdjustment(halfKelly, close, high, low, d.la||atr);
 
   // ── Combined EV (MC 확률 사용 가능 시) ───────
   function renderCEV(elId, mcP, tpP, stP, color) {
