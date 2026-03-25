@@ -407,7 +407,7 @@ html,body{background:var(--bg0);color:var(--t1);font-family:var(--ui);font-size:
     </div>
   </div>
   <!-- MTF CONFIRM BADGE -->
-  <div class="mtf-badge" id="mtf-badge">★ Multi-TF 강추 — 현재 TF + 상위 TF 모두 BUY 신호</div>
+  <div class="mtf-badge" id="mtf-badge">★ 강추 — 단기·중기 차트 모두 상승 방향</div>
   <!-- EXPIRY BAR -->
   <div class="expiry-bar" id="expiry-bar">
     <div class="expiry-lbl" id="expiry-lbl"><span id="expiry-txt">—</span><span id="expiry-pct">—</span></div>
@@ -748,7 +748,7 @@ html,body{background:var(--bg0);color:var(--t1);font-family:var(--ui);font-size:
     <div class="gs-body">
       <div class="signal-row"><span class="sr-icon">✅</span><div class="sr-text"><b>강세 바이어스</b> — 큰 흐름이 상승 중. 매수에 유리한 환경입니다.</div></div>
       <div class="signal-row"><span class="sr-icon">⚠</span><div class="sr-text"><b>약세 바이어스</b> — 큰 흐름이 하락 중. BUY 1만 소량 진입하거나 기다리세요.</div></div>
-      <div class="signal-row"><span class="sr-icon">★</span><div class="sr-text"><b>Multi-TF 강추</b> — 단기·중기 모두 상승 방향. 지금이 가장 유리한 타이밍입니다.</div></div>
+      <div class="signal-row"><span class="sr-icon">★</span><div class="sr-text"><b>★ 강추 배지</b> — 단기 차트(15분/1시간)와 중기 차트(4시간/일봉)가 동시에 상승 방향. 지금이 가장 좋은 타이밍입니다.</div></div>
       <div class="signal-row"><span class="sr-icon">🔥</span><div class="sr-text"><b>거래량 급증</b> — 실제로 많이 거래되고 있음. 신호의 신뢰도가 높습니다.</div></div>
       <div class="signal-row"><span class="sr-icon">⚠</span><div class="sr-text"><b>거래량 부족</b> — 조용한 상태. 가격이 예상대로 움직이지 않을 수 있습니다.</div></div>
       <div class="signal-row"><span class="sr-icon">⛔</span><div class="sr-text"><b>고점 근처 / 포기 권장</b> — 지금은 사면 안 됩니다. 다른 코인을 찾거나 기다리세요.</div></div>
@@ -783,7 +783,7 @@ html,body{background:var(--bg0);color:var(--t1);font-family:var(--ui);font-size:
   <div class="guide-ver">RANGE CALC v1.0 — 일반인을 위한 코인 매수 계산기</div>
 </div>
 <div class="page" id="page-info">
-  <div class="isec"><div class="ittl">타임프레임별 설정</div><div class="itxt"><b style="color:var(--t1)">15M</b> 스캘핑 · ~15일 · 상위TF 1H · Look 3봉<br><b style="color:var(--t1)">1H</b> 단타 · ~62일 · 상위TF 4H · Look 4봉<br><b style="color:var(--t1)">4H</b> 스윙 · 90일 · 상위TF Daily · Look 6봉<br><b style="color:var(--t1)">1D</b> 장기 · 90일 · 상위TF Weekly · Look 5봉</div></div>
+  <div class="isec"><div class="ittl">타임프레임별 설정</div><div class="itxt"><b style="color:var(--t1)">15M</b> 스캘핑 · ~15일 · 1시간봉 기준 · 3봉 확인<br><b style="color:var(--t1)">1H</b> 단타 · ~62일 · 4시간봉 기준 · 4봉 확인<br><b style="color:var(--t1)">4H</b> 스윙 · 90일 · 일봉 기준 · 6봉 확인<br><b style="color:var(--t1)">1D</b> 장기 · 90일 · 주봉 기준 · 5봉 확인</div></div>
   <div class="isec"><div class="ittl">보수적 버퍼 선택</div><div class="fm">rawBuf = argmax(WR × PF × EV) over [3%..10%]</div><div class="fm">annualFills &lt; 12 → buf +1% <span class="fc">// 희귀 진입 보정</span></div><div class="fm">annualFills &lt; 6 → buf +2% <span class="fc">// 극희귀 보정</span></div><div class="fm">cap = min(buf, 8%)</div></div>
   <div class="isec"><div class="ittl">백테스트 엔진</div><div class="fm">Fill: 다음봉 LOW ≤ buyPrice 여야 체결</div><div class="fm">Stop/TP: 체결 후 캔들별 순차 확인</div><div class="fm">동시충돌: 같은 봉 → 보수적 LOSS</div><div class="fm">수수료+슬리피지: 0.15% 차감</div><div class="fm">Volume ≥ 20MA×80% · Close ≥ Low+Range×20%</div></div>
   <div class="isec"><div class="ittl">Monte Carlo 확률</div><div class="fm">2,000회 · hourly GBM · drift=0 (보수적)</div><div class="fm">14일 / 30일 내 각 BUY 도달 확률 계산</div></div>
@@ -988,11 +988,13 @@ function renderBias(m,ts,cfg){
   var bar=el('bbar'),b=getBias(m,ts);
   if(!b){bar.classList.remove('on');return;}
   bar.className='bbar on '+(b.bull?'bull':'bear');
-  el('blbl').textContent=(b.bull?'▲ 강세':'▼ 약세')+' ('+cfg.htf.toUpperCase()+' 20MA)';
+  var htfName={'1h':'1시간봉','4h':'4시간봉','1d':'일봉','1w':'주봉'}[cfg.htf]||cfg.htf.toUpperCase();
+  el('blbl').textContent=(b.bull?'▲ 강세':'▼ 약세')+' ('+htfName+' 기준)';
   el('bsub').textContent=b.bull?'진입 유리':'신중';
   el('bval').textContent='20MA $'+fp(b.sma);
   var w=el('wbar');
-  if(!b.bull){w.textContent='⚠ '+cfg.htf.toUpperCase()+' 약세 — 매수 신중. BUY3 비중 줄이고 소량 진입 권장.';w.className='wbar on amber';}
+  if(!b.bull){var htfN={'1h':'1시간봉','4h':'4시간봉','1d':'일봉','1w':'주봉'}[cfg.htf]||cfg.htf.toUpperCase();
+  w.textContent='⚠ '+htfN+' 기준 하락 중 — 지금은 매수 신중. 소량만 진입하거나 기다리세요.';w.className='wbar on amber';}
   else{w.classList.remove('on');}
 }
 
@@ -1144,7 +1146,8 @@ function calculate(noScroll){
   // Range 너무 좁으면 경고 (가격 대비 1.5% 미만)
   var rangeRatio=rng/lp;
   if(rangeRatio<0.015){
-    el('wbar').textContent='⚠ Range가 너무 좁습니다 ('+((rangeRatio*100).toFixed(1))+'%). 상위 TF('+TFC[G.tf].htf.toUpperCase()+')로 검색하면 더 정확한 매수가를 얻을 수 있습니다.';
+    var upperTf={'15m':'1시간(1H)','1h':'4시간(4H)','4h':'일봉(1D)','1d':'주봉(1W)'}[G.tf]||'상위 차트';
+    el('wbar').textContent='⚠ 현재 차트 가격 범위가 너무 좁습니다 ('+((rangeRatio*100).toFixed(1))+'%). '+upperTf+' 탭으로 바꿔서 검색하면 더 정확한 매수가를 볼 수 있습니다.';
     el('wbar').className='wbar on amber';
   }
   // 이름 원복
@@ -1537,15 +1540,15 @@ function renderDiagnosis() {
   var isBull = el('bbar').classList.contains('bull');
   if(mtfOn) {
     score += 25;
-    factors.push({icon:'★', lbl:'Multi-TF 강추', val:'상위TF 동일 방향', cls:'good'});
+    factors.push({icon:'★', lbl:'단기+중기 모두 상승', val:'진입 최적 타이밍', cls:'good'});
   } else if(bbarOn && isBull) {
     score += 15;
-    factors.push({icon:'▲', lbl:'상위TF 강세', val:'진입 유리', cls:'good'});
+    factors.push({icon:'▲', lbl:'큰 흐름 상승 중', val:'진입 유리', cls:'good'});
   } else if(bbarOn && !isBull) {
     score -= 10;
-    factors.push({icon:'▼', lbl:'상위TF 약세', val:'신중 필요', cls:'bad'});
+    factors.push({icon:'▼', lbl:'큰 흐름 하락 중', val:'신중 필요', cls:'bad'});
   } else {
-    factors.push({icon:'—', lbl:'바이어스 정보 없음', val:'검색 필요', cls:'neut'});
+    factors.push({icon:'—', lbl:'큰 흐름 정보 없음', val:'코인 검색 필요', cls:'neut'});
   }
 
   // ── 2. 거래량 ────────────────────────────────
