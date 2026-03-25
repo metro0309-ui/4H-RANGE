@@ -453,9 +453,46 @@ html,body{background:var(--bg0);color:var(--t1);font-family:var(--ui);font-size:
 .risk-final.safe{background:var(--Gd);color:var(--G)}.risk-final.caution{background:var(--Ad);color:var(--A)}.risk-final.danger{background:var(--Rd);color:var(--R)}
 .adj-kelly{font-family:var(--num);font-size:20px;font-weight:700;display:block;margin-bottom:3px}
 
+
+/* ── BUY가 고정 모드 ── */
+.lock-bar{display:flex;align-items:center;justify-content:space-between;
+  padding:7px 16px;background:var(--bg2);border-bottom:1px solid var(--bd);
+  font-size:11px;display:none}
+.lock-bar.on{display:flex}
+.lock-bar.locked{background:rgba(51,112,255,.06);border-bottom-color:rgba(51,112,255,.2)}
+.lock-left{display:flex;align-items:center;gap:6px;color:var(--t2)}
+.lock-icon{font-size:12px}
+.lock-lbl{font-family:var(--num);font-size:10px}
+.lock-lbl.locked{color:var(--B)}
+.lock-right{display:flex;align-items:center;gap:6px}
+.lock-btn{background:none;border:1px solid var(--bd2);border-radius:3px;
+  padding:3px 8px;font-family:var(--num);font-size:9px;color:var(--t3);
+  cursor:pointer;transition:all .15s}
+.lock-btn:hover{border-color:var(--G);color:var(--G)}
+.lock-btn.active{background:var(--Bd);border-color:var(--B);color:var(--B)}
+/* 도달 알림 배너 */
+.reach-banner{display:none;position:fixed;top:0;left:0;right:0;z-index:999;
+  padding:14px 16px;font-size:13px;font-weight:700;text-align:center;
+  animation:slideDown .3s ease}
+@keyframes slideDown{from{transform:translateY(-100%)}to{transform:translateY(0)}}
+.reach-banner.on{display:block}
+.reach-banner.b1{background:var(--G);color:#000}
+.reach-banner.b2{background:var(--B);color:#fff}
+.reach-banner.tp{background:var(--A);color:#000}
+.reach-banner.stop{background:var(--R);color:#fff}
+.reach-close{float:right;cursor:pointer;opacity:.7;font-size:16px}
+/* 고정된 BUY 카드 강조 */
+.buylv.triggered{animation:flashGreen .6s ease 3}
+@keyframes flashGreen{0%,100%{background:transparent}50%{background:rgba(0,177,64,.15)}}
+/* 현재가 vs BUY 거리 표시 */
+.dist-bar{width:100%;height:2px;background:var(--bg3);border-radius:1px;margin-top:6px;overflow:hidden}
+.dist-fill{height:100%;border-radius:1px;background:var(--G);transition:width .5s}
+.dist-lbl{font-size:9px;color:var(--t3);font-family:var(--num);margin-top:3px;text-align:right}
+
 </style>
 </head>
 <body>
+<div class="reach-banner" id="reach-banner"><span id="reach-msg">—</span><span class="reach-close" onclick="closeReachBanner()">✕</span></div>
 <div class="app">
 <div class="hdr">
   <div style="display:flex;align-items:center">
@@ -497,6 +534,18 @@ html,body{background:var(--bg0);color:var(--t1);font-family:var(--ui);font-size:
     <div class="ws-right">
       <button class="refresh-btn" onclick="manualRefresh()" id="refresh-btn" style="display:none">↻ 새로고침</button>
       <label class="ws-toggle"><input type="checkbox" id="ws-toggle" onchange="toggleWS(this.checked)"><span class="ws-slider"></span></label>
+    </div>
+  </div>
+
+  <!-- BUY가 고정 모드 바 -->
+  <div class="lock-bar" id="lock-bar">
+    <div class="lock-left">
+      <span class="lock-icon" id="lock-icon">🔓</span>
+      <span class="lock-lbl" id="lock-lbl">BUY가 실시간 변동 중</span>
+    </div>
+    <div class="lock-right">
+      <button class="lock-btn" id="lock-btn" onclick="toggleLock()">🔒 BUY가 고정</button>
+      <button class="lock-btn" onclick="manualRefresh()" style="display:none" id="lock-refresh">↻ 갱신</button>
     </div>
   </div>
   <!-- MTF CONFIRM BADGE -->
@@ -601,7 +650,7 @@ html,body{background:var(--bg0);color:var(--t1);font-family:var(--ui);font-size:
         <div class="lvbg" id="lb1" style="width:60%"></div>
         <div class="lvtop">
           <div><div style="display:flex;align-items:center;margin-bottom:3px"><span class="lvbadge" id="b1badge">BUY 1</span><span class="lvname" id="b1name">즉시진입 · 최적버퍼</span></div><div class="lvmethod" id="b1m">—</div></div>
-          <div><div class="lvprice" id="b1p">—</div><div class="pct-badge" id="b1pct">—</div><div class="lvtp" id="b1g">—</div><div class="lvloss" id="b1l">—</div></div>
+          <div><div class="lvprice" id="b1p">—</div><div class="pct-badge" id="b1pct">—</div><div class="dist-bar"><div class="dist-fill" id="b1dist" style="width:0%"></div></div><div class="dist-lbl" id="b1distlbl">—</div><div class="lvtp" id="b1g">—</div><div class="lvloss" id="b1l">—</div></div>
         </div>
         <div class="lvstats">
           <div class="ls"><span class="lsl">실승률</span><span class="lsv" id="b1wr" style="color:var(--G)">—</span></div>
@@ -619,7 +668,7 @@ html,body{background:var(--bg0);color:var(--t1);font-family:var(--ui);font-size:
         <div class="lvbg" id="lb2" style="width:40%"></div>
         <div class="lvtop">
           <div><div style="display:flex;align-items:center;margin-bottom:3px"><span class="lvbadge" id="b2badge">BUY 2</span><span class="lvname" id="b2name">지지선 대기 · Pivot</span></div><div class="lvmethod" id="b2m">—</div></div>
-          <div><div class="lvprice" id="b2p">—</div><div class="pct-badge" id="b2pct">—</div><div class="lvtp" id="b2g">—</div><div class="lvloss" id="b2l">—</div></div>
+          <div><div class="lvprice" id="b2p">—</div><div class="pct-badge" id="b2pct">—</div><div class="dist-bar"><div class="dist-fill" id="b2dist" style="width:0%"></div></div><div class="dist-lbl" id="b2distlbl">—</div><div class="lvtp" id="b2g">—</div><div class="lvloss" id="b2l">—</div></div>
         </div>
         <div class="lvstats">
           <div class="ls"><span class="lsl">실승률</span><span class="lsv" id="b2wr" style="color:var(--B)">—</span></div>
@@ -1020,6 +1069,8 @@ function switchTab(n){
 
 function setTF(tf){
   G.tf=tf;G.bt=null;G.bm=null;G.lastClosedTs=null;G.livePrice=null;
+  G.locked=false;G.lockedB1=null;G.lockedB2=null;G.b1Reached=false;G.b2Reached=false;
+  el('lock-bar').classList.remove('on');
   if(G.liveTimer){clearInterval(G.liveTimer);G.liveTimer=null;}
   stopWS();
   if(G.expiryTimer){clearInterval(G.expiryTimer);G.expiryTimer=null;}
@@ -1110,6 +1161,7 @@ function doSearch(){
         checkMTF(G.bm,parseInt(cur[0]),cfg);
         if(el('ws-toggle').checked) startWS(pair,G.tf);
         el('refresh-btn').style.display='';
+        el('lock-bar').classList.add('on');
 
         setLoad(false);toast(sym+' 완료 · 실승률 '+bt.b1WR.toFixed(1)+'% · 연'+bt.af.toFixed(0)+'회 · 🔴LIVE');
         el('sinput').blur();calculate();
@@ -1151,7 +1203,17 @@ function liveUpdate(pair,tf){
     var remStr=remH>0?(remH+'h '+pad2(remM)+'m 후 봉 마감'):(remM+'m 후 봉 마감');
     el('tksub').textContent=pair+' · '+TFC[tf].lbl+' · 🔴 LIVE · '+remStr;
     // 입력값 DOM 반영 후 계산 실행 (타이밍 보장)
-    setTimeout(function(){calculate(true);},10);
+    if(G.locked) {
+      // 고정 모드: 현재가만 업데이트, 봉 마감 감지 시 갱신
+      checkReach(cl);
+      if(G.lastClosedTs && newClosedTs !== G.lastClosedTs && G.res) {
+        G.lockedB1=G.res.buy1; G.lockedB2=G.res.buy2;
+        G.lockedTP=G.res.tp; G.lockedStop=G.res.stop1;
+        G.b1Reached=false; G.b2Reached=false;
+      }
+    } else {
+      setTimeout(function(){calculate(true);},10);
+    }
   }).catch(function(){});
 }
 
@@ -1656,22 +1718,43 @@ function startWS(pair,tf){
           toast('🕯 새 봉 마감 — BUY가 갱신됨');
         }
 
-        // ★ 핵심: 현재 봉 H/L/C → 입력값 실시간 업데이트 → BUY가 재계산
-        // 0.05% 이상 H/L 변동 OR 5초 경과 시 재계산
-        var prevH=parseFloat(el('ih').value)||h;
-        var prevL=parseFloat(el('il').value)||l;
-        var hlMoved=Math.abs(h-prevH)/Math.max(prevH,0.0001)>0.0005
-                  ||Math.abs(l-prevL)/Math.max(prevL,0.0001)>0.0005;
-        var timeElapsed=now-lastCalc>5000;
-
-        if(hlMoved||timeElapsed||k.x){
-          lastCalc=now;
-          // 입력값 업데이트 (BUY가 재계산 트리거)
-          el('ih').value=parseFloat(h.toFixed(6));
-          el('il').value=parseFloat(l.toFixed(6));
-          el('ic').value=parseFloat(cl.toFixed(6));
-          // BUY1/2/3 즉시 재계산
-          setTimeout(function(){calculate(true);},0);
+        if(G.locked) {
+          // ── 고정 모드: 현재가 모니터링만, BUY가 재계산 안 함 ──
+          checkReach(cl);
+          // 봉 마감 시에만 BUY가 갱신
+          if(k.x) {
+            el('ih').value=parseFloat(h.toFixed(6));
+            el('il').value=parseFloat(l.toFixed(6));
+            el('ic').value=parseFloat(cl.toFixed(6));
+            setTimeout(function(){
+              calculate(true);
+              // 갱신 후 새 BUY가로 고정값 업데이트
+              if(G.res){
+                G.lockedB1=G.res.buy1;
+                G.lockedB2=G.res.buy2;
+                G.lockedTP=G.res.tp;
+                G.lockedStop=G.res.stop1;
+                G.b1Reached=false;
+                G.b2Reached=false;
+                el('lock-lbl').textContent='BUY1 $'+fp(G.lockedB1)+' 갱신됨 (새 봉 기준)';
+                toast('🕯 봉 마감 — BUY가 갱신됨');
+              }
+            },50);
+          }
+        } else {
+          // ── 일반 모드: 기존 실시간 재계산 ──
+          var prevH=parseFloat(el('ih').value)||h;
+          var prevL=parseFloat(el('il').value)||l;
+          var hlMoved=Math.abs(h-prevH)/Math.max(prevH,0.0001)>0.0005
+                    ||Math.abs(l-prevL)/Math.max(prevL,0.0001)>0.0005;
+          var timeElapsed=now-lastCalc>5000;
+          if(hlMoved||timeElapsed||k.x){
+            lastCalc=now;
+            el('ih').value=parseFloat(h.toFixed(6));
+            el('il').value=parseFloat(l.toFixed(6));
+            el('ic').value=parseFloat(cl.toFixed(6));
+            setTimeout(function(){calculate(true);},0);
+          }
         }
       }catch(e){}
     };
@@ -2608,6 +2691,124 @@ function renderMultiSummary() {
   el('sum-consensus').textContent=consensus;
   el('sum-consensus-sub').textContent=consensusSub;
   el('mtf-summary').classList.add('on');
+}
+
+
+// ════════════════════════════════════════════════
+//  BUY가 고정 모드 (봉 마감 시에만 업데이트)
+// ════════════════════════════════════════════════
+G.locked = false;
+G.lockedB1 = null;
+G.lockedB2 = null;
+G.lockedTP = null;
+G.lockedStop = null;
+G.b1Reached = false;
+G.b2Reached = false;
+
+function toggleLock() {
+  if(!G.res){ toast('먼저 계산하기를 눌러주세요'); return; }
+  G.locked = !G.locked;
+  if(G.locked) {
+    G.lockedB1   = G.res.buy1;
+    G.lockedB2   = G.res.buy2;
+    G.lockedTP   = G.res.tp;
+    G.lockedStop = G.res.stop1;
+    G.b1Reached  = false;
+    G.b2Reached  = false;
+    el('lock-icon').textContent = '🔒';
+    el('lock-lbl').textContent  = 'BUY1 $'+fp(G.lockedB1)+' 고정됨';
+    el('lock-lbl').className    = 'lock-lbl locked';
+    el('lock-btn').textContent  = '🔓 고정 해제';
+    el('lock-btn').className    = 'lock-btn active';
+    el('lock-refresh').style.display = '';
+    el('lock-bar').className    = 'lock-bar on locked';
+    toast('🔒 BUY가 고정 — 봉 마감 시에만 자동 갱신됩니다');
+  } else {
+    G.lockedB1 = G.lockedB2 = G.lockedTP = G.lockedStop = null;
+    el('lock-icon').textContent = '🔓';
+    el('lock-lbl').textContent  = 'BUY가 실시간 변동 중';
+    el('lock-lbl').className    = 'lock-lbl';
+    el('lock-btn').textContent  = '🔒 BUY가 고정';
+    el('lock-btn').className    = 'lock-btn';
+    el('lock-refresh').style.display = 'none';
+    el('lock-bar').className    = 'lock-bar on';
+    // 거리 바 초기화
+    ['b1dist','b2dist'].forEach(function(id){var e=el(id);if(e)e.style.width='0%';});
+    ['b1distlbl','b2distlbl'].forEach(function(id){var e=el(id);if(e)e.textContent='';});
+    toast('🔓 BUY가 고정 해제');
+  }
+}
+
+function closeReachBanner() {
+  el('reach-banner').className = 'reach-banner';
+}
+
+// 현재가 → 고정 BUY가 거리 표시 + 도달 감지
+function checkReach(livePrice) {
+  if(!G.locked || !G.lockedB1) return;
+  var b1 = G.lockedB1, b2 = G.lockedB2;
+  var tp = G.lockedTP, stop = G.lockedStop;
+
+  // 거리 계산
+  var distB1pct = (livePrice - b1) / livePrice * 100; // 양수 = 아직 위에 있음
+  var distB2pct = (livePrice - b2) / livePrice * 100;
+
+  // 거리 바 (현재가 → BUY까지 얼마나 가까워졌나)
+  // 10% 이상 차이 = 0%, 0% = 100%
+  var b1fill = distB1pct > 0 ? Math.max(0, Math.min(100, 100 - distB1pct*10)) : 100;
+  var b2fill = distB2pct > 0 ? Math.max(0, Math.min(100, 100 - distB2pct*10)) : 100;
+
+  var db1=el('b1dist'), db2=el('b2dist'), dl1=el('b1distlbl'), dl2=el('b2distlbl');
+  if(db1){
+    db1.style.width = b1fill+'%';
+    db1.style.background = b1fill>80?'var(--G)':b1fill>50?'var(--A)':'var(--t3)';
+  }
+  if(dl1){
+    dl1.textContent = distB1pct>0.1
+      ? '매수가까지 -'+distB1pct.toFixed(2)+'% 남음'
+      : '✅ 매수 구간 진입';
+    dl1.style.color = distB1pct<=0.1 ? 'var(--G)' : 'var(--t3)';
+  }
+  if(db2){ db2.style.width = b2fill+'%'; }
+  if(dl2){
+    dl2.textContent = distB2pct>0.1
+      ? '추가매수까지 -'+distB2pct.toFixed(2)+'% 남음'
+      : '✅ 추가매수 구간 진입';
+    dl2.style.color = distB2pct<=0.1 ? 'var(--B)' : 'var(--t3)';
+  }
+
+  // Stop 도달
+  if(stop && livePrice <= stop) {
+    showReachBanner('stop', '🛑 손절가 $'+fp(stop)+' 도달 — 지정가 주문 확인하세요!');
+    return;
+  }
+  // TP 도달
+  if(tp && livePrice >= tp) {
+    showReachBanner('tp', '🎯 목표가 $'+fp(tp)+' 도달 — 익절 타이밍!');
+    return;
+  }
+  // BUY1 도달 (처음 한 번)
+  if(!G.b1Reached && livePrice <= b1) {
+    G.b1Reached = true;
+    showReachBanner('b1',
+      '🟢 BUY1 $'+fp(b1)+' 도달! — 지금 매수 타이밍 (현재가 $'+fp(livePrice)+')');
+  }
+  // BUY2 도달 (처음 한 번)
+  if(!G.b2Reached && livePrice <= b2) {
+    G.b2Reached = true;
+    showReachBanner('b2',
+      '🔵 BUY2 $'+fp(b2)+' 도달! — 추가매수 타이밍 (현재가 $'+fp(livePrice)+')');
+  }
+}
+
+function showReachBanner(type, msg) {
+  var b = el('reach-banner');
+  var m = el('reach-msg');
+  if(!b||!m) return;
+  m.textContent = msg;
+  b.className = 'reach-banner on '+type;
+  // 10초 후 자동 닫힘
+  setTimeout(function(){ if(b.classList.contains('on')) closeReachBanner(); }, 10000);
 }
 
 setTF('4h');
