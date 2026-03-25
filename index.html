@@ -1299,7 +1299,7 @@ function renderDirection(S0, dv) {
 
 function startMC(S0,dv,b1,b2,b3,tp,s1,high,low){
   var mc=el('mcstatus'); // 화면에 표시 안함
-  ['b1p14','b1p30','b2p14','b2p30','b3p14','b3p30'].forEach(function(id){el(id).textContent='…';});
+  ['b1p14','b1p30','b2p14','b2p30'].forEach(function(id){var e=el(id);if(e)e.textContent='…';});
   var N=2000,hv=dv/Math.sqrt(24),s14=14*24,s30=30*24;
   var r14=[0,0,0],r30=[0,0,0],done=0,CHK=250,tgts=[b1,b2,b3];
   function chunk(){
@@ -1312,10 +1312,15 @@ function startMC(S0,dv,b1,b2,b3,tp,s1,high,low){
     done=end;
     if(done<N){setTimeout(chunk,0);}
     else{
-      function sp(b14,b30,p14id,p30id,v14,v30){el(b14).style.width=Math.min(100,v14*100)+'%';el(b30).style.width=Math.min(100,v30*100)+'%';el(p14id).textContent=(v14*100).toFixed(1)+'%';el(p30id).textContent=(v30*100).toFixed(1)+'%';}
+      function sp(b14,b30,p14id,p30id,v14,v30){
+        var e1=el(b14),e2=el(b30),e3=el(p14id),e4=el(p30id);
+        if(e1)e1.style.width=Math.min(100,v14*100)+'%';
+        if(e2)e2.style.width=Math.min(100,v30*100)+'%';
+        if(e3)e3.textContent=(v14*100).toFixed(1)+'%';
+        if(e4)e4.textContent=(v30*100).toFixed(1)+'%';
+      }
       sp('b1b14','b1b30','b1p14','b1p30',r14[0]/N,r30[0]/N);
       sp('b2b14','b2b30','b2p14','b2p30',r14[1]/N,r30[1]/N);
-      sp('b3b14','b3b30','b3p14','b3p30',r14[2]/N,r30[2]/N);
       G_MC={r14:[r14[0]/N,r14[1]/N,r14[2]/N],r30:[r30[0]/N,r30[1]/N,r30[2]/N],ready:true};
       if(tp&&s1&&high&&low&&G.res){renderQuant(G.res.buy1,G.res.buy2,G.res.buy3,tp,s1,S0,low,high);}
       renderDiagnosis();
