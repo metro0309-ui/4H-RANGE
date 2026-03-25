@@ -666,19 +666,19 @@ html,body{background:var(--bg0);color:var(--t1);font-family:var(--ui);font-size:
   <div class="wbar" id="wbar"></div>
   <div class="btcard" id="btcard">
     <div class="bth">
-      <div><div class="bttl" id="bttl">백테스트 결과</div><div class="btts" id="btts">—</div></div>
+      <div><div class="bttl" id="bttl">이 코인 반등 적합도</div><div class="btts" id="btts">—</div></div>
       <div class="btpill" id="btpill">—</div>
     </div>
-    <div class="frow"><div class="flbl">BUY1 연간 예상 진입 횟수</div><div class="fr"><span class="fval" id="fval">—</span><span class="ftag" id="ftag">—</span></div></div>
+    <div class="frow"><div class="flbl">연간 반등 기회 발생 횟수</div><div class="fr"><span class="fval" id="fval">—</span><span class="ftag" id="ftag">—</span></div></div>
     <div class="btgrid">
-      <div class="bts"><span class="btsl">실거래</span><span class="btsv" id="bttr" style="color:var(--t1)">—</span></div>
-      <div class="bts"><span class="btsl">순승률</span><span class="btsv" id="btwr" style="color:var(--G)">—</span></div>
-      <div class="bts"><span class="btsl">PF</span><span class="btsv" id="btpf" style="color:var(--B)">—</span></div>
-      <div class="bts"><span class="btsl">기대값</span><span class="btsv" id="btev" style="color:var(--P)">—</span></div>
-      <div class="bts"><span class="btsl">최적버퍼</span><span class="btsv" id="btbuf" style="color:var(--A)">—</span></div>
-      <div class="bts"><span class="btsl">최대연속손</span><span class="btsv" id="btsk" style="color:var(--R)">—</span></div>
+      <div class="bts"><span class="btsl">분석 샘플</span><span class="btsv" id="bttr" style="color:var(--t1)">—</span></div>
+      <div class="bts"><span class="btsl">반등 성공률</span><span class="btsv" id="btwr" style="color:var(--G)">—</span></div>
+      <div class="bts"><span class="btsl">수익배수(PF)</span><span class="btsv" id="btpf" style="color:var(--B)">—</span></div>
+      <div class="bts"><span class="btsl">기대수익</span><span class="btsv" id="btev" style="color:var(--P)">—</span></div>
+      <div class="bts"><span class="btsl">최적진입폭</span><span class="btsv" id="btbuf" style="color:var(--A)">—</span></div>
+      <div class="bts"><span class="btsl">최대연속실패</span><span class="btsv" id="btsk" style="color:var(--R)">—</span></div>
     </div>
-    <div class="btblbl"><span>BUY1 실승률</span><span id="btbpct">0%</span></div>
+    <div class="btblbl"><span>반등 성공률</span><span id="btbpct">0%</span></div>
     <div class="btrack"><div class="bfill" id="btbfill" style="width:0%"></div></div>
   </div>
   <div class="ticker" id="ticker">
@@ -994,17 +994,17 @@ html,body{background:var(--bg0);color:var(--t1);font-family:var(--ui);font-size:
         <div class="ev-card">
           <div class="ev-card-lbl">BUY1 복합 EV</div>
           <div class="ev-card-val" id="cev1">—</div>
-          <div class="ev-card-sub">MC × 백테스트</div>
+          <div class="ev-card-sub">MC × 반등적합도</div>
         </div>
         <div class="ev-card">
           <div class="ev-card-lbl">BUY2 복합 EV</div>
           <div class="ev-card-val" id="cev2">—</div>
-          <div class="ev-card-sub">MC × 백테스트</div>
+          <div class="ev-card-sub">MC × 반등적합도</div>
         </div>
         <div class="ev-card">
           <div class="ev-card-lbl">BUY3 복합 EV</div>
           <div class="ev-card-val" id="cev3">—</div>
-          <div class="ev-card-sub">MC × 백테스트</div>
+          <div class="ev-card-sub">MC × 반등적합도</div>
         </div>
       </div>
 
@@ -1202,7 +1202,7 @@ html,body{background:var(--bg0);color:var(--t1);font-family:var(--ui);font-size:
 <div class="page" id="page-info">
   <div class="isec"><div class="ittl">타임프레임별 설정</div><div class="itxt"><b style="color:var(--t1)">15M</b> 스캘핑 · ~15일 · 1시간봉 기준 · 3봉 확인<br><b style="color:var(--t1)">1H</b> 단타 · ~62일 · 4시간봉 기준 · 4봉 확인<br><b style="color:var(--t1)">4H</b> 스윙 · 90일 · 일봉 기준 · 6봉 확인<br><b style="color:var(--t1)">1D</b> 장기 · 90일 · 주봉 기준 · 5봉 확인</div></div>
   <div class="isec"><div class="ittl">보수적 버퍼 선택</div><div class="fm">rawBuf = argmax(WR × PF × EV) over [3%..10%]</div><div class="fm">annualFills &lt; 12 → buf +1% <span class="fc">// 희귀 진입 보정</span></div><div class="fm">annualFills &lt; 6 → buf +2% <span class="fc">// 극희귀 보정</span></div><div class="fm">cap = min(buf, 8%)</div></div>
-  <div class="isec"><div class="ittl">백테스트 엔진</div><div class="fm">Fill: 다음봉 LOW ≤ buyPrice 여야 체결</div><div class="fm">Stop/TP: 체결 후 캔들별 순차 확인</div><div class="fm">동시충돌: 같은 봉 → 보수적 LOSS</div><div class="fm">수수료+슬리피지: 0.15% 차감</div><div class="fm">Volume ≥ 20MA×80% · Close ≥ Low+Range×20%</div></div>
+  <div class="isec"><div class="ittl">백테스트 엔진</div><div class="fm">목적: 이 코인이 저점에서 반등을 잘 하는 코인인가 판별</div><div class="fm">진입가 기준이 아닌 반등 패턴 자체를 분석 → 코인 선별 용도</div><div class="fm">실제 진입가는 황금각 (피보나치+RSI+거래량)으로 결정</div><div class="fm">수수료+슬리피지: 0.15% 차감</div><div class="fm">Volume ≥ 20MA×80% · Close ≥ Low+Range×20%</div></div>
   <div class="isec"><div class="ittl">Monte Carlo 확률</div><div class="fm">2,000회 · hourly GBM · drift=0 (보수적)</div><div class="fm">14일 / 30일 내 각 BUY 도달 확률 계산</div></div>
   <div class="iver">RANGE CALC v1.0</div>
 </div>
@@ -1599,16 +1599,55 @@ function runBT(candles,bm,cfg){
 }
 
 function renderBT(bt,cfg){
-  el('btts').innerHTML='백테스트 기간: <b>'+fmtDT(bt.sTs)+'</b> ~ <b>'+fmtDT(bt.eTs)+'</b><br/>총 <b>'+Math.round(bt.bd)+'일</b> · 유효봉 <b>'+bt.vc+'회</b> <span style="color:var(--t3);font-size:9px">(현재 봉 제외, 완성봉 기준)</span>';
-  el('bttl').textContent='백테스트 ('+cfg.lbl+') — 현실 보정';
+  // ── 헤더 ──────────────────────────────────────
+  el('btts').innerHTML=
+    '분석 기간: <b>'+fmtDT(bt.sTs)+'</b> ~ <b>'+fmtDT(bt.eTs)+'</b><br/>'+
+    '총 <b>'+Math.round(bt.bd)+'일</b> · 샘플 <b>'+bt.vc+'회</b> '+
+    '<span style="color:var(--t3);font-size:9px">※ 진입가 기준 아닌 반등 패턴 분석</span>';
+  el('bttl').textContent='이 코인 반등 적합도 ('+cfg.lbl+')';
+
+  // ── 반등 빈도 ──────────────────────────────────
   el('fval').textContent='연 약 '+bt.af.toFixed(1)+'회';
   var ft=el('ftag');
-  if(bt.af<6){ft.textContent='극희귀';ft.className='ftag rare';}else if(bt.af<12){ft.textContent='희귀';ft.className='ftag ok';}else if(bt.af<24){ft.textContent='보통';ft.className='ftag ok';}else{ft.textContent='잦음';ft.className='ftag good';}
-  el('bttr').textContent=bt.b1T+'회';el('btwr').textContent=bt.b1WR.toFixed(1)+'%';el('btpf').textContent=bt.b1PF.toFixed(2);el('btev').textContent=(bt.b1EV>=0?'+':'')+bt.b1EV.toFixed(2)+'%';el('btbuf').textContent=(bt.rb*100).toFixed(0)+'%→'+(bt.ab*100).toFixed(0)+'%';el('btsk').textContent=bt.b1SK+'연속';
-  el('btbpct').textContent=bt.b1WR.toFixed(1)+'%';var fi=el('btbfill');fi.style.width=Math.min(100,bt.b1WR)+'%';fi.style.background=bt.b1WR>=58?'var(--G)':bt.b1WR>=44?'var(--A)':'var(--R)';
-  var sc=bt.b1WR*0.35+Math.min(bt.b1PF,5)*8+(bt.b1EV>0?10:0)-(bt.af<6?10:0);var pill=el('btpill');
-  if(bt.b1T<15){pill.textContent='데이터 부족';pill.className='btpill ok';} // 샘플 15회 미만 = 통계 불안정
-  else if(sc>=42){pill.textContent='우량';pill.className='btpill good';}else if(sc>=28){pill.textContent='적정';pill.className='btpill ok';}else{pill.textContent='주의';pill.className='btpill bad';}
+  if(bt.af<6){ft.textContent='기회 적음';ft.className='ftag rare';}
+  else if(bt.af<12){ft.textContent='가끔';ft.className='ftag ok';}
+  else if(bt.af<24){ft.textContent='보통';ft.className='ftag ok';}
+  else{ft.textContent='기회 많음';ft.className='ftag good';}
+
+  // ── 수치 ────────────────────────────────────────
+  el('bttr').textContent=bt.b1T+'회';
+  el('btwr').textContent=bt.b1WR.toFixed(1)+'%';
+  el('btpf').textContent=bt.b1PF.toFixed(2);
+  el('btev').textContent=(bt.b1EV>=0?'+':'')+bt.b1EV.toFixed(2)+'%';
+  el('btbuf').textContent=(bt.rb*100).toFixed(0)+'%→'+(bt.ab*100).toFixed(0)+'%';
+  el('btsk').textContent=bt.b1SK+'연속';
+
+  // ── 반등 성공률 바 ──────────────────────────────
+  el('btbpct').textContent=bt.b1WR.toFixed(1)+'%';
+  var fi=el('btbfill');
+  fi.style.width=Math.min(100,bt.b1WR)+'%';
+  fi.style.background=bt.b1WR>=58?'var(--G)':bt.b1WR>=44?'var(--A)':'var(--R)';
+
+  // ── 적합도 판정 ────────────────────────────────
+  // 기준: 이 코인이 저점에서 반등을 잘 하는가
+  // 실제 진입가(피보나치)와 별개 — 코인 선별 용도
+  var pill=el('btpill');
+  if(bt.b1T<15){
+    pill.textContent='샘플 부족';
+    pill.className='btpill ok';
+  } else {
+    var sc=bt.b1WR*0.35+Math.min(bt.b1PF,5)*8+(bt.b1EV>0?10:0)-(bt.af<6?10:0);
+    if(sc>=42){
+      pill.textContent='반등 우량';
+      pill.className='btpill good';
+    } else if(sc>=28){
+      pill.textContent='반등 보통';
+      pill.className='btpill ok';
+    } else {
+      pill.textContent='반등 약함';
+      pill.className='btpill bad';
+    }
+  }
   el('btcard').classList.add('on');
 }
 
@@ -2176,16 +2215,16 @@ function renderDiagnosis() {
   var tradeCount = G.bt.b1T||0;
   if(tradeCount < 15) {
     // 샘플 부족 — 점수에 영향 주지 않고 경고만
-    factors.push({icon:'⚠', lbl:'백테스트 샘플 부족', val:tradeCount+'회 (신뢰도 낮음)', cls:'warn'});
+    factors.push({icon:'⚠', lbl:'반등 샘플 부족', val:tradeCount+'회 — 다른 코인 고려', cls:'warn'});
   } else if(wr >= 58 && pf >= 1.5) {
     score += 20;
-    factors.push({icon:'✅', lbl:'백테스트 우량', val:'승률 '+wr.toFixed(1)+'% · PF '+pf.toFixed(2), cls:'good'});
+    factors.push({icon:'✅', lbl:'반등 우량 코인', val:'반등성공률 '+wr.toFixed(1)+'% · 수익배수 '+pf.toFixed(2), cls:'good'});
   } else if(wr >= 44 && pf >= 1.2) {
     score += 10;
-    factors.push({icon:'🔶', lbl:'백테스트 적정', val:'승률 '+wr.toFixed(1)+'% · PF '+pf.toFixed(2), cls:'warn'});
+    factors.push({icon:'🔶', lbl:'반등 보통 코인', val:'반등성공률 '+wr.toFixed(1)+'% · 수익배수 '+pf.toFixed(2), cls:'warn'});
   } else {
     score -= 5;
-    factors.push({icon:'❌', lbl:'백테스트 주의', val:'승률 '+wr.toFixed(1)+'% · PF '+pf.toFixed(2), cls:'bad'});
+    factors.push({icon:'❌', lbl:'반등 약한 코인', val:'반등성공률 '+wr.toFixed(1)+'% · 수익배수 '+pf.toFixed(2), cls:'bad'});
   }
 
   // ── 4. 7일 방향성 (Monte Carlo) ─────────────
@@ -2930,7 +2969,7 @@ function renderMultiCard(key, r) {
   score = Math.max(0,Math.min(100,score));
 
   var pillCls = bt.b1WR>=58&&bt.b1PF>=1.5?'good':bt.b1WR>=44?'ok':'bad';
-  var pillTxt = bt.b1WR>=58&&bt.b1PF>=1.5?'우량':bt.b1WR>=44?'적정':'주의';
+  var pillTxt = bt.b1T<15?'샘플부족':bt.b1WR>=58&&bt.b1PF>=1.5?'반등우량':bt.b1WR>=44?'반등보통':'반등약함';
   var biasTxt = r.isBull===true?'▲ 상승':r.isBull===false?'▼ 하락':'—';
   var biasCls = r.isBull===true?'bull':r.isBull===false?'bear':'';
   var diagCls, diagTxt;
