@@ -339,6 +339,27 @@ html,body{background:var(--bg0);color:var(--t1);font-family:var(--ui);font-size:
 .sr-text b{color:var(--t1)}
 .guide-ver{text-align:center;font-family:var(--num);font-size:10px;color:var(--t3);padding:20px}
 
+
+/* ── 종합 진단 카드 ── */
+.diag-card{background:var(--bg1);border-bottom:1px solid var(--bd);padding:14px 16px}
+.diag-header{display:flex;align-items:flex-start;gap:10px;margin-bottom:12px}
+.diag-icon{font-size:24px;flex-shrink:0;line-height:1.2}
+.diag-title{font-size:14px;font-weight:700;color:var(--t1);margin-bottom:3px}
+.diag-sub{font-size:11px;color:var(--t2);line-height:1.5}
+.diag-score-wrap{margin-left:auto;text-align:center;flex-shrink:0}
+.diag-score{font-family:var(--num);font-size:24px;font-weight:700;line-height:1}
+.diag-score-lbl{font-size:9px;color:var(--t3);margin-top:2px;text-transform:uppercase;letter-spacing:.04em}
+.diag-factors{display:flex;flex-direction:column;gap:5px;margin-bottom:10px}
+.df-row{display:flex;align-items:center;gap:8px;padding:6px 8px;background:var(--bg2);border-radius:4px;font-size:11px}
+.df-icon{font-size:13px;flex-shrink:0}
+.df-lbl{color:var(--t2);flex:1}
+.df-val{font-family:var(--num);font-size:10px;font-weight:600;flex-shrink:0}
+.df-val.good{color:var(--G)}.df-val.warn{color:var(--A)}.df-val.bad{color:var(--R)}.df-val.neut{color:var(--t3)}
+.diag-action{padding:10px 12px;border-radius:4px;font-size:12px;font-weight:600;line-height:1.55;text-align:center}
+.diag-action.go{background:var(--Gd);color:var(--G);border:1px solid rgba(0,177,64,.25)}
+.diag-action.wait{background:var(--Ad);color:var(--A);border:1px solid rgba(240,176,64,.25)}
+.diag-action.stop{background:var(--Rd);color:var(--R);border:1px solid rgba(240,64,64,.25)}
+
 </style>
 </head>
 <body>
@@ -472,11 +493,11 @@ html,body{background:var(--bg0);color:var(--t1);font-family:var(--ui);font-size:
     <!-- MODE TOGGLE -->
     <div class="mode-bar">
       <button class="mode-btn active-range" id="mode-range" onclick="setMode('range')">
-        📉 Range 매수<span>하단 분할매수</span>
+        📉 하락 매수<span>조정·횡보 구간</span>
       </button>
       <div class="mode-divider"></div>
       <button class="mode-btn" id="mode-break" onclick="setMode('break')">
-        🚀 Breakout 매수<span>고점 돌파 추세</span>
+        🚀 상승 매수<span>돌파·모멘텀 구간</span>
       </button>
     </div>
     <div class="mode-hint range on" id="mode-hint"></div>
@@ -519,30 +540,28 @@ html,body{background:var(--bg0);color:var(--t1);font-family:var(--ui);font-size:
           <div class="mcrow"><span class="mclbl">30일 도달</span><div class="mctrack"><div class="mcbar" id="b2b30" style="background:var(--t3)"></div></div><span class="mcpct" id="b2p30" style="color:var(--t2)">—</span></div>
         </div>
       </div>
-      <div class="buylv lv3">
-        <div class="lvbg" id="lb3" style="width:25%"></div>
-        <div class="lvtop">
-          <div><div style="display:flex;align-items:center;margin-bottom:3px"><span class="lvbadge" id="b3badge">BUY 3</span><span class="lvname" id="b3name">딥바이 · ATR 하방</span></div><div class="lvmethod" id="b3m">—</div></div>
-          <div><div class="lvprice" id="b3p">—</div><div class="pct-badge" id="b3pct">—</div><div class="lvtp" id="b3g">—</div><div class="lvloss" id="b3l">—</div></div>
+    </div>
+    <!-- 종합 진단 카드 -->
+    <div class="diag-card" id="diag-card" style="display:none">
+      <div class="diag-header">
+        <span class="diag-icon" id="diag-icon">🤔</span>
+        <div>
+          <div class="diag-title" id="diag-title">종합 진단 분석 중...</div>
+          <div class="diag-sub" id="diag-sub">—</div>
         </div>
-        <div class="lvstats">
-          <div class="ls"><span class="lsl">실승률</span><span class="lsv" id="b3wr" style="color:var(--P)">—</span></div>
-          <div class="ls"><span class="lsl">Fill률</span><span class="lsv" id="b3fr" style="color:var(--t2)">—</span></div>
-          <div class="ls"><span class="lsl">PF</span><span class="lsv" id="b3pf" style="color:var(--B)">—</span></div>
-          <div class="ls"><span class="lsl">비중</span><span class="lsv" id="b3wt" style="color:var(--P)">—</span></div>
-        </div>
-        <div class="evtag" id="b3ev">EV —</div>
-        <div class="mcwrap">
-          <div class="mcrow"><span class="mclbl">14일 도달</span><div class="mctrack"><div class="mcbar" id="b3b14" style="background:var(--P)"></div></div><span class="mcpct" id="b3p14" style="color:var(--P)">—</span></div>
-          <div class="mcrow"><span class="mclbl">30일 도달</span><div class="mctrack"><div class="mcbar" id="b3b30" style="background:var(--t3)"></div></div><span class="mcpct" id="b3p30" style="color:var(--t2)">—</span></div>
+        <div class="diag-score-wrap">
+          <div class="diag-score" id="diag-score">—</div>
+          <div class="diag-score-lbl">점수</div>
         </div>
       </div>
+      <div class="diag-factors" id="diag-factors"></div>
+      <div class="diag-action" id="diag-action">—</div>
     </div>
     <div class="mcstatus" id="mcstatus">⏳ Monte Carlo 계산 중...</div>
     <div class="wtpanel">
       <div class="wttitle">분할매수 비중 가이드</div>
-      <div class="wtbars"><div class="wb wb1" id="wg1" style="flex:3">B1</div><div class="wb wb2" id="wg2" style="flex:4">B2</div><div class="wb wb3" id="wg3" style="flex:3">B3</div></div>
-      <div class="wtlbls"><div class="wtlbl" id="wl1">—</div><div class="wtlbl" id="wl2">—</div><div class="wtlbl" id="wl3">—</div></div>
+      <div class="wtbars"><div class="wb wb1" id="wg1" style="flex:5">B1</div><div class="wb wb2" id="wg2" style="flex:5">B2</div><div class="wb wb3" id="wg3" style="flex:0;display:none"></div></div>
+      <div class="wtlbls" style="grid-template-columns:1fr 1fr"><div class="wtlbl" id="wl1">—</div><div class="wtlbl" id="wl2">—</div><div class="wtlbl" id="wl3" style="display:none">—</div></div>
     </div>
     <div class="sumstrip">
       <div class="ss"><div class="ssl">목표가 TP</div><div class="ssv" id="rtp" style="color:var(--A)">—</div></div>
@@ -686,11 +705,11 @@ html,body{background:var(--bg0);color:var(--t1);font-family:var(--ui);font-size:
       결과 화면에서 <b>두 가지 모드</b> 중 하나를 선택하세요.
       <div class="mode-explain">
         <div class="me-card">
-          <div class="me-title range">📉 Range 매수</div>
+          <div class="me-title range">📉 하락 매수</div>
           <div class="me-body">가격이 내려올 때 사서 반등을 기다리는 전략. 횡보장·조정장에 유리.</div>
         </div>
         <div class="me-card">
-          <div class="me-title break">🚀 Breakout 매수</div>
+          <div class="me-title break">🚀 상승 매수</div>
           <div class="me-body">가격이 고점을 뚫고 올라갈 때 따라 사는 전략. 상승장에 유리.</div>
         </div>
       </div>
@@ -702,10 +721,10 @@ html,body{background:var(--bg0);color:var(--t1);font-family:var(--ui);font-size:
   <div class="guide-step">
     <div class="gs-head"><div class="gs-num">4</div><div class="gs-title">BUY 1·2·3 지정가 주문</div></div>
     <div class="gs-body">
-      앱이 제시하는 <b>BUY 1, BUY 2, BUY 3</b> 가격에 지정가 주문을 거래소에 미리 걸어두세요.<br><br>
+      앱이 제시하는 <b>BUY 1, BUY 2</b> 가격에 지정가 주문을 거래소에 미리 걸어두세요.<br><br>
       <b>BUY 1</b> — 가장 빠르게 도달할 가능성이 높은 가격 (비중 가장 큼)<br>
       <b>BUY 2</b> — 더 내려올 때를 대비한 두 번째 가격<br>
-      <b>BUY 3</b> — 큰 폭 하락 시 마지막 매수 (비중 작음)<br><br>
+
       각 카드의 <b>14일 도달 %</b>를 보고 너무 낮으면(10% 미만) 그 레벨은 건너뛰세요.
       <div class="gs-warn"><b>❌ 시장가 주문 금지</b> — 지금 당장 사고 싶어도 반드시 지정가로 걸어두세요. 시장가로 사면 이 앱의 의미가 없습니다.</div>
     </div>
@@ -753,11 +772,11 @@ html,body{background:var(--bg0);color:var(--t1);font-family:var(--ui);font-size:
     </div>
     <div class="faq-item">
       <div class="faq-q">Q. Breakout 모드는 언제 쓰나요?</div>
-      <div class="faq-a">앱이 자동으로 제안합니다. 현재가가 고점 근처일 때 Breakout 버튼이 주황색으로 강조됩니다. 이때 거래량도 많으면(🔥) 돌파 매수를 고려하세요.</div>
+      <div class="faq-a">앱이 자동으로 제안합니다. 현재가가 고점 근처일 때 상승 매수 버튼이 주황색으로 강조됩니다. 이때 거래량도 많으면(🔥) 돌파 매수를 고려하세요.</div>
     </div>
     <div class="faq-item">
       <div class="faq-q">Q. 14일 도달 확률이 20%면 진입해야 하나요?</div>
-      <div class="faq-a">BUY 1 기준 20% 미만이면 그 레벨은 건너뛰는 게 낫습니다. 확률이 낮다는 건 그 가격까지 내려올 가능성이 낮다는 뜻입니다. BUY 2, BUY 3는 더 낮아도 괜찮습니다 — 소량이니까요.</div>
+      <div class="faq-a">BUY 1 기준 20% 미만이면 그 레벨은 건너뛰는 게 낫습니다. 확률이 낮다는 건 그 가격까지 내려올 가능성이 낮다는 뜻입니다. BUY 2는 더 낮아도 괜찮습니다 — 소량이니까요.</div>
     </div>
   </div>
 
@@ -784,6 +803,9 @@ var G={coin:'AAVE',tf:'4h',bt:null,bm:null,res:null,liveTimer:null,livePair:null
   FEE:0.0015,AP:14,VP:20,AS:2.5,CC:0.20,VR:0.80};
 
 function el(id){return document.getElementById(id);}
+
+function elS(id,fn){var e=document.getElementById(id);if(e)fn(e);}
+
 function fp(n){
   if(n==null||isNaN(n))return'—';
   var v=Math.abs(n);
@@ -1048,7 +1070,7 @@ function calculate(noScroll){
     // 배지 이름
     el('b1name').textContent='즉시진입 · 돌파 직후';
     el('b2name').textContent='눌림 대기 · 재확인 진입';
-    el('b3name').textContent='선제 진입 · 고점 직전';
+    (document.getElementById('b3name')||{}).textContent='선제 진입 · 고점 직전';
     // 돌파 상태 메시지
     var statusTxt = br.isBroken
       ? '✅ 고점 이미 돌파 — 눌림목 진입 대기'
@@ -1074,17 +1096,17 @@ function calculate(noScroll){
     el('b2g').textContent='↑'+((tp-b2)/b2*100).toFixed(2)+'% → TP';el('b2l').textContent='↓ 손절 '+l2.toFixed(2)+'%';
     el('b2wr').textContent='—';el('b2fr').textContent='—';el('b2pf').textContent='—';el('b2wt').textContent='40%';
     el('b2ev').textContent='EV —';el('b2ev').className='evtag evz';el('lb2').style.width='60%';
-    el('b3p').textContent='$'+fp(b3);el('b3m').textContent='High × 99.5% (선제, 공격적)';
-    el('b3g').textContent='↑'+((tp-b3)/b3*100).toFixed(2)+'% → TP';el('b3l').textContent='↓ 손절 '+l3.toFixed(2)+'%';
-    el('b3wr').textContent='—';el('b3fr').textContent='—';el('b3pf').textContent='—';el('b3wt').textContent='20%';
-    el('b3ev').textContent='EV —';el('b3ev').className='evtag evz';el('lb3').style.width='40%';
+    (document.getElementById('b3p')||{}).textContent='$'+fp(b3);(document.getElementById('b3m')||{}).textContent='High × 99.5% (선제, 공격적)';
+    (document.getElementById('b3g')||{}).textContent='↑'+((tp-b3)/b3*100).toFixed(2)+'% → TP';(document.getElementById('b3l')||{}).textContent='↓ 손절 '+l3.toFixed(2)+'%';
+    (document.getElementById('b3wr')||{}).textContent='—';(document.getElementById('b3fr')||{}).textContent='—';(document.getElementById('b3pf')||{}).textContent='—';(document.getElementById('b3wt')||{}).textContent='20%';
+    (document.getElementById('b3ev')||{}).textContent='EV —';(document.getElementById('b3ev')||{}).className='evtag evz';(document.getElementById('lb3')||{}).style.width='40%';
     // % 배지
     el('b1pct').textContent=((b1-lp)/lp*100).toFixed(2)+'% (현재가 대비)';
     el('b1pct').className='pct-badge '+(b1<=lp?'neg':'pos');
     el('b2pct').textContent=((b2-lp)/lp*100).toFixed(2)+'% (현재가 대비)';
     el('b2pct').className='pct-badge '+(b2<=lp?'neg':'pos');
-    el('b3pct').textContent=((b3-lp)/lp*100).toFixed(2)+'% (현재가 대비)';
-    el('b3pct').className='pct-badge '+(b3<=lp?'neg':'pos');
+    (document.getElementById('b3pct')||{}).textContent=((b3-lp)/lp*100).toFixed(2)+'% (현재가 대비)';
+    (document.getElementById('b3pct')||{}).className='pct-badge '+(b3<=lp?'neg':'pos');
     // 분할비중
     el('wg1').style.flex=40;el('wg2').style.flex=40;el('wg3').style.flex=20;
     el('wl1').textContent='진입1 40%';el('wl2').textContent='눌림 40%';el('wl3').textContent='선제 20%';
@@ -1105,7 +1127,7 @@ function calculate(noScroll){
   // 이름 원복
   el('b1name').textContent='즉시진입 · 최적버퍼';
   el('b2name').textContent='지지선 대기 · Pivot';
-  el('b3name').textContent='딥바이 · ATR 하방';
+  (document.getElementById('b3name')||{}).textContent='딥바이 · ATR 하방';
   var l1=atr*G.AS/b1*100,l2=atr*G.AS/b2*100,l3=atr*G.AS/b3*100;
   var d=G.bt||{b1WR:0,b1PF:0,b1EV:0,b1FR:0,b2WR:0,b2PF:0,b2EV:0,b2FR:0,b3WR:0,b3PF:0,b3EV:0,b3FR:0};
   var hb=!!G.bt;
@@ -1122,7 +1144,7 @@ function calculate(noScroll){
   function pctStr(p){return (p>=0?'+':'')+p.toFixed(2)+'% (현재가 대비)';}
   el('b1pct').textContent=pctStr(p1);el('b1pct').className='pct-badge '+(p1<0?'neg':'pos');
   el('b2pct').textContent=pctStr(p2pct);el('b2pct').className='pct-badge '+(p2pct<0?'neg':'pos');
-  el('b3pct').textContent=pctStr(p3pct);el('b3pct').className='pct-badge '+(p3pct<0?'neg':'pos');
+  (document.getElementById('b3pct')||{}).textContent=pctStr(p3pct);(document.getElementById('b3pct')||{}).className='pct-badge '+(p3pct<0?'neg':'pos');
   // 하이브리드 버퍼 표시
   var curATR=G.bt?G.bt.la:atr;
   var avgATR=G.bt?G.bt.la:atr; // avgATR 근사 (실제 백테스트에서 avg 따로 구하면 더 정확)
@@ -1134,7 +1156,7 @@ function calculate(noScroll){
     el('b1m').style.color='';
   }el('b1g').textContent='↑'+((tp-b1)/b1*100).toFixed(2)+'% → TP';el('b1l').textContent='↓ 감내손실 '+l1.toFixed(2)+'%';el('b1wr').textContent=hb?d.b1WR.toFixed(1)+'%':'—';el('b1fr').textContent=hb?d.b1FR.toFixed(1)+'%':'—';el('b1pf').textContent=hb?d.b1PF.toFixed(2):'—';el('b1wt').textContent=w1+'%';el('b1ev').textContent=et(d.b1EV,hb);el('b1ev').className=ec(d.b1EV);el('lb1').style.width=Math.max(15,hb?d.b1FR:60)+'%';
   el('b2p').textContent='$'+fp(b2);el('b2m').textContent=ps1<low?'S1 = 2×Pivot−High':'S2 = Pivot−Range';el('b2g').textContent='↑'+((tp-b2)/b2*100).toFixed(2)+'% → TP';el('b2l').textContent='↓ 감내손실 '+l2.toFixed(2)+'%';el('b2wr').textContent=hb?d.b2WR.toFixed(1)+'%':'—';el('b2fr').textContent=hb?d.b2FR.toFixed(1)+'%':'—';el('b2pf').textContent=hb?d.b2PF.toFixed(2):'—';el('b2wt').textContent=w2+'%';el('b2ev').textContent=et(d.b2EV,hb);el('b2ev').className=ec(d.b2EV);el('lb2').style.width=Math.max(8,hb?d.b2FR:40)+'%';
-  el('b3p').textContent='$'+fp(b3);el('b3m').textContent='Low − ATR14×0.35';el('b3g').textContent='↑'+((tp-b3)/b3*100).toFixed(2)+'% → TP';el('b3l').textContent='↓ 감내손실 '+l3.toFixed(2)+'%';el('b3wr').textContent=hb?d.b3WR.toFixed(1)+'%':'—';el('b3fr').textContent=hb?d.b3FR.toFixed(1)+'%':'—';el('b3pf').textContent=hb?d.b3PF.toFixed(2):'—';el('b3wt').textContent=w3+'%';el('b3ev').textContent=et(d.b3EV,hb);el('b3ev').className=ec(d.b3EV);el('lb3').style.width=Math.max(4,hb?d.b3FR:25)+'%';
+  (document.getElementById('b3p')||{}).textContent='$'+fp(b3);(document.getElementById('b3m')||{}).textContent='Low − ATR14×0.35';(document.getElementById('b3g')||{}).textContent='↑'+((tp-b3)/b3*100).toFixed(2)+'% → TP';(document.getElementById('b3l')||{}).textContent='↓ 감내손실 '+l3.toFixed(2)+'%';(document.getElementById('b3wr')||{}).textContent=hb?d.b3WR.toFixed(1)+'%':'—';(document.getElementById('b3fr')||{}).textContent=hb?d.b3FR.toFixed(1)+'%':'—';(document.getElementById('b3pf')||{}).textContent=hb?d.b3PF.toFixed(2):'—';(document.getElementById('b3wt')||{}).textContent=w3+'%';(document.getElementById('b3ev')||{}).textContent=et(d.b3EV,hb);(document.getElementById('b3ev')||{}).className=ec(d.b3EV);(document.getElementById('lb3')||{}).style.width=Math.max(4,hb?d.b3FR:25)+'%';
   el('wg1').style.flex=Math.max(w1,5);el('wg2').style.flex=Math.max(w2,5);el('wg3').style.flex=Math.max(w3,5);el('wl1').textContent='BUY1 '+w1+'%';el('wl2').textContent='BUY2 '+w2+'%';el('wl3').textContent='BUY3 '+w3+'%';
   el('rtp').textContent='$'+fp(tp);el('rstop').textContent='$'+fp(s1);el('rvol').textContent=fp(atr)+' / '+(atr/low*100).toFixed(1)+'%';
   renderBar(high,low,b1,b2,b3,tp,s1);
@@ -1144,6 +1166,8 @@ function calculate(noScroll){
   if(!noScroll) setTimeout(function(){el('results').scrollIntoView({behavior:'smooth',block:'start'});},80);
   startMC(close,G.bt?(G.bt.la/low*Math.sqrt(24)):0.039,b1,b2,b3,tp,s1,high,low);
   renderDirection(close, G.bt?(G.bt.la/low*Math.sqrt(24)):0.039);
+  // 1차 진단 (MC 전 상태로 즉시)
+  setTimeout(renderDiagnosis, 100);
 }
 
 function renderBar(high,low,b1,b2,b3,tp,sl){
@@ -1247,6 +1271,7 @@ function renderDirection(S0, dv) {
     el('dir-flat-pct').textContent = flatP + '%';
     el('dir-sub').textContent      = '기준: 현재가 ±3% 이내 = 보합 · 3,000회 시뮬레이션 · drift=0';
 
+    renderDiagnosis(); // 방향성 계산 완료 후 재진단
     var v = el('dir-verdict');
     if (r.up >= 0.55) {
       v.textContent = '▲ 강세 우위 — 매수 유리한 구간';
@@ -1286,6 +1311,9 @@ function startMC(S0,dv,b1,b2,b3,tp,s1,high,low){
       sp('b1b14','b1b30','b1p14','b1p30',r14[0]/N,r30[0]/N);
       sp('b2b14','b2b30','b2p14','b2p30',r14[1]/N,r30[1]/N);
       sp('b3b14','b3b30','b3p14','b3p30',r14[2]/N,r30[2]/N);
+      G_MC={r14:[r14[0]/N,r14[1]/N,r14[2]/N],r30:[r30[0]/N,r30[1]/N,r30[2]/N],ready:true};
+      if(tp&&s1&&high&&low&&G.res){renderQuant(G.res.buy1,G.res.buy2,G.res.buy3,tp,s1,S0,low,high);}
+      renderDiagnosis();
       // mc 표시 제거됨
     }
   }
@@ -1463,6 +1491,150 @@ function checkMTF(bm,ts,cfg){
 }
 
 
+
+// ════════════════════════════════════════════════
+//  종합 진단 (6가지 신호 종합)
+// ════════════════════════════════════════════════
+function renderDiagnosis() {
+  var card = el('diag-card');
+  if(!G.bt) { card.style.display='none'; return; }
+  card.style.display='block';
+
+  var score = 0;
+  var factors = [];
+
+  // ── 1. Multi-TF 바이어스 ─────────────────────
+  var mtfOn = el('mtf-badge').classList.contains('on');
+  var bbarOn = el('bbar').classList.contains('on');
+  var isBull = el('bbar').classList.contains('bull');
+  if(mtfOn) {
+    score += 25;
+    factors.push({icon:'★', lbl:'Multi-TF 강추', val:'상위TF 동일 방향', cls:'good'});
+  } else if(bbarOn && isBull) {
+    score += 15;
+    factors.push({icon:'▲', lbl:'상위TF 강세', val:'진입 유리', cls:'good'});
+  } else if(bbarOn && !isBull) {
+    score -= 10;
+    factors.push({icon:'▼', lbl:'상위TF 약세', val:'신중 필요', cls:'bad'});
+  } else {
+    factors.push({icon:'—', lbl:'바이어스 정보 없음', val:'검색 필요', cls:'neut'});
+  }
+
+  // ── 2. 거래량 ────────────────────────────────
+  var vr = G.curVolRatio || 0;
+  if(vr >= 1.5) {
+    score += 20;
+    factors.push({icon:'🔥', lbl:'거래량 충분', val:(vr*100).toFixed(0)+'% (평균 대비)', cls:'good'});
+  } else if(vr >= 0.8) {
+    score += 8;
+    factors.push({icon:'⚡', lbl:'거래량 보통', val:(vr*100).toFixed(0)+'%', cls:'warn'});
+  } else if(vr > 0) {
+    score -= 10;
+    factors.push({icon:'⚠', lbl:'거래량 부족', val:(vr*100).toFixed(0)+'%', cls:'bad'});
+  } else {
+    factors.push({icon:'—', lbl:'거래량 정보 없음', val:'실시간 ON 권장', cls:'neut'});
+  }
+
+  // ── 3. 백테스트 품질 ─────────────────────────
+  var wr = G.bt.b1WR || 0;
+  var pf = G.bt.b1PF || 0;
+  if(wr >= 58 && pf >= 1.5) {
+    score += 20;
+    factors.push({icon:'✅', lbl:'백테스트 우량', val:'승률 '+wr.toFixed(1)+'% · PF '+pf.toFixed(2), cls:'good'});
+  } else if(wr >= 44 && pf >= 1.2) {
+    score += 10;
+    factors.push({icon:'🔶', lbl:'백테스트 적정', val:'승률 '+wr.toFixed(1)+'% · PF '+pf.toFixed(2), cls:'warn'});
+  } else {
+    score -= 5;
+    factors.push({icon:'❌', lbl:'백테스트 주의', val:'승률 '+wr.toFixed(1)+'% · PF '+pf.toFixed(2), cls:'bad'});
+  }
+
+  // ── 4. 7일 방향성 (Monte Carlo) ─────────────
+  var upPctEl = el('dir-up-pct');
+  var dnPctEl = el('dir-dn-pct');
+  var verdictEl = el('dir-verdict');
+  var upP = upPctEl ? parseFloat(upPctEl.textContent) : 0;
+  var dnP = dnPctEl ? parseFloat(dnPctEl.textContent) : 0;
+  if(!isNaN(upP) && !isNaN(dnP) && (upP+dnP)>0) {
+    if(upP >= 50) {
+      score += 15;
+      factors.push({icon:'📈', lbl:'7일 방향성', val:'상승 '+upP.toFixed(1)+'%', cls:'good'});
+    } else if(dnP >= 55) {
+      score -= 10;
+      factors.push({icon:'📉', lbl:'7일 방향성', val:'하락 '+dnP.toFixed(1)+'%', cls:'bad'});
+    } else {
+      score += 5;
+      factors.push({icon:'↔', lbl:'7일 방향성', val:'중립 (상승 '+upP.toFixed(1)+'%)', cls:'warn'});
+    }
+  } else {
+    factors.push({icon:'⏳', lbl:'7일 방향성', val:'계산 중...', cls:'neut'});
+  }
+
+  // ── 5. MC 14일 BUY1 도달 확률 ───────────────
+  if(G_MC.ready) {
+    var mc1 = G_MC.r14[0] * 100;
+    if(mc1 >= 50) {
+      score += 15;
+      factors.push({icon:'🎯', lbl:'BUY1 도달 확률', val:'14일 내 '+mc1.toFixed(0)+'%', cls:'good'});
+    } else if(mc1 >= 25) {
+      score += 5;
+      factors.push({icon:'🎯', lbl:'BUY1 도달 확률', val:'14일 내 '+mc1.toFixed(0)+'%', cls:'warn'});
+    } else {
+      score -= 5;
+      factors.push({icon:'🎯', lbl:'BUY1 도달 확률', val:'14일 내 '+mc1.toFixed(0)+'% (낮음)', cls:'bad'});
+    }
+  } else {
+    factors.push({icon:'⏳', lbl:'BUY1 도달 확률', val:'MC 계산 중...', cls:'neut'});
+  }
+
+  score = Math.max(0, Math.min(100, score));
+
+  // ── 점수 → 아이콘/제목/행동 ─────────────────
+  var icon, title, sub, actionCls, action;
+  if(score >= 70) {
+    icon='🟢'; title='진입 유리 — 좋은 타이밍';
+    sub='여러 신호가 동시에 매수를 지지합니다.';
+    actionCls='go';
+    action='✅ BUY1 지정가 주문을 걸어두세요. 비중은 Kelly 비율 참고.';
+  } else if(score >= 50) {
+    icon='🟡'; title='신중 진입 — 조건부 가능';
+    sub='일부 신호가 긍정적이나 리스크 요인이 있습니다.';
+    actionCls='wait';
+    action='⚡ BUY1만 소량(절반 비중) 진입. BUY2는 추가 확인 후 결정.';
+  } else if(score >= 30) {
+    icon='🟠'; title='대기 권장 — 신호 혼조';
+    sub='긍정·부정 신호가 섞여 있어 타이밍이 불분명합니다.';
+    actionCls='wait';
+    action='⏳ 지금은 기다리세요. 바이어스나 거래량이 개선될 때까지 대기.';
+  } else {
+    icon='🔴'; title='진입 비추천 — 불리한 환경';
+    sub='여러 신호가 매수에 불리합니다.';
+    actionCls='stop';
+    action='❌ 이 코인은 패스. 다른 코인을 검색하거나 다음 기회를 기다리세요.';
+  }
+
+  // ── 렌더링 ───────────────────────────────────
+  el('diag-icon').textContent = icon;
+  el('diag-title').textContent = title;
+  el('diag-sub').textContent = sub;
+
+  var scoreEl = el('diag-score');
+  scoreEl.textContent = score;
+  scoreEl.style.color = score>=70?'var(--G)':score>=50?'var(--A)':score>=30?'#ff6400':'var(--R)';
+
+  var fEl = el('diag-factors');
+  fEl.innerHTML = factors.map(function(f){
+    return '<div class="df-row">'
+      +'<span class="df-icon">'+f.icon+'</span>'
+      +'<span class="df-lbl">'+f.lbl+'</span>'
+      +'<span class="df-val '+f.cls+'">'+f.val+'</span>'
+      +'</div>';
+  }).join('');
+
+  el('diag-action').textContent = action;
+  el('diag-action').className = 'diag-action ' + actionCls;
+}
+
 // ════════════════════════════════════════════════
 //  QUANT ENGINE
 // ════════════════════════════════════════════════
@@ -1600,14 +1772,14 @@ function setMode(mode) {
   var rb = el('mode-range'), bb = el('mode-break');
   rb.className = 'mode-btn' + (mode==='range' ? ' active-range' : '');
   bb.className = 'mode-btn' + (mode==='break' ? ' active-break' : '');
-  el('mode-seclbl').textContent = mode==='range' ? '추천 매수가 3단계' : '🚀 Breakout 진입가 3단계';
+  el('mode-seclbl').textContent = mode==='range' ? '📉 하락 매수 — 추천 매수가' : '🚀 상승 매수 — 진입가 3단계';
   var hint = el('mode-hint');
   if(mode==='range'){
     hint.className='mode-hint range on';
-    hint.textContent='📉 Range 하단 매수 — 현재 봉 Low 근처에서 분할매수. 횡보·조정장에 유효.';
+    hint.textContent='📉 하락 매수 — 가격이 내려올 때 낮은 가격에 지정가 매수. 횡보·조정장에 유효.';
   } else {
     hint.className='mode-hint break on';
-    hint.textContent='🚀 Breakout 매수 — High 돌파 후 눌림목 진입. 상승 추세·모멘텀 장에 유효.';
+    hint.textContent='🚀 상승 매수 — 고점을 뚫고 올라갈 때 따라 진입. 상승 추세·모멘텀 장에 유효.';
   }
   // badge 색 변경
   ['b1badge','b2badge','b3badge'].forEach(function(id){
