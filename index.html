@@ -360,6 +360,83 @@ html,body{background:var(--bg0);color:var(--t1);font-family:var(--ui);font-size:
 .diag-action.wait{background:var(--Ad);color:var(--A);border:1px solid rgba(240,176,64,.25)}
 .diag-action.stop{background:var(--Rd);color:var(--R);border:1px solid rgba(240,64,64,.25)}
 
+
+/* ── 통합분석 탭 ── */
+.multi-search{padding:10px 16px;background:var(--bg1);border-bottom:1px solid var(--bd)}
+.multi-sbox{position:relative}
+.multi-input{width:100%;background:var(--bg2);border:1px solid var(--bd);border-radius:4px;
+  padding:10px 44px 10px 12px;font-family:var(--num);font-size:16px;font-weight:500;
+  color:var(--t1);outline:none;text-transform:uppercase;-webkit-appearance:none}
+.multi-input:focus{border-color:var(--G)}
+.multi-input::placeholder{text-transform:none;color:var(--t3);font-family:var(--ui);font-size:13px}
+.multi-go{position:absolute;right:6px;top:50%;transform:translateY(-50%);
+  background:var(--G);border:none;width:28px;height:28px;border-radius:3px;
+  cursor:pointer;display:flex;align-items:center;justify-content:center}
+.multi-go:active{background:var(--Gdk)}.multi-go svg{width:13px;height:13px}
+.multi-lov{display:none;align-items:center;justify-content:center;gap:10px;
+  padding:12px 16px;background:var(--bg1);border-bottom:1px solid var(--bd);font-size:11px;color:var(--t2)}
+.multi-lov.on{display:flex}
+.mtf-coin{padding:10px 16px;background:var(--bg1);border-bottom:1px solid var(--bd);
+  font-size:13px;font-weight:700;display:none}
+.mtf-coin.on{display:flex;align-items:center;justify-content:space-between}
+.mtf-price{font-family:var(--num);font-size:16px;font-weight:700;color:var(--G)}
+.mtf-chg{font-family:var(--num);font-size:11px}
+.mtf-chg.up{color:var(--G)}.mtf-chg.dn{color:var(--R)}
+/* TF 카드 */
+.mtf-card{background:var(--bg1);border-bottom:1px solid var(--bd);padding:12px 16px}
+.mtf-card-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}
+.mtf-tf-badge{font-family:var(--num);font-size:11px;font-weight:700;padding:3px 10px;
+  border-radius:3px;letter-spacing:.04em}
+.mtf-tf-badge.tf15{background:rgba(155,89,247,.15);color:var(--P);border:1px solid rgba(155,89,247,.3)}
+.mtf-tf-badge.tf1h{background:rgba(51,112,255,.15);color:var(--B);border:1px solid rgba(51,112,255,.3)}
+.mtf-tf-badge.tf4h{background:rgba(0,177,64,.15);color:var(--G);border:1px solid rgba(0,177,64,.3)}
+.mtf-tf-badge.tf1d{background:rgba(240,176,64,.15);color:var(--A);border:1px solid rgba(240,176,64,.3)}
+.mtf-head-right{display:flex;align-items:center;gap:6px}
+.mtf-pill{font-family:var(--num);font-size:9px;font-weight:700;padding:2px 7px;border-radius:2px}
+.mtf-pill.good{background:var(--Gd);color:var(--G)}.mtf-pill.ok{background:var(--Ad);color:var(--A)}.mtf-pill.bad{background:var(--Rd);color:var(--R)}
+.mtf-bias{font-size:10px;font-weight:600;padding:2px 6px;border-radius:2px}
+.mtf-bias.bull{background:rgba(0,177,64,.1);color:var(--G)}.mtf-bias.bear{background:rgba(240,64,64,.1);color:var(--R)}
+/* BUY 가격 행 */
+.mtf-buy-row{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-bottom:8px}
+.mtf-buy{background:var(--bg2);border:1px solid var(--bd);border-radius:4px;padding:8px 10px}
+.mtf-buy-lbl{font-size:9px;text-transform:uppercase;letter-spacing:.04em;margin-bottom:3px}
+.mtf-buy.b1 .mtf-buy-lbl{color:var(--G)}.mtf-buy.b2 .mtf-buy-lbl{color:var(--B)}
+.mtf-buy-price{font-family:var(--num);font-size:15px;font-weight:700}
+.mtf-buy.b1 .mtf-buy-price{color:var(--G)}.mtf-buy.b2 .mtf-buy-price{color:var(--B)}
+.mtf-buy-pct{font-family:var(--num);font-size:9px;margin-top:2px}
+.mtf-buy-pct.neg{color:var(--G)}.mtf-buy-pct.pos{color:var(--R)}
+/* 통계 행 */
+.mtf-stats{display:grid;grid-template-columns:repeat(4,1fr);background:var(--bd);
+  border-radius:4px;overflow:hidden;gap:1px;margin-bottom:8px}
+.mtf-stat{background:var(--bg2);padding:6px 8px;text-align:center}
+.mtf-stat-l{font-size:9px;color:var(--t3);text-transform:uppercase;letter-spacing:.03em;margin-bottom:2px}
+.mtf-stat-v{font-family:var(--num);font-size:11px;font-weight:600}
+/* MC 확률 행 */
+.mtf-mc{display:grid;grid-template-columns:1fr 1fr;gap:4px}
+.mtf-mc-item{background:var(--bg2);border:1px solid var(--bd);border-radius:4px;padding:5px 8px;
+  display:flex;align-items:center;justify-content:space-between}
+.mtf-mc-lbl{font-size:9px;color:var(--t3)}
+.mtf-mc-val{font-family:var(--num);font-size:11px;font-weight:600}
+/* 진단 요약 */
+.mtf-diag{margin-top:8px;padding:7px 10px;border-radius:4px;font-size:11px;font-weight:600;
+  display:flex;align-items:center;gap:6px}
+.mtf-diag.go{background:var(--Gd);color:var(--G)}.mtf-diag.wait{background:var(--Ad);color:var(--A)}.mtf-diag.stop{background:var(--Rd);color:var(--R)}
+/* 로딩 스켈레톤 */
+.mtf-loading{padding:20px 16px;text-align:center;font-size:12px;color:var(--t3);
+  border-bottom:1px solid var(--bd);display:none}
+.mtf-loading.on{display:block}
+/* 통합 요약 */
+.mtf-summary{background:var(--bg2);margin:0;padding:12px 16px;border-bottom:1px solid var(--bd);
+  display:none}
+.mtf-summary.on{display:block}
+.mtf-sum-title{font-size:10px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;
+  color:var(--t3);margin-bottom:10px}
+.mtf-sum-grid{display:grid;grid-template-columns:1fr 1fr;gap:6px}
+.mtf-sum-card{background:var(--bg1);border:1px solid var(--bd);border-radius:4px;padding:8px 10px}
+.mtf-sum-lbl{font-size:9px;color:var(--t3);margin-bottom:3px}
+.mtf-sum-val{font-family:var(--num);font-size:12px;font-weight:700}
+.mtf-sum-sub{font-size:9px;color:var(--t3);margin-top:2px}
+
 </style>
 </head>
 <body>
@@ -373,8 +450,8 @@ html,body{background:var(--bg0);color:var(--t1);font-family:var(--ui);font-size:
 </div>
 <div class="tabs">
   <button class="tab active" onclick="switchTab('calc')">계산기</button>
+  <button class="tab" onclick="switchTab('multi')">통합분석</button>
   <button class="tab" onclick="switchTab('guide')">사용법</button>
-  <button class="tab" onclick="switchTab('info')">알고리즘</button>
 </div>
 <div class="page active" id="page-calc">
   <div class="tfbar">
@@ -666,6 +743,65 @@ html,body{background:var(--bg0);color:var(--t1);font-family:var(--ui);font-size:
     </div>
   </div>
 </div>
+
+<div class="page" id="page-multi">
+  <!-- 검색 -->
+  <div class="multi-search">
+    <div class="multi-sbox">
+      <input class="multi-input" id="multi-input" type="text" placeholder="코인 검색 (BTC, ETH, AAVE...)"
+        maxlength="10" autocomplete="off" autocorrect="off" autocapitalize="characters" spellcheck="false"/>
+      <button class="multi-go" onclick="doMultiSearch()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round">
+          <circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+        </svg>
+      </button>
+    </div>
+  </div>
+  <div class="multi-lov" id="multi-lov"><div class="spin"></div><span id="multi-ltxt">분석 중...</span></div>
+
+  <!-- 현재가 헤더 -->
+  <div class="mtf-coin" id="mtf-coin">
+    <div>
+      <div id="mtf-coin-name" style="font-size:13px;font-weight:700">—</div>
+      <div style="font-size:10px;color:var(--t3);font-family:var(--num);margin-top:2px" id="mtf-coin-sub">—</div>
+    </div>
+    <div style="text-align:right">
+      <div class="mtf-price" id="mtf-cur-price">—</div>
+      <div class="mtf-chg" id="mtf-cur-chg">—</div>
+    </div>
+  </div>
+
+  <!-- 통합 요약 -->
+  <div class="mtf-summary" id="mtf-summary">
+    <div class="mtf-sum-title">📊 4개 차트 통합 요약</div>
+    <div class="mtf-sum-grid">
+      <div class="mtf-sum-card">
+        <div class="mtf-sum-lbl">가장 빠른 진입 (15분)</div>
+        <div class="mtf-sum-val" id="sum-fast-price" style="color:var(--P)">—</div>
+        <div class="mtf-sum-sub" id="sum-fast-pct">—</div>
+      </div>
+      <div class="mtf-sum-card">
+        <div class="mtf-sum-lbl">가장 안전한 진입 (1일)</div>
+        <div class="mtf-sum-val" id="sum-safe-price" style="color:var(--A)">—</div>
+        <div class="mtf-sum-sub" id="sum-safe-pct">—</div>
+      </div>
+      <div class="mtf-sum-card">
+        <div class="mtf-sum-lbl">평균 BUY1</div>
+        <div class="mtf-sum-val" id="sum-avg-price" style="color:var(--G)">—</div>
+        <div class="mtf-sum-sub" id="sum-avg-sub">4개 차트 평균</div>
+      </div>
+      <div class="mtf-sum-card">
+        <div class="mtf-sum-lbl">전체 방향 일치</div>
+        <div class="mtf-sum-val" id="sum-consensus" style="color:var(--t1)">—</div>
+        <div class="mtf-sum-sub" id="sum-consensus-sub">—</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 4개 TF 카드 (동적 생성) -->
+  <div id="mtf-cards"></div>
+</div>
+
 <div class="page" id="page-guide">
 
   <div class="guide-hero">
@@ -827,7 +963,7 @@ function toast(msg,err){var t=el('toast');t.textContent=msg;t.className='toast'+
 function setLoad(on,msg){el('lov').classList.toggle('on',on);if(msg)el('ltxt').textContent=msg;el('sgo').style.opacity=on?'0.4':'';el('sgo').style.pointerEvents=on?'none':'';}
 
 function switchTab(n){
-  ['calc','guide','info'].forEach(function(nm,i){
+  ['calc','multi','guide'].forEach(function(nm,i){
     document.querySelectorAll('.tab')[i].classList.toggle('active',nm===n);
     el('page-'+nm).classList.toggle('active',nm===n);
   });
@@ -1954,6 +2090,250 @@ function renderVolume(candles, curVolume) {
 
   // G에 저장 (calculate에서 활용)
   G.curVolRatio=ratio;
+}
+
+
+// ════════════════════════════════════════════════
+//  통합 분석 (4개 TF 동시 계산)
+// ════════════════════════════════════════════════
+var MULTI = {
+  coin:'', results:{}, loading:0, total:4, livePrice:null
+};
+
+var MULTI_TF_LIST = [
+  {key:'15m', iv:'15m', lim:1500, htf:'1h',  hl:200, look:3, lbl:'15분봉', cls:'tf15', color:'var(--P)'},
+  {key:'1h',  iv:'1h',  lim:1500, htf:'4h',  hl:200, look:4, lbl:'1시간봉', cls:'tf1h', color:'var(--B)'},
+  {key:'4h',  iv:'4h',  lim:540,  htf:'1d',  hl:110, look:6, lbl:'4시간봉', cls:'tf4h', color:'var(--G)'},
+  {key:'1d',  iv:'1d',  lim:90,   htf:'1w',  hl:52,  look:5, lbl:'일봉',    cls:'tf1d', color:'var(--A)'}
+];
+
+el('multi-input').addEventListener('keydown', function(e){ if(e.key==='Enter') doMultiSearch(); });
+
+function doMultiSearch() {
+  var sym = el('multi-input').value.trim().toUpperCase();
+  if(!sym){ toast('코인 심볼을 입력하세요'); return; }
+  MULTI.coin = sym;
+  MULTI.results = {};
+  MULTI.loading = 0;
+  MULTI.total = MULTI_TF_LIST.length;
+
+  el('multi-lov').classList.add('on');
+  el('mtf-coin').classList.remove('on');
+  el('mtf-summary').classList.remove('on');
+  el('mtf-cards').innerHTML = '';
+  el('multi-ltxt').textContent = sym + ' — 4개 차트 동시 분석 중...';
+
+  // 현재가 먼저 가져오기
+  function fetchOne(url){
+    return fetch(url).then(function(r){if(!r.ok)throw new Error();return r.json();})
+    .catch(function(){return fetch('https://corsproxy.io/?'+url).then(function(r){return r.json();});});
+  }
+
+  // 각 TF 병렬 로딩
+  MULTI_TF_LIST.forEach(function(cfg){
+    var pair = sym+'USDT';
+    var B = 'https://api.binance.com/api/v3/klines';
+    var u1 = B+'?symbol='+pair+'&interval='+cfg.iv+'&limit='+cfg.lim;
+    var u2 = B+'?symbol='+pair+'&interval='+cfg.htf+'&limit='+cfg.hl;
+
+    Promise.all([fetchOne(u1), fetchOne(u2).catch(function(){return [];})])
+    .then(function(res){
+      var candles = res[0], htfCandles = res[1];
+      if(!candles||candles.length<30){ multiOneDone(cfg.key, null); return; }
+
+      setTimeout(function(){
+        try {
+          var bm = buildBM(htfCandles);
+          var bt = runBT(candles, bm, cfg);
+          var cur = candles[candles.length-1];
+          var prev = candles[candles.length-2];
+          var h = parseFloat(cur[2]), l = parseFloat(cur[3]), cl = parseFloat(cur[4]);
+          var prevCl = parseFloat(prev[4]);
+          var chg = (cl-prevCl)/prevCl*100;
+          var rng = h-l, atr = bt.la;
+          var lp = cl;
+
+          // BUY1/2 계산 (메인 calculate 로직 동일)
+          var buf = bt.ab;
+          var b1_base = l+rng*buf;
+          var b1_minGap = lp*0.985;
+          var b1 = Math.min(b1_base, b1_minGap);
+          var b2gap = Math.max(atr*1.0, rng*0.18, b1*0.015);
+          var b2 = b1-b2gap;
+          var tp = Math.max(l+rng*0.85, b1*1.05);
+          var stop = b1-atr*2.5;
+
+          // 바이어스
+          var bias = getBias(bm, parseInt(cur[0]));
+          var isBull = bias?bias.bull:null;
+
+          // MC 14일 도달확률 (간이 계산 - 500회)
+          var dv = atr/l*Math.sqrt(24);
+          var mc14 = calcMC14Quick(cl, dv, b1);
+
+          var result = {
+            cfg:cfg, bt:bt, h:h, l:l, cl:cl, chg:chg,
+            b1:b1, b2:b2, tp:tp, stop:stop,
+            buf:buf, atr:atr, isBull:isBull, mc14:mc14
+          };
+
+          // 현재가 저장 (모든 TF 공통)
+          if(!MULTI.livePrice) MULTI.livePrice = cl;
+
+          multiOneDone(cfg.key, result);
+        } catch(e) {
+          multiOneDone(cfg.key, null);
+        }
+      }, 10);
+    })
+    .catch(function(){ multiOneDone(cfg.key, null); });
+  });
+}
+
+// MC 14일 간이 계산 (500회)
+function calcMC14Quick(S0, dv, target) {
+  var N=500, hv=dv/Math.sqrt(24), steps=14*24, hit=0;
+  for(var i=0;i<N;i++){
+    var p=S0, mn=S0;
+    for(var t=0;t<steps;t++){p=p*Math.exp(-0.5*hv*hv+hv*randN());if(p<mn)mn=p;}
+    if(mn<=target)hit++;
+  }
+  return hit/N;
+}
+
+function multiOneDone(key, result) {
+  MULTI.results[key] = result;
+  MULTI.loading++;
+  el('multi-ltxt').textContent = MULTI.coin+' 분석 중... ('+MULTI.loading+'/'+MULTI.total+')';
+
+  if(result) renderMultiCard(key, result);
+
+  if(MULTI.loading >= MULTI.total) {
+    el('multi-lov').classList.remove('on');
+    renderMultiHeader();
+    renderMultiSummary();
+  }
+}
+
+function renderMultiHeader() {
+  // 현재가 (4H 또는 가장 최근 로드된 TF)
+  var r = MULTI.results['4h'] || MULTI.results['1h'] || Object.values(MULTI.results)[0];
+  if(!r) return;
+  el('mtf-coin').classList.add('on');
+  el('mtf-coin-name').textContent = MULTI.coin + 'USDT';
+  el('mtf-coin-sub').textContent = '4개 차트 통합 분석 · 실시간';
+  el('mtf-cur-price').textContent = '$'+fp(r.cl);
+  var ce = el('mtf-cur-chg');
+  ce.textContent = (r.chg>=0?'+':'')+r.chg.toFixed(2)+'%';
+  ce.className = 'mtf-chg '+(r.chg>=0?'up':'dn');
+}
+
+function renderMultiCard(key, r) {
+  var cfg = r.cfg, bt = r.bt;
+  var lp = r.cl;
+  var p1 = ((r.b1-lp)/lp*100).toFixed(2);
+  var p2 = ((r.b2-lp)/lp*100).toFixed(2);
+
+  // 진단 점수 (간이)
+  var score = 0;
+  if(bt.b1WR>=58)score+=25; else if(bt.b1WR>=44)score+=12;
+  if(bt.b1PF>=1.5)score+=20; else if(bt.b1PF>=1.2)score+=10;
+  if(r.isBull===true)score+=20; else if(r.isBull===false)score-=10;
+  if(r.mc14>=0.5)score+=20; else if(r.mc14>=0.25)score+=8;
+  if(bt.b1EV>0)score+=15;
+  score = Math.max(0,Math.min(100,score));
+
+  var pillCls = bt.b1WR>=58&&bt.b1PF>=1.5?'good':bt.b1WR>=44?'ok':'bad';
+  var pillTxt = bt.b1WR>=58&&bt.b1PF>=1.5?'우량':bt.b1WR>=44?'적정':'주의';
+  var biasTxt = r.isBull===true?'▲ 상승':r.isBull===false?'▼ 하락':'—';
+  var biasCls = r.isBull===true?'bull':r.isBull===false?'bear':'';
+  var diagCls = score>=65?'go':score>=40?'wait':'stop';
+  var diagTxt = score>=65?'✅ 진입 유리 ('+score+'점)':score>=40?'⚡ 신중 진입 ('+score+'점)':'❌ 진입 비추 ('+score+'점)';
+
+  var card = document.createElement('div');
+  card.className = 'mtf-card';
+  card.id = 'mtf-card-'+key;
+  card.innerHTML =
+    '<div class="mtf-card-head">'
+      +'<span class="mtf-tf-badge '+cfg.cls+'">'+cfg.lbl+'</span>'
+      +'<div class="mtf-head-right">'
+        +(r.isBull!==null?'<span class="mtf-bias '+biasCls+'">'+biasTxt+'</span>':'')
+        +'<span class="mtf-pill '+pillCls+'">'+pillTxt+'</span>'
+      +'</div>'
+    +'</div>'
+    +'<div class="mtf-buy-row">'
+      +'<div class="mtf-buy b1">'
+        +'<div class="mtf-buy-lbl">BUY 1 — 즉시진입</div>'
+        +'<div class="mtf-buy-price">$'+fp(r.b1)+'</div>'
+        +'<div class="mtf-buy-pct '+(p1<0?'neg':'pos')+'">'+p1+'% (현재가 대비)</div>'
+      +'</div>'
+      +'<div class="mtf-buy b2">'
+        +'<div class="mtf-buy-lbl">BUY 2 — 추가매수</div>'
+        +'<div class="mtf-buy-price">$'+fp(r.b2)+'</div>'
+        +'<div class="mtf-buy-pct '+(p2<0?'neg':'pos')+'">'+p2+'% (현재가 대비)</div>'
+      +'</div>'
+    +'</div>'
+    +'<div class="mtf-stats">'
+      +'<div class="mtf-stat"><div class="mtf-stat-l">승률</div><div class="mtf-stat-v" style="color:'+(bt.b1WR>=55?'var(--G)':bt.b1WR>=44?'var(--A)':'var(--R)')+'">'+bt.b1WR.toFixed(1)+'%</div></div>'
+      +'<div class="mtf-stat"><div class="mtf-stat-l">PF</div><div class="mtf-stat-v" style="color:var(--B)">'+bt.b1PF.toFixed(2)+'</div></div>'
+      +'<div class="mtf-stat"><div class="mtf-stat-l">기대값</div><div class="mtf-stat-v" style="color:'+(bt.b1EV>0?'var(--G)':'var(--R)')+'">'+((bt.b1EV>=0?'+':'')+bt.b1EV.toFixed(2))+'%</div></div>'
+      +'<div class="mtf-stat"><div class="mtf-stat-l">TP</div><div class="mtf-stat-v" style="color:var(--A)">$'+fp(r.tp)+'</div></div>'
+    +'</div>'
+    +'<div class="mtf-mc">'
+      +'<div class="mtf-mc-item"><span class="mtf-mc-lbl">14일 BUY1 도달</span><span class="mtf-mc-val" style="color:'+(r.mc14>=0.5?'var(--G)':r.mc14>=0.25?'var(--A)':'var(--R)')+'">'+((r.mc14*100).toFixed(0))+'%</span></div>'
+      +'<div class="mtf-mc-item"><span class="mtf-mc-lbl">최적 버퍼</span><span class="mtf-mc-val" style="color:var(--t2)">'+((r.buf*100).toFixed(0))+'%</span></div>'
+    +'</div>'
+    +'<div class="mtf-diag '+diagCls+'">'+diagTxt+'</div>';
+
+  // 순서 맞춰서 삽입
+  var order = ['15m','1h','4h','1d'];
+  var cards = el('mtf-cards');
+  var existingKeys = Array.from(cards.children).map(function(c){return c.id.replace('mtf-card-','');});
+  var insertIdx = order.indexOf(key);
+  var inserted = false;
+  for(var i=0;i<existingKeys.length;i++){
+    if(order.indexOf(existingKeys[i])>insertIdx){
+      cards.insertBefore(card, cards.children[i]);
+      inserted=true; break;
+    }
+  }
+  if(!inserted) cards.appendChild(card);
+}
+
+function renderMultiSummary() {
+  var valid = MULTI_TF_LIST.map(function(t){return MULTI.results[t.key];}).filter(Boolean);
+  if(!valid.length) return;
+
+  var lp = valid[0].cl;
+
+  // 가장 빠른 진입 = 15분봉 BUY1
+  var fast = MULTI.results['15m'];
+  // 가장 안전한 진입 = 일봉 BUY1
+  var safe = MULTI.results['1d'];
+  // 평균 BUY1
+  var avg = valid.reduce(function(s,r){return s+r.b1;},0)/valid.length;
+  // 방향 일치 여부
+  var bullCount = valid.filter(function(r){return r.isBull===true;}).length;
+  var bearCount = valid.filter(function(r){return r.isBull===false;}).length;
+  var consensus, consensusSub;
+  if(bullCount===valid.length){consensus='▲ 전부 상승';consensusSub='최적 진입 환경';}
+  else if(bearCount===valid.length){consensus='▼ 전부 하락';consensusSub='매수 신중';}
+  else if(bullCount>bearCount){consensus='▲ '+bullCount+'/'+valid.length+' 상승';consensusSub='조건부 진입';}
+  else{consensus='▼ '+bearCount+'/'+valid.length+' 하락';consensusSub='신중 권장';}
+
+  if(fast){
+    el('sum-fast-price').textContent='$'+fp(fast.b1);
+    el('sum-fast-pct').textContent=((fast.b1-lp)/lp*100).toFixed(2)+'% (현재가 대비)';
+  }
+  if(safe){
+    el('sum-safe-price').textContent='$'+fp(safe.b1);
+    el('sum-safe-pct').textContent=((safe.b1-lp)/lp*100).toFixed(2)+'% (현재가 대비)';
+  }
+  el('sum-avg-price').textContent='$'+fp(avg);
+  el('sum-avg-sub').textContent='4개 차트 BUY1 평균';
+  el('sum-consensus').textContent=consensus;
+  el('sum-consensus-sub').textContent=consensusSub;
+  el('mtf-summary').classList.add('on');
 }
 
 setTF('4h');
