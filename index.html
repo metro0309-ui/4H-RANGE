@@ -3646,8 +3646,7 @@ function renderSummaryCard() {
   if(adjDescEl) {
     var txt = adjDescEl.textContent||'';
     if(txt.includes('악재') || txt.includes('감지')) {
-      investReason = txt.replace(/<[^>]+>/g,'').split('
-')[0].trim();
+      investReason = txt.replace(/<[^>]+>/g,'').split('\n')[0].trim();
     } else {
       investReason = '위험도 보정 기준';
     }
