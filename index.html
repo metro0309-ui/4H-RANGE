@@ -804,6 +804,11 @@ var G={coin:'AAVE',tf:'4h',bt:null,bm:null,res:null,liveTimer:null,livePair:null
 
 function el(id){return document.getElementById(id);}
 
+// b3 안전 접근 헬퍼
+var _dummy={style:{},className:'',textContent:''};
+function elv(id){return document.getElementById(id)||_dummy;}
+
+
 function elS(id,fn){var e=document.getElementById(id);if(e)fn(e);}
 
 function fp(n){
@@ -1070,7 +1075,7 @@ function calculate(noScroll){
     // 배지 이름
     el('b1name').textContent='즉시진입 · 돌파 직후';
     el('b2name').textContent='눌림 대기 · 재확인 진입';
-    (document.getElementById('b3name')||{}).textContent='선제 진입 · 고점 직전';
+    elv('b3name').textContent='선제 진입 · 고점 직전';
     // 돌파 상태 메시지
     var statusTxt = br.isBroken
       ? '✅ 고점 이미 돌파 — 눌림목 진입 대기'
@@ -1096,17 +1101,17 @@ function calculate(noScroll){
     el('b2g').textContent='↑'+((tp-b2)/b2*100).toFixed(2)+'% → TP';el('b2l').textContent='↓ 손절 '+l2.toFixed(2)+'%';
     el('b2wr').textContent='—';el('b2fr').textContent='—';el('b2pf').textContent='—';el('b2wt').textContent='40%';
     el('b2ev').textContent='EV —';el('b2ev').className='evtag evz';el('lb2').style.width='60%';
-    (document.getElementById('b3p')||{}).textContent='$'+fp(b3);(document.getElementById('b3m')||{}).textContent='High × 99.5% (선제, 공격적)';
-    (document.getElementById('b3g')||{}).textContent='↑'+((tp-b3)/b3*100).toFixed(2)+'% → TP';(document.getElementById('b3l')||{}).textContent='↓ 손절 '+l3.toFixed(2)+'%';
-    (document.getElementById('b3wr')||{}).textContent='—';(document.getElementById('b3fr')||{}).textContent='—';(document.getElementById('b3pf')||{}).textContent='—';(document.getElementById('b3wt')||{}).textContent='20%';
-    (document.getElementById('b3ev')||{}).textContent='EV —';(document.getElementById('b3ev')||{}).className='evtag evz';(document.getElementById('lb3')||{}).style.width='40%';
+    elv('b3p').textContent='$'+fp(b3);elv('b3m').textContent='High × 99.5% (선제, 공격적)';
+    elv('b3g').textContent='↑'+((tp-b3)/b3*100).toFixed(2)+'% → TP';elv('b3l').textContent='↓ 손절 '+l3.toFixed(2)+'%';
+    elv('b3wr').textContent='—';elv('b3fr').textContent='—';elv('b3pf').textContent='—';elv('b3wt').textContent='20%';
+    elv('b3ev').textContent='EV —';elv('b3ev').className='evtag evz';elv('lb3').style.width='40%';
     // % 배지
     el('b1pct').textContent=((b1-lp)/lp*100).toFixed(2)+'% (현재가 대비)';
     el('b1pct').className='pct-badge '+(b1<=lp?'neg':'pos');
     el('b2pct').textContent=((b2-lp)/lp*100).toFixed(2)+'% (현재가 대비)';
     el('b2pct').className='pct-badge '+(b2<=lp?'neg':'pos');
-    (document.getElementById('b3pct')||{}).textContent=((b3-lp)/lp*100).toFixed(2)+'% (현재가 대비)';
-    (document.getElementById('b3pct')||{}).className='pct-badge '+(b3<=lp?'neg':'pos');
+    elv('b3pct').textContent=((b3-lp)/lp*100).toFixed(2)+'% (현재가 대비)';
+    elv('b3pct').className='pct-badge '+(b3<=lp?'neg':'pos');
     // 분할비중
     el('wg1').style.flex=40;el('wg2').style.flex=40;el('wg3').style.flex=20;
     el('wl1').textContent='진입1 40%';el('wl2').textContent='눌림 40%';el('wl3').textContent='선제 20%';
@@ -1127,7 +1132,7 @@ function calculate(noScroll){
   // 이름 원복
   el('b1name').textContent='즉시진입 · 최적버퍼';
   el('b2name').textContent='지지선 대기 · Pivot';
-  (document.getElementById('b3name')||{}).textContent='딥바이 · ATR 하방';
+  elv('b3name').textContent='딥바이 · ATR 하방';
   var l1=atr*G.AS/b1*100,l2=atr*G.AS/b2*100,l3=atr*G.AS/b3*100;
   var d=G.bt||{b1WR:0,b1PF:0,b1EV:0,b1FR:0,b2WR:0,b2PF:0,b2EV:0,b2FR:0,b3WR:0,b3PF:0,b3EV:0,b3FR:0};
   var hb=!!G.bt;
@@ -1144,7 +1149,7 @@ function calculate(noScroll){
   function pctStr(p){return (p>=0?'+':'')+p.toFixed(2)+'% (현재가 대비)';}
   el('b1pct').textContent=pctStr(p1);el('b1pct').className='pct-badge '+(p1<0?'neg':'pos');
   el('b2pct').textContent=pctStr(p2pct);el('b2pct').className='pct-badge '+(p2pct<0?'neg':'pos');
-  (document.getElementById('b3pct')||{}).textContent=pctStr(p3pct);(document.getElementById('b3pct')||{}).className='pct-badge '+(p3pct<0?'neg':'pos');
+  elv('b3pct').textContent=pctStr(p3pct);elv('b3pct').className='pct-badge '+(p3pct<0?'neg':'pos');
   // 하이브리드 버퍼 표시
   var curATR=G.bt?G.bt.la:atr;
   var avgATR=G.bt?G.bt.la:atr; // avgATR 근사 (실제 백테스트에서 avg 따로 구하면 더 정확)
@@ -1156,7 +1161,7 @@ function calculate(noScroll){
     el('b1m').style.color='';
   }el('b1g').textContent='↑'+((tp-b1)/b1*100).toFixed(2)+'% → TP';el('b1l').textContent='↓ 감내손실 '+l1.toFixed(2)+'%';el('b1wr').textContent=hb?d.b1WR.toFixed(1)+'%':'—';el('b1fr').textContent=hb?d.b1FR.toFixed(1)+'%':'—';el('b1pf').textContent=hb?d.b1PF.toFixed(2):'—';el('b1wt').textContent=w1+'%';el('b1ev').textContent=et(d.b1EV,hb);el('b1ev').className=ec(d.b1EV);el('lb1').style.width=Math.max(15,hb?d.b1FR:60)+'%';
   el('b2p').textContent='$'+fp(b2);el('b2m').textContent=ps1<low?'S1 = 2×Pivot−High':'S2 = Pivot−Range';el('b2g').textContent='↑'+((tp-b2)/b2*100).toFixed(2)+'% → TP';el('b2l').textContent='↓ 감내손실 '+l2.toFixed(2)+'%';el('b2wr').textContent=hb?d.b2WR.toFixed(1)+'%':'—';el('b2fr').textContent=hb?d.b2FR.toFixed(1)+'%':'—';el('b2pf').textContent=hb?d.b2PF.toFixed(2):'—';el('b2wt').textContent=w2+'%';el('b2ev').textContent=et(d.b2EV,hb);el('b2ev').className=ec(d.b2EV);el('lb2').style.width=Math.max(8,hb?d.b2FR:40)+'%';
-  (document.getElementById('b3p')||{}).textContent='$'+fp(b3);(document.getElementById('b3m')||{}).textContent='Low − ATR14×0.35';(document.getElementById('b3g')||{}).textContent='↑'+((tp-b3)/b3*100).toFixed(2)+'% → TP';(document.getElementById('b3l')||{}).textContent='↓ 감내손실 '+l3.toFixed(2)+'%';(document.getElementById('b3wr')||{}).textContent=hb?d.b3WR.toFixed(1)+'%':'—';(document.getElementById('b3fr')||{}).textContent=hb?d.b3FR.toFixed(1)+'%':'—';(document.getElementById('b3pf')||{}).textContent=hb?d.b3PF.toFixed(2):'—';(document.getElementById('b3wt')||{}).textContent=w3+'%';(document.getElementById('b3ev')||{}).textContent=et(d.b3EV,hb);(document.getElementById('b3ev')||{}).className=ec(d.b3EV);(document.getElementById('lb3')||{}).style.width=Math.max(4,hb?d.b3FR:25)+'%';
+  elv('b3p').textContent='$'+fp(b3);elv('b3m').textContent='Low − ATR14×0.35';elv('b3g').textContent='↑'+((tp-b3)/b3*100).toFixed(2)+'% → TP';elv('b3l').textContent='↓ 감내손실 '+l3.toFixed(2)+'%';elv('b3wr').textContent=hb?d.b3WR.toFixed(1)+'%':'—';elv('b3fr').textContent=hb?d.b3FR.toFixed(1)+'%':'—';elv('b3pf').textContent=hb?d.b3PF.toFixed(2):'—';elv('b3wt').textContent=w3+'%';elv('b3ev').textContent=et(d.b3EV,hb);elv('b3ev').className=ec(d.b3EV);elv('lb3').style.width=Math.max(4,hb?d.b3FR:25)+'%';
   el('wg1').style.flex=Math.max(w1,5);el('wg2').style.flex=Math.max(w2,5);el('wg3').style.flex=Math.max(w3,5);el('wl1').textContent='BUY1 '+w1+'%';el('wl2').textContent='BUY2 '+w2+'%';el('wl3').textContent='BUY3 '+w3+'%';
   el('rtp').textContent='$'+fp(tp);el('rstop').textContent='$'+fp(s1);el('rvol').textContent=fp(atr)+' / '+(atr/low*100).toFixed(1)+'%';
   renderBar(high,low,b1,b2,b3,tp,s1);
