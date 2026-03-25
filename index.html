@@ -1141,6 +1141,8 @@ function calculate(noScroll){
   // BUY2: max(ATR×1.0, Range×18%, BUY1×1.5%) 간격 보장
   var b2gap=Math.max(atr*1.0, rng*0.18, b1*0.015);
   var b2=b1-b2gap;
+  // b3: 화면에서 제거됐지만 renderBar/checkAbandon/startMC 내부 파라미터로 유지
+  var b3=b2-b2gap;
   var tp=Math.max(low+rng*0.85, b1*1.05);
 
   // Range 너무 좁으면 경고 (가격 대비 1.5% 미만)
