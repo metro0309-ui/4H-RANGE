@@ -528,6 +528,39 @@ html,body{background:var(--bg0);color:var(--t1);font-family:var(--ui);font-size:
 .lev-badge{font-family:var(--num);font-size:10px;font-weight:700;padding:2px 8px;
   border-radius:3px;background:rgba(240,176,64,.15);color:var(--A);border:1px solid rgba(240,176,64,.3)}
 
+
+/* ── 황금 매수각 패널 ── */
+.golden-panel{display:none;border-bottom:1px solid var(--bd)}
+.golden-panel.on{display:block}
+/* 황금각 배너 */
+.golden-banner{padding:14px 16px;display:flex;align-items:center;gap:10px}
+.golden-banner.hit{background:linear-gradient(135deg,rgba(0,177,64,.12),rgba(240,176,64,.08));
+  border-bottom:1px solid rgba(0,177,64,.2)}
+.golden-banner.watch{background:var(--bg2);border-bottom:1px solid var(--bd)}
+.golden-banner.wait{background:var(--bg1);border-bottom:1px solid var(--bd)}
+.gb-icon{font-size:28px;flex-shrink:0}
+.gb-body{flex:1}
+.gb-title{font-size:13px;font-weight:700;margin-bottom:3px}
+.gb-title.hit{color:var(--G)}.gb-title.watch{color:var(--A)}.gb-title.wait{color:var(--t2)}
+.gb-desc{font-size:11px;color:var(--t2);line-height:1.6}
+.gb-score{flex-shrink:0;text-align:center}
+.gb-score-val{font-family:var(--num);font-size:22px;font-weight:700;line-height:1}
+.gb-score-lbl{font-size:9px;color:var(--t3);text-transform:uppercase;letter-spacing:.04em;margin-top:2px}
+/* RSI + 신호 행 */
+.signal-grid{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--bd)}
+.sg-cell{background:var(--bg1);padding:9px 12px}
+.sg-lbl{font-size:9px;color:var(--t3);text-transform:uppercase;letter-spacing:.04em;margin-bottom:4px}
+.sg-val{font-family:var(--num);font-size:14px;font-weight:700}
+.sg-sub{font-size:9px;color:var(--t3);font-family:var(--num);margin-top:2px}
+/* RSI 바 */
+.rsi-track{height:4px;background:var(--bg3);border-radius:2px;margin-top:5px;overflow:hidden;position:relative}
+.rsi-fill{height:100%;border-radius:2px;transition:width .5s}
+.rsi-mark{position:absolute;top:-2px;width:2px;height:8px;background:var(--t3);border-radius:1px}
+/* TP 조정 알림 */
+.tp-mode{padding:8px 12px;font-size:11px;font-weight:600;display:flex;align-items:center;gap:6px;
+  background:var(--bg2);border-bottom:1px solid var(--bd)}
+.tp-mode.bull{color:var(--G)}.tp-mode.bear{color:var(--A)}
+
 </style>
 </head>
 <body>
@@ -683,6 +716,56 @@ html,body{background:var(--bg0);color:var(--t1);font-family:var(--ui);font-size:
     </div>
     <div class="mode-hint range on" id="mode-hint"></div>
     <div class="seclbl" id="mode-seclbl">추천 매수가 3단계</div>
+
+    <!-- 황금 매수각 패널 -->
+    <div class="golden-panel" id="golden-panel">
+      <!-- 메인 배너 -->
+      <div class="golden-banner wait" id="gb-banner">
+        <div class="gb-icon" id="gb-icon">⏳</div>
+        <div class="gb-body">
+          <div class="gb-title wait" id="gb-title">황금 매수각 분석 중...</div>
+          <div class="gb-desc" id="gb-desc">RSI + 피보나치 + 거래량 동시 분석</div>
+        </div>
+        <div class="gb-score">
+          <div class="gb-score-val" id="gb-score" style="color:var(--t3)">—</div>
+          <div class="gb-score-lbl">황금각</div>
+        </div>
+      </div>
+      <!-- TP 모드 표시 -->
+      <div class="tp-mode bull" id="tp-mode-bar" style="display:none">
+        <span id="tp-mode-icon">📈</span>
+        <span id="tp-mode-txt">—</span>
+      </div>
+      <!-- 신호 그리드 -->
+      <div class="signal-grid">
+        <div class="sg-cell">
+          <div class="sg-lbl">RSI (14)</div>
+          <div class="sg-val" id="sg-rsi">—</div>
+          <div class="rsi-track">
+            <div class="rsi-fill" id="sg-rsi-fill" style="width:50%"></div>
+            <div class="rsi-mark" id="sg-rsi-mark30" style="left:30%"></div>
+            <div class="rsi-mark" id="sg-rsi-mark70" style="left:70%"></div>
+          </div>
+          <div class="sg-sub" id="sg-rsi-sub">—</div>
+        </div>
+        <div class="sg-cell">
+          <div class="sg-lbl">거래량 신호</div>
+          <div class="sg-val" id="sg-vol">—</div>
+          <div class="sg-sub" id="sg-vol-sub">—</div>
+        </div>
+        <div class="sg-cell">
+          <div class="sg-lbl">피보나치 위치</div>
+          <div class="sg-val" id="sg-fib">—</div>
+          <div class="sg-sub" id="sg-fib-sub">—</div>
+        </div>
+        <div class="sg-cell">
+          <div class="sg-lbl">장세 (4H 기준)</div>
+          <div class="sg-val" id="sg-bias">—</div>
+          <div class="sg-sub" id="sg-bias-sub">—</div>
+        </div>
+      </div>
+    </div>
+
     <div class="abandwrap" id="abandwrap"><div class="abandcard" id="abandcard"><div class="abandtitle" id="abandtitle">—</div><div class="abandbody" id="abandbody">—</div></div></div>
     <div class="buygroup">
       <div class="buylv lv1">
@@ -1180,7 +1263,8 @@ function setTF(tf){
   document.querySelectorAll('.tfbtn').forEach(function(b){b.classList.toggle('active',b.dataset.tf===tf);});
   var L=tf.toUpperCase();
   el('tclh').textContent=L+' HIGH';el('tclc').textContent=L+' CLOSE';el('tcll').textContent=L+' LOW';
-  ['btcard','ticker','results','bbar','wbar','vol-panel','risk-card','lev-panel'].forEach(function(id){el(id).classList.remove('on');});
+  ['btcard','ticker','results','bbar','wbar','vol-panel','risk-card','lev-panel','golden-panel'].forEach(function(id){el(id).classList.remove('on');});
+  G._prevRSI=null;G._goldenMode=null;
   G._riskData=null;
   G.curVolRatio=null;G._candles=null;
 }
@@ -1958,6 +2042,14 @@ function startWS(pair,tf){
           toast('🕯 새 봉 마감 — BUY가 갱신됨');
         }
 
+        // 황금각: 실시간 거래량 변화 반영
+        if(G._candles && G.res && el('golden-panel').classList.contains('on')){
+          var _isBullLive = el('bbar').classList.contains('on') ? el('bbar').classList.contains('bull') : null;
+          if(G.bt && G._candles.length>20){
+            var _smartLive = calcSmartBuy(G._candles, G._candles.length-1, G.bt.la, cl);
+            renderGoldenSignal(_smartLive, _isBullLive, G.curVolRatio, cl);
+          }
+        }
         if(G.locked) {
           // ── 고정 모드: 현재가 모니터링만, BUY가 재계산 안 함 ──
           checkReach(cl);
@@ -3137,6 +3229,182 @@ function renderLeverage(entry, tp, stop, livePrice) {
     warn.innerHTML = '✅ 청산가까지 <b>'+distToLiq.toFixed(1)+'%</b> 여유 있습니다.<br>손절가 <b>$'+fp(safeStop)+'</b> 를 미리 걸어두세요.';
     el('lev-main').className = 'lev-main';
   }
+}
+
+
+// ════════════════════════════════════════════════
+//  황금 매수각 알고리즘
+//  조건: RSI 바닥 회복 + 피보나치 지지 + 거래량 확인 + 장세
+// ════════════════════════════════════════════════
+
+// RSI 이전 값 저장 (30 돌파 감지용)
+G._prevRSI = null;
+G._goldenMode = null; // 'bull' | 'bear'
+
+function renderGoldenSignal(smart, isBull, curVolRatio, livePrice) {
+  if(!smart) return;
+  var panel = el('golden-panel');
+  panel.classList.add('on');
+
+  var rsi = smart.rsi;
+  var fibH = smart.fibH, fibL = smart.fibL;
+  var score = 0;
+  var signals = [];
+
+  // ── 장세 판단 ──────────────────────────────
+  var biasScore = 0;
+  if(isBull === true)  { biasScore = 20; signals.push({k:'bias', v:'상승장', c:'var(--G)'}); }
+  else if(isBull === false) { biasScore = 10; signals.push({k:'bias', v:'하락장', c:'var(--A)'}); }
+  else                 { biasScore = 5;  signals.push({k:'bias', v:'판단중', c:'var(--t3)'}); }
+  score += biasScore;
+
+  // ── RSI 신호 ──────────────────────────────
+  // 핵심: RSI 30 이하 → 30 돌파 = 가장 강한 매수 신호
+  var rsiScore = 0, rsiTxt, rsiColor, rsiSubTxt;
+  var prevRSI = G._prevRSI || rsi;
+  var rsiCrossing = prevRSI < 30 && rsi >= 30; // 30 돌파 감지
+
+  if(rsiCrossing) {
+    rsiScore = 35; rsiTxt = rsi.toFixed(1); rsiColor = 'var(--G)';
+    rsiSubTxt = '🚨 30선 돌파 — 최강 신호';
+  } else if(rsi < 30) {
+    rsiScore = 25; rsiTxt = rsi.toFixed(1); rsiColor = 'var(--G)';
+    rsiSubTxt = '과매도 구간 — 반등 임박';
+  } else if(rsi < 40) {
+    rsiScore = 18; rsiTxt = rsi.toFixed(1); rsiColor = 'var(--G)';
+    rsiSubTxt = '저점 회복 중 — 매수 유리';
+  } else if(rsi < 50) {
+    rsiScore = 10; rsiTxt = rsi.toFixed(1); rsiColor = 'var(--t2)';
+    rsiSubTxt = '중립 구간';
+  } else if(rsi > 70) {
+    rsiScore = -10; rsiTxt = rsi.toFixed(1); rsiColor = 'var(--R)';
+    rsiSubTxt = '과매수 — 진입 위험';
+  } else {
+    rsiScore = 5; rsiTxt = rsi.toFixed(1); rsiColor = 'var(--t3)';
+    rsiSubTxt = '중립';
+  }
+  score += rsiScore;
+  G._prevRSI = rsi;
+
+  // RSI UI
+  var rsiEl = el('sg-rsi'), rsiFill = el('sg-rsi-fill'), rsiSub = el('sg-rsi-sub');
+  if(rsiEl) { rsiEl.textContent = rsiTxt; rsiEl.style.color = rsiColor; }
+  if(rsiFill) {
+    rsiFill.style.width = Math.min(100,rsi)+'%';
+    rsiFill.style.background = rsi<30?'var(--G)':rsi>70?'var(--R)':'var(--B)';
+  }
+  if(rsiSub) rsiSub.textContent = rsiSubTxt;
+
+  // ── 거래량 신호 ────────────────────────────
+  var vr = curVolRatio || 1;
+  var volScore = 0, volTxt, volColor, volSub;
+  if(vr >= 2.0)      { volScore=25; volTxt='🔥 급증'; volColor='var(--G)'; volSub='평균 '+vr.toFixed(1)+'배 — 강한 신호'; }
+  else if(vr >= 1.5) { volScore=18; volTxt='✅ 충분'; volColor='var(--G)'; volSub='평균 '+vr.toFixed(1)+'배'; }
+  else if(vr >= 0.8) { volScore=8;  volTxt='⚡ 보통'; volColor='var(--t2)'; volSub='평균 '+vr.toFixed(1)+'배'; }
+  else               { volScore=-5; volTxt='⚠ 부족'; volColor='var(--R)'; volSub='평균 '+vr.toFixed(1)+'배 — 신뢰도 낮음'; }
+  score += volScore;
+  var sgVol=el('sg-vol'), sgVolSub=el('sg-vol-sub');
+  if(sgVol){ sgVol.textContent=volTxt; sgVol.style.color=volColor; }
+  if(sgVolSub) sgVolSub.textContent=volSub;
+
+  // ── 피보나치 위치 ──────────────────────────
+  var fibScore = 0, fibTxt, fibColor, fibSub;
+  if(fibH && fibL && fibH > fibL) {
+    var fibRange = fibH - fibL;
+    var fib618 = fibH - fibRange*0.618;
+    var fib786 = fibH - fibRange*0.786;
+    var fib382 = fibH - fibRange*0.382;
+    var distTo618 = Math.abs(livePrice - fib618) / livePrice * 100;
+    var distTo786 = Math.abs(livePrice - fib786) / livePrice * 100;
+
+    if(distTo618 < 1.5) {
+      fibScore=25; fibTxt='Fib 61.8%'; fibColor='var(--G)';
+      fibSub='$'+fp(fib618)+' 지지선 근처';
+    } else if(distTo786 < 1.5) {
+      fibScore=20; fibTxt='Fib 78.6%'; fibColor='var(--G)';
+      fibSub='$'+fp(fib786)+' 깊은 지지선';
+    } else if(livePrice > fib382) {
+      fibScore=5; fibTxt='상단 구간'; fibColor='var(--t3)';
+      fibSub='지지선까지 거리 있음';
+    } else {
+      fibScore=15; fibTxt='중간 구간'; fibColor='var(--t2)';
+      fibSub='$'+fp(fib618)+' 향해 하락 중';
+    }
+  } else {
+    fibScore=5; fibTxt='계산 중'; fibColor='var(--t3)';
+    fibSub='스윙 포인트 탐색 중';
+  }
+  score += fibScore;
+  var sgFib=el('sg-fib'), sgFibSub=el('sg-fib-sub');
+  if(sgFib){ sgFib.textContent=fibTxt; sgFib.style.color=fibColor; }
+  if(sgFibSub) sgFibSub.textContent=fibSub;
+
+  // ── 장세 UI ────────────────────────────────
+  var sgBias=el('sg-bias'), sgBiasSub=el('sg-bias-sub');
+  if(sgBias){
+    sgBias.textContent = isBull===true?'▲ 상승장':isBull===false?'▼ 하락장':'— 판단중';
+    sgBias.style.color = isBull===true?'var(--G)':isBull===false?'var(--A)':'var(--t3)';
+  }
+  if(sgBiasSub){
+    sgBiasSub.textContent = isBull===true?'눌림목 매수 — TP 길게':
+                            isBull===false?'반등 매수 — TP 짧게':'바이어스 확인 필요';
+  }
+
+  // ── 장세별 TP 조정 ─────────────────────────
+  // 하락장이면 짧은 TP (38.2% 반등), 상승장이면 긴 TP (직전 고점)
+  var tpBar=el('tp-mode-bar'), tpIcon=el('tp-mode-icon'), tpTxt=el('tp-mode-txt');
+  if(tpBar){
+    tpBar.style.display='';
+    if(isBull===true){
+      tpBar.className='tp-mode bull';
+      if(tpIcon) tpIcon.textContent='📈';
+      if(tpTxt) tpTxt.textContent='상승장 — 목표가: 직전 고점 (길게 보유)';
+    } else if(isBull===false){
+      tpBar.className='tp-mode bear';
+      if(tpIcon) tpIcon.textContent='📉';
+      if(tpTxt) tpTxt.textContent='하락장 — 목표가: 38.2% 반등 (짧게 익절)';
+    } else {
+      tpBar.style.display='none';
+    }
+  }
+
+  // ── 총점 → 황금각 등급 ─────────────────────
+  score = Math.max(0, Math.min(100, score));
+  var banner=el('gb-banner'), gbIcon=el('gb-icon');
+  var gbTitle=el('gb-title'), gbDesc=el('gb-desc'), gbScore=el('gb-score');
+
+  if(gbScore) { gbScore.textContent=score; }
+
+  if(score >= 70) {
+    // 황금 매수각
+    if(banner) banner.className='golden-banner hit';
+    if(gbIcon) gbIcon.textContent = rsiCrossing ? '🚨' : '🌟';
+    if(gbTitle){ gbTitle.textContent='황금 매수각 — 지금이 타이밍!'; gbTitle.className='gb-title hit'; }
+    if(gbDesc){
+      var reasons=[];
+      if(rsi<40) reasons.push('RSI 과매도');
+      if(vr>=1.5) reasons.push('거래량 충분');
+      if(fibScore>=20) reasons.push('피보나치 지지선');
+      if(isBull===true) reasons.push('상승장 눌림목');
+      gbDesc.textContent = reasons.join(' + ') + ' 동시 충족';
+    }
+    if(gbScore) gbScore.style.color='var(--G)';
+  } else if(score >= 50) {
+    if(banner) banner.className='golden-banner watch';
+    if(gbIcon) gbIcon.textContent='👀';
+    if(gbTitle){ gbTitle.textContent='진입 고려 가능 — 추가 확인 필요'; gbTitle.className='gb-title watch'; }
+    if(gbDesc) gbDesc.textContent='일부 조건 충족. 거래량·RSI 개선 시 진입.';
+    if(gbScore) gbScore.style.color='var(--A)';
+  } else {
+    if(banner) banner.className='golden-banner wait';
+    if(gbIcon) gbIcon.textContent='⏳';
+    if(gbTitle){ gbTitle.textContent='대기 — 아직 타이밍이 아닙니다'; gbTitle.className='gb-title wait'; }
+    if(gbDesc) gbDesc.textContent='RSI 하락 또는 피보나치 지지선 도달을 기다리세요.';
+    if(gbScore) gbScore.style.color='var(--t3)';
+  }
+
+  // 장세에 따라 TP 자동 조정 (실제 계산에 반영)
+  G._goldenMode = isBull===true?'bull':'bear';
 }
 
 setTF('4h');
