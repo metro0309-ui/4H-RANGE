@@ -543,7 +543,7 @@ html,body{background:var(--bg0);color:var(--t1);font-family:var(--ui);font-size:
 <div class="tabs">
   <button class="tab active" onclick="switchTab('calc')">계산기</button>
   <button class="tab" onclick="switchTab('multi')">통합분석</button>
-  <button class="tab" onclick="switchTab('guide')">사용법</button>
+  <button class="tab" onclick="switchTab('guide')">설명서</button>
 </div>
 <div class="page active" id="page-calc">
   <div class="tfbar">
@@ -1022,120 +1022,100 @@ html,body{background:var(--bg0);color:var(--t1);font-family:var(--ui);font-size:
 
 <div class="page" id="page-guide">
 
+  <!-- HERO -->
   <div class="guide-hero">
-    <div class="guide-hero-title">📱 Range Calc 사용법</div>
-    <div class="guide-hero-sub">코인을 검색하면 AI가 자동으로 최적 매수 가격을 계산해줍니다.<br>지정가 주문만 활용해도 수익 가능성이 크게 높아집니다.</div>
-  </div>
-
-  <!-- STEP 1 -->
-  <div class="guide-step">
-    <div class="gs-head"><div class="gs-num">1</div><div class="gs-title">원하는 코인 검색</div></div>
-    <div class="gs-body">
-      상단 검색창에 코인 이름을 입력하고 🔍 버튼을 누르세요.<br>
-      예: <b>BTC</b>, <b>ETH</b>, <b>SOL</b>, <b>AAVE</b><br><br>
-      검색하면 자동으로 <b>3개월치 데이터를 분석</b>해서 승률, 수익 배수(PF), 최적 매수 가격을 계산합니다.
-      <div class="gs-tip"><b>💡 팁:</b> 상단 탭에서 거래 스타일을 먼저 선택하세요.<br>
-      <b>15M</b> 하루~며칠 단위 / <b>4H</b> 1~2주 단위 (추천) / <b>1D</b> 한달 이상</div>
+    <div class="guide-hero-title">📖 설명서</div>
+    <div class="guide-hero-sub">
+      레버리지 5배 기준 · 황금 매수 타이밍을 잡는 법<br>
+      <b style="color:var(--R)">레버리지는 손절을 지키지 않으면 원금이 전액 소멸됩니다.</b>
     </div>
   </div>
 
-  <!-- STEP 2 -->
+  <!-- 1. 진입 금지 조건 -->
   <div class="guide-step">
-    <div class="gs-head"><div class="gs-num">2</div><div class="gs-title">백테스트 결과 확인</div></div>
+    <div class="gs-head"><div class="gs-num" style="background:var(--R);color:#fff">✕</div><div class="gs-title">이 조건이 하나라도 해당되면 오늘은 거래 안 합니다</div></div>
     <div class="gs-body">
-      검색 후 나오는 <b>백테스트 카드</b>를 먼저 보세요.<br><br>
-      <b>우량</b> 뱃지 → 진입 적합<br>
-      <b>적정</b> 뱃지 → 소량 진입 고려<br>
-      <b>주의</b> 뱃지 → 이 코인은 패스<br><br>
-      <b>순승률 55% 이상</b>, <b>PF 1.3 이상</b>인 코인만 진입하는 게 좋습니다.
-      <div class="gs-tip"><b>💡 PF(수익배수)란?</b> PF 2.0이면 손절 1번 나도 수익 2번이면 플러스라는 뜻입니다.</div>
+      <div class="signal-row"><span class="sr-icon">❌</span><div class="sr-text">종합진단 <b>50점 미만</b></div></div>
+      <div class="signal-row"><span class="sr-icon">❌</span><div class="sr-text">청산가까지 거리 <b>8% 미만</b> — 너무 위험</div></div>
+      <div class="signal-row"><span class="sr-icon">❌</span><div class="sr-text"><b>거래량 부족</b> 신호 (⚠ 표시)</div></div>
+      <div class="signal-row"><span class="sr-icon">❌</span><div class="sr-text"><b>큰 흐름 하락 중</b> (▼ 약세 표시)</div></div>
+      <div class="signal-row"><span class="sr-icon">❌</span><div class="sr-text">7일 하락 확률 <b>55% 이상</b></div></div>
+      <div class="signal-row"><span class="sr-icon">❌</span><div class="sr-text">공포탐욕 지수 <b>20 이하</b> (극도 공포)</div></div>
+      <div class="signal-row"><span class="sr-icon">❌</span><div class="sr-text">24시간 <b>-10% 이상 급락</b> 직후</div></div>
+      <div class="gs-warn">거래 안 하는 것도 전략입니다. 억지로 진입하면 손실납니다.</div>
     </div>
   </div>
 
-  <!-- STEP 3 -->
+  <!-- 2. 진입 가능 조건 -->
   <div class="guide-step">
-    <div class="gs-head"><div class="gs-num">3</div><div class="gs-title">매수 모드 선택</div></div>
+    <div class="gs-head"><div class="gs-num">✓</div><div class="gs-title">이 중 5개 이상 충족될 때만 진입합니다</div></div>
     <div class="gs-body">
-      결과 화면에서 <b>두 가지 모드</b> 중 하나를 선택하세요.
-      <div class="mode-explain">
-        <div class="me-card">
-          <div class="me-title range">📉 하락 매수</div>
-          <div class="me-body">가격이 내려올 때 사서 반등을 기다리는 전략. 횡보장·조정장에 유리.</div>
-        </div>
-        <div class="me-card">
-          <div class="me-title break">🚀 상승 매수</div>
-          <div class="me-body">가격이 고점을 뚫고 올라갈 때 따라 사는 전략. 상승장에 유리.</div>
-        </div>
-      </div>
-      <div class="gs-tip" style="margin-top:10px"><b>💡 모르겠으면 Range 모드</b>가 기본입니다. 앱이 자동으로 어떤 모드가 유리한지 알려줍니다.</div>
+      <div class="signal-row"><span class="sr-icon">✅</span><div class="sr-text">종합진단 <b>70점 이상</b></div></div>
+      <div class="signal-row"><span class="sr-icon">✅</span><div class="sr-text"><b>★ 강추 배지</b> — 단기·중기 차트 모두 상승</div></div>
+      <div class="signal-row"><span class="sr-icon">✅</span><div class="sr-text">거래량 <b>평균 1.5배 이상</b> (🔥 표시)</div></div>
+      <div class="signal-row"><span class="sr-icon">✅</span><div class="sr-text">BUY1이 <b>피보나치 지지선</b> 근처</div></div>
+      <div class="signal-row"><span class="sr-icon">✅</span><div class="sr-text"><b>BTC 초과 낙폭</b> — 이 코인이 BTC보다 더 내렸음</div></div>
+      <div class="signal-row"><span class="sr-icon">✅</span><div class="sr-text">청산가까지 <b>15% 이상</b> 여유</div></div>
+      <div class="signal-row"><span class="sr-icon">✅</span><div class="sr-text">14일 BUY1 도달 확률 <b>40% 이상</b></div></div>
+      <div class="gs-tip"><b>💡 시간대:</b> 한국시간 오전 9~11시 또는 오후 10시~자정에 진입하면 확률이 더 높습니다.</div>
     </div>
   </div>
 
-  <!-- STEP 4 -->
+  <!-- 3. 진입 방법 -->
   <div class="guide-step">
-    <div class="gs-head"><div class="gs-num">4</div><div class="gs-title">BUY 1·2·3 지정가 주문</div></div>
+    <div class="gs-head"><div class="gs-num">3</div><div class="gs-title">진입 방법 (레버리지 5배 싱글 진입)</div></div>
     <div class="gs-body">
-      앱이 제시하는 <b>BUY 1, BUY 2</b> 가격에 지정가 주문을 거래소에 미리 걸어두세요.<br><br>
-      <b>BUY 1</b> — 가장 빠르게 도달할 가능성이 높은 가격 (비중 가장 큼)<br>
-      <b>BUY 2</b> — 더 내려올 때를 대비한 두 번째 가격<br>
-
-      각 카드의 <b>14일 도달 %</b>를 보고 너무 낮으면(10% 미만) 그 레벨은 건너뛰세요.
-      <div class="gs-warn"><b>❌ 시장가 주문 금지</b> — 지금 당장 사고 싶어도 반드시 지정가로 걸어두세요. 시장가로 사면 이 앱의 의미가 없습니다.</div>
+      <b>① 진입가</b> — BUY1 가격에 <b>지정가 주문</b>만 사용합니다.<br>
+      가격이 안 내려오면 그냥 패스합니다. 시장가 진입 금지.<br><br>
+      <b>② 손절가</b> — 진입과 동시에 손절 주문을 걸어둡니다.<br>
+      앱의 🛑 손절가 라인이 기준입니다.<br><br>
+      <b>③ 익절가</b> — 목표가(TP)의 <b>70% 도달 시 전량 익절</b>합니다.<br>
+      100%까지 기다리다 되돌림 맞는 경우가 더 많습니다.
+      <div class="gs-warn"><b>❌ 절대 금지:</b> 손절 주문 없이 포지션 유지 / 손절 후 즉시 재진입 / 물타기</div>
     </div>
   </div>
 
-  <!-- STEP 5 -->
+  <!-- 4. 자금 관리 -->
   <div class="guide-step">
-    <div class="gs-head"><div class="gs-num">5</div><div class="gs-title">목표가(TP)와 손절가(Stop) 설정</div></div>
+    <div class="gs-head"><div class="gs-num">4</div><div class="gs-title">자금 관리 (가장 중요)</div></div>
     <div class="gs-body">
-      매수 체결 후 반드시 두 가지를 동시에 설정하세요.<br><br>
-      <b>목표가 TP</b> — 이 가격에 오면 절반 이상 팝니다. 욕심 내지 마세요.<br>
-      <b>손절가 Stop</b> — 이 가격 아래로 봉이 마감하면 손절합니다.<br><br>
-      카드에 표시된 <b>↑ X% → TP</b>가 수익률, <b>↓ 감내손실 X%</b>가 최대 허용 손실입니다.
-      <div class="gs-tip"><b>💡 손절이 나쁜 게 아닙니다.</b> 승률 60%라면 10번 중 4번은 손절이 정상입니다. 손절을 안 하면 그 4번에서 전체 수익을 날립니다.</div>
+      한 번 거래에 전체 자본의 <b>최대 10%만</b> 사용합니다.<br><br>
+      예시: 자본 100만원<br>
+      → 10만원으로 5배 레버리지 = 실질 노출 50만원<br>
+      → 손절나도 자본의 몇 %만 손실<br>
+      → 10번 손절나도 생존 가능<br><br>
+      <b>앱의 Kelly 비율이 20%로 나와도 레버리지에서는 10% 이하로 줄이세요.</b>
+      <div class="gs-tip"><b>💡 이유:</b> 승률 70%여도 자금 관리를 못 하면 결국 파산합니다. 반대로 승률 50%여도 자금 관리를 잘 하면 살아남습니다.</div>
     </div>
   </div>
 
-  <!-- STEP 6 -->
+  <!-- 5. 하루 루틴 -->
   <div class="guide-step">
-    <div class="gs-head"><div class="gs-num">6</div><div class="gs-title">신호 읽는 법</div></div>
+    <div class="gs-head"><div class="gs-num">5</div><div class="gs-title">하루 루틴</div></div>
     <div class="gs-body">
-      <div class="signal-row"><span class="sr-icon">✅</span><div class="sr-text"><b>강세 바이어스</b> — 큰 흐름이 상승 중. 매수에 유리한 환경입니다.</div></div>
-      <div class="signal-row"><span class="sr-icon">⚠</span><div class="sr-text"><b>약세 바이어스</b> — 큰 흐름이 하락 중. BUY 1만 소량 진입하거나 기다리세요.</div></div>
-      <div class="signal-row"><span class="sr-icon">★</span><div class="sr-text"><b>★ 강추 배지</b> — 단기 차트(15분/1시간)와 중기 차트(4시간/일봉)가 동시에 상승 방향. 지금이 가장 좋은 타이밍입니다.</div></div>
-      <div class="signal-row"><span class="sr-icon">🔥</span><div class="sr-text"><b>거래량 급증</b> — 실제로 많이 거래되고 있음. 신호의 신뢰도가 높습니다.</div></div>
-      <div class="signal-row"><span class="sr-icon">⚠</span><div class="sr-text"><b>거래량 부족</b> — 조용한 상태. 가격이 예상대로 움직이지 않을 수 있습니다.</div></div>
-      <div class="signal-row"><span class="sr-icon">⛔</span><div class="sr-text"><b>고점 근처 / 포기 권장</b> — 지금은 사면 안 됩니다. 다른 코인을 찾거나 기다리세요.</div></div>
+      <div class="signal-row"><span class="sr-icon">1️⃣</span><div class="sr-text"><b>통합분석 탭</b>에서 BTC 방향 먼저 확인</div></div>
+      <div class="signal-row"><span class="sr-icon">2️⃣</span><div class="sr-text">후보 코인 2~3개 검색</div></div>
+      <div class="signal-row"><span class="sr-icon">3️⃣</span><div class="sr-text">진입 금지 7가지 조건 체크 — 하나라도 해당되면 패스</div></div>
+      <div class="signal-row"><span class="sr-icon">4️⃣</span><div class="sr-text">통과한 코인만 BUY1 <b>지정가 + 손절 동시 등록</b></div></div>
+      <div class="signal-row"><span class="sr-icon">5️⃣</span><div class="sr-text">화면 닫고 기다림 — <b>🔒 BUY가 고정 버튼</b> 활성화</div></div>
+      <div class="signal-row"><span class="sr-icon">6️⃣</span><div class="sr-text">BUY1 도달 배너 뜨면 거래소에서 체결 확인</div></div>
+      <div class="signal-row"><span class="sr-icon">7️⃣</span><div class="sr-text">TP 70% 도달 시 전량 익절</div></div>
     </div>
   </div>
 
-  <!-- 자주 묻는 질문 -->
+  <!-- 핵심 요약 -->
   <div class="guide-section">
-    <div class="guide-section-title">자주 묻는 질문</div>
-    <div class="faq-item">
-      <div class="faq-q">Q. BUY 가격까지 안 내려오면 어떻게 하나요?</div>
-      <div class="faq-a">그냥 기다리세요. 주문을 취소하지 말고 봉 마감까지 기다렸다가, 유효기간이 지나면 새로 검색해서 업데이트하면 됩니다. 억지로 진입할 필요가 없습니다.</div>
-    </div>
-    <div class="faq-item">
-      <div class="faq-q">Q. 실시간 토글은 언제 켜야 하나요?</div>
-      <div class="faq-a">BUY 가격 근처까지 왔을 때 켜두면 좋습니다. 항상 켜두면 배터리 소모가 있으니 진입 대기 중에만 사용하세요.</div>
-    </div>
-    <div class="faq-item">
-      <div class="faq-q">Q. 얼마씩 투자해야 하나요?</div>
-      <div class="faq-a">퀀트 분석 패널의 <b>Kelly 비율</b>을 확인하세요. 예를 들어 15%라고 나오면 전체 투자금의 15% 이하로만 진입하라는 뜻입니다. 절대 한 코인에 50% 이상 넣지 마세요.</div>
-    </div>
-    <div class="faq-item">
-      <div class="faq-q">Q. Breakout 모드는 언제 쓰나요?</div>
-      <div class="faq-a">앱이 자동으로 제안합니다. 현재가가 고점 근처일 때 상승 매수 버튼이 주황색으로 강조됩니다. 이때 거래량도 많으면(🔥) 돌파 매수를 고려하세요.</div>
-    </div>
-    <div class="faq-item">
-      <div class="faq-q">Q. 14일 도달 확률이 20%면 진입해야 하나요?</div>
-      <div class="faq-a">BUY 1 기준 20% 미만이면 그 레벨은 건너뛰는 게 낫습니다. 확률이 낮다는 건 그 가격까지 내려올 가능성이 낮다는 뜻입니다. BUY 2는 더 낮아도 괜찮습니다 — 소량이니까요.</div>
+    <div class="guide-section-title">한 줄 요약</div>
+    <div style="background:var(--bg2);border:1px solid var(--bd);border-radius:4px;padding:14px;font-size:13px;color:var(--t2);line-height:1.8;text-align:center">
+      이 앱은 <b style="color:var(--t1)">진입 타이밍</b>을 계산해줍니다.<br>
+      수익은 그 타이밍을 <b style="color:var(--G)">얼마나 기계적으로 지키느냐</b>에 달려 있습니다.<br>
+      <span style="color:var(--R);font-size:11px">레버리지는 손절을 지키지 않으면 원금이 소멸됩니다.</span>
     </div>
   </div>
 
-  <div class="guide-ver">RANGE CALC v1.0 — 일반인을 위한 코인 매수 계산기</div>
+  <div class="guide-ver">RANGE CALC v1.0 · 레버리지 전용</div>
 </div>
+
 <div class="page" id="page-info">
   <div class="isec"><div class="ittl">타임프레임별 설정</div><div class="itxt"><b style="color:var(--t1)">15M</b> 스캘핑 · ~15일 · 1시간봉 기준 · 3봉 확인<br><b style="color:var(--t1)">1H</b> 단타 · ~62일 · 4시간봉 기준 · 4봉 확인<br><b style="color:var(--t1)">4H</b> 스윙 · 90일 · 일봉 기준 · 6봉 확인<br><b style="color:var(--t1)">1D</b> 장기 · 90일 · 주봉 기준 · 5봉 확인</div></div>
   <div class="isec"><div class="ittl">보수적 버퍼 선택</div><div class="fm">rawBuf = argmax(WR × PF × EV) over [3%..10%]</div><div class="fm">annualFills &lt; 12 → buf +1% <span class="fc">// 희귀 진입 보정</span></div><div class="fm">annualFills &lt; 6 → buf +2% <span class="fc">// 극희귀 보정</span></div><div class="fm">cap = min(buf, 8%)</div></div>
