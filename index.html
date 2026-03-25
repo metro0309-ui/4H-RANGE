@@ -489,6 +489,45 @@ html,body{background:var(--bg0);color:var(--t1);font-family:var(--ui);font-size:
 .dist-fill{height:100%;border-radius:1px;background:var(--G);transition:width .5s}
 .dist-lbl{font-size:9px;color:var(--t3);font-family:var(--num);margin-top:3px;text-align:right}
 
+
+/* ── 레버리지 패널 ── */
+.lev-panel{background:var(--bg1);border-bottom:1px solid var(--bd);padding:12px 16px;display:none}
+.lev-panel.on{display:block}
+.lev-title{font-size:10px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;
+  color:var(--t3);margin-bottom:10px;display:flex;align-items:center;justify-content:space-between}
+.lev-x-wrap{display:flex;gap:6px;margin-bottom:10px}
+.lev-x-btn{flex:1;background:var(--bg2);border:1px solid var(--bd);border-radius:4px;
+  padding:7px 0;font-family:var(--num);font-size:12px;font-weight:600;color:var(--t3);
+  cursor:pointer;text-align:center;transition:all .15s}
+.lev-x-btn:hover{border-color:var(--bd2);color:var(--t2)}
+.lev-x-btn.active{background:rgba(240,176,64,.12);border-color:rgba(240,176,64,.4);color:var(--A)}
+/* 핵심 정보 카드 */
+.lev-main{background:var(--bg2);border:1px solid var(--bd);border-radius:6px;
+  padding:14px;margin-bottom:8px;position:relative;overflow:hidden}
+.lev-main::before{content:'';position:absolute;top:0;left:0;bottom:0;width:3px;background:var(--G)}
+.lev-main.danger::before{background:var(--R)}
+.lev-rows{display:flex;flex-direction:column;gap:8px}
+.lev-row{display:flex;align-items:center;justify-content:space-between}
+.lev-row-lbl{font-size:11px;color:var(--t2)}
+.lev-row-val{font-family:var(--num);font-size:14px;font-weight:700}
+.lev-row-sub{font-size:10px;color:var(--t3);font-family:var(--num);margin-top:1px;text-align:right}
+/* 청산가 경고 */
+.liq-warn{padding:10px 12px;border-radius:4px;font-size:11px;font-weight:600;
+  line-height:1.6;margin-bottom:8px;display:none}
+.liq-warn.on{display:block}
+.liq-warn.safe{background:var(--Gd);color:var(--G);border:1px solid rgba(0,177,64,.2)}
+.liq-warn.caution{background:var(--Ad);color:var(--A);border:1px solid rgba(240,176,64,.2)}
+.liq-warn.danger{background:var(--Rd);color:var(--R);border:1px solid rgba(240,64,64,.2)}
+/* 손익 계산 */
+.pnl-grid{display:grid;grid-template-columns:1fr 1fr;gap:6px}
+.pnl-card{background:var(--bg2);border:1px solid var(--bd);border-radius:4px;padding:9px 10px;text-align:center}
+.pnl-lbl{font-size:9px;color:var(--t3);text-transform:uppercase;letter-spacing:.04em;margin-bottom:4px}
+.pnl-val{font-family:var(--num);font-size:14px;font-weight:700}
+.pnl-sub{font-size:9px;color:var(--t3);font-family:var(--num);margin-top:2px}
+/* 배수 표시 */
+.lev-badge{font-family:var(--num);font-size:10px;font-weight:700;padding:2px 8px;
+  border-radius:3px;background:rgba(240,176,64,.15);color:var(--A);border:1px solid rgba(240,176,64,.3)}
+
 </style>
 </head>
 <body>
@@ -701,10 +740,91 @@ html,body{background:var(--bg0);color:var(--t1);font-family:var(--ui);font-size:
     </div>
     <div class="mcstatus" id="mcstatus">⏳ Monte Carlo 계산 중...</div>
     <div class="wtpanel">
-      <div class="wttitle">분할매수 비중 가이드</div>
+      <div class="wttitle">진입 비중 (싱글 진입 기준: 100%)</div>
       <div class="wtbars"><div class="wb wb1" id="wg1" style="flex:5">B1</div><div class="wb wb2" id="wg2" style="flex:5">B2</div><div class="wb wb3" id="wg3" style="flex:0;display:none"></div></div>
       <div class="wtlbls" style="grid-template-columns:1fr 1fr"><div class="wtlbl" id="wl1">—</div><div class="wtlbl" id="wl2">—</div><div class="wtlbl" id="wl3" style="display:none">—</div></div>
     </div>
+
+    <!-- 레버리지 패널 -->
+    <div class="lev-panel" id="lev-panel">
+      <div class="lev-title">
+        <span>⚡ 레버리지 계산 (5배 기준)</span>
+        <div class="lev-x-wrap" style="margin:0;gap:4px">
+          <button class="lev-x-btn" data-x="3" onclick="setLevX(3)">3×</button>
+          <button class="lev-x-btn active" data-x="5" onclick="setLevX(5)">5×</button>
+          <button class="lev-x-btn" data-x="10" onclick="setLevX(10)">10×</button>
+          <button class="lev-x-btn" data-x="20" onclick="setLevX(20)">20×</button>
+        </div>
+      </div>
+
+      <!-- 청산가 경고 -->
+      <div class="liq-warn" id="liq-warn">—</div>
+
+      <!-- 핵심 3가지 -->
+      <div class="lev-main" id="lev-main">
+        <div class="lev-rows">
+          <div class="lev-row">
+            <div>
+              <div class="lev-row-lbl">📍 진입가 (BUY1)</div>
+              <div class="lev-row-sub" id="lev-entry-sub">—</div>
+            </div>
+            <div style="text-align:right">
+              <div class="lev-row-val" id="lev-entry" style="color:var(--G)">—</div>
+            </div>
+          </div>
+          <div style="height:1px;background:var(--bd);margin:2px 0"></div>
+          <div class="lev-row">
+            <div>
+              <div class="lev-row-lbl" style="color:var(--R)">🛑 손절가 (Stop)</div>
+              <div class="lev-row-sub" id="lev-stop-sub">—</div>
+            </div>
+            <div style="text-align:right">
+              <div class="lev-row-val" id="lev-stop" style="color:var(--R)">—</div>
+              <div class="lev-row-sub" id="lev-stop-pct" style="color:var(--R)">—</div>
+            </div>
+          </div>
+          <div class="lev-row">
+            <div>
+              <div class="lev-row-lbl" style="color:var(--R)">💀 청산가 (강제청산)</div>
+              <div class="lev-row-sub" id="lev-liq-sub">손절 안 하면 여기서 끝</div>
+            </div>
+            <div style="text-align:right">
+              <div class="lev-row-val" id="lev-liq" style="color:var(--R)">—</div>
+              <div class="lev-row-sub" id="lev-liq-pct" style="color:var(--R)">—</div>
+            </div>
+          </div>
+          <div style="height:1px;background:var(--bd);margin:2px 0"></div>
+          <div class="lev-row">
+            <div>
+              <div class="lev-row-lbl" style="color:var(--A)">🎯 목표가 (TP)</div>
+              <div class="lev-row-sub" id="lev-tp-sub">—</div>
+            </div>
+            <div style="text-align:right">
+              <div class="lev-row-val" id="lev-tp" style="color:var(--A)">—</div>
+              <div class="lev-row-sub" id="lev-tp-pct" style="color:var(--A)">—</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 예상 손익 -->
+      <div class="pnl-grid">
+        <div class="pnl-card">
+          <div class="pnl-lbl">✅ TP 도달 시 수익</div>
+          <div class="pnl-val" id="lev-pnl-win" style="color:var(--G)">—</div>
+          <div class="pnl-sub" id="lev-pnl-win-sub">100만원 기준</div>
+        </div>
+        <div class="pnl-card">
+          <div class="pnl-lbl">❌ 손절 시 손실</div>
+          <div class="pnl-val" id="lev-pnl-lose" style="color:var(--R)">—</div>
+          <div class="pnl-sub" id="lev-pnl-lose-sub">100만원 기준</div>
+        </div>
+      </div>
+      <div style="text-align:center;font-size:10px;color:var(--t3);font-family:var(--num);margin-top:6px">
+        손절 필수 — 청산가 닿으면 원금 전체 소멸
+      </div>
+    </div>
+
     <div class="sumstrip">
       <div class="ss"><div class="ssl">목표가 TP</div><div class="ssv" id="rtp" style="color:var(--A)">—</div></div>
       <div class="ss"><div class="ssl">동적 Stop</div><div class="ssv" id="rstop" style="color:var(--R)">—</div></div>
@@ -1080,7 +1200,7 @@ function setTF(tf){
   document.querySelectorAll('.tfbtn').forEach(function(b){b.classList.toggle('active',b.dataset.tf===tf);});
   var L=tf.toUpperCase();
   el('tclh').textContent=L+' HIGH';el('tclc').textContent=L+' CLOSE';el('tcll').textContent=L+' LOW';
-  ['btcard','ticker','results','bbar','wbar','vol-panel','risk-card'].forEach(function(id){el(id).classList.remove('on');});
+  ['btcard','ticker','results','bbar','wbar','vol-panel','risk-card','lev-panel'].forEach(function(id){el(id).classList.remove('on');});
   G._riskData=null;
   G.curVolRatio=null;G._candles=null;
 }
@@ -1492,6 +1612,7 @@ function calculate(noScroll){
     G.res={coin:G.coin,tf:G.tf,high,low,close,buy1:b1,buy2:b2,buy3:b3,tp,stop1:s1,buf,atr,ts:Date.now(),b1WR:null,b1EV:null,af:null};
     el('results').classList.add('on');
     if(!noScroll)setTimeout(function(){el('results').scrollIntoView({behavior:'smooth',block:'start'});},80);
+    renderLeverage(b1, tp, s1, G.livePrice||close);
     startMC(close,G.bt?(G.bt.la/high*Math.sqrt(24)):0.039,b1,b2,b3,tp,s1,high,low);
     renderDirection(close,G.bt?(G.bt.la/high*Math.sqrt(24)):0.039);
     return; // Breakout 모드 계산 끝
@@ -1571,6 +1692,7 @@ function calculate(noScroll){
   G.res={coin:G.coin,tf:G.tf,high,low,close,buy1:b1,buy2:b2,buy3:b3,tp,stop1:s1,buf,atr,ts:Date.now(),b1WR:hb?d.b1WR:null,b1EV:hb?d.b1EV:null,af:hb?G.bt.af:null};
   el('results').classList.add('on');
   if(!noScroll) setTimeout(function(){el('results').scrollIntoView({behavior:'smooth',block:'start'});},80);
+  renderLeverage(b1, tp, s1, G.livePrice||close);
   startMC(close,G.bt?(G.bt.la/low*Math.sqrt(24)):0.039,b1,b2,b3,tp,s1,high,low);
   renderDirection(close, G.bt?(G.bt.la/low*Math.sqrt(24)):0.039);
   // 1차 진단 (MC 전 상태로 즉시)
@@ -2950,6 +3072,91 @@ function showReachBanner(type, msg) {
   b.className = 'reach-banner on '+type;
   // 10초 후 자동 닫힘
   setTimeout(function(){ if(b.classList.contains('on')) closeReachBanner(); }, 10000);
+}
+
+
+// ════════════════════════════════════════════════
+//  레버리지 계산 (5배 싱글 진입 기준)
+// ════════════════════════════════════════════════
+G.levX = 5; // 기본 배수
+
+function setLevX(x) {
+  G.levX = x;
+  document.querySelectorAll('.lev-x-btn').forEach(function(b){
+    b.classList.toggle('active', parseInt(b.dataset.x)===x);
+  });
+  // 제목 업데이트
+  var titleEl = el('lev-panel').querySelector('.lev-title span');
+  if(titleEl) titleEl.textContent = '⚡ 레버리지 계산 ('+x+'배 기준)';
+  if(G.res) renderLeverage(G.res.buy1, G.res.tp, G.res.stop1, G.livePrice||G.res.close);
+}
+
+function renderLeverage(entry, tp, stop, livePrice) {
+  var x = G.levX;
+  var panel = el('lev-panel');
+  panel.classList.add('on');
+
+  // ── 청산가 계산 ──────────────────────────────
+  // 롱 포지션: 청산가 = 진입가 × (1 - 1/레버리지 × 0.9)
+  // (유지증거금 약 0.5% 감안)
+  var liqPct = (1/x) * 0.9;          // 청산까지 허용 하락률
+  var liqPrice = entry * (1 - liqPct);
+
+  // ── 손절가 ───────────────────────────────────
+  // stop은 calculate()에서 계산된 값 사용
+  // 단, 청산가보다 반드시 위에 있어야 함
+  var safeStop = stop;
+  if(safeStop <= liqPrice * 1.02) {
+    safeStop = liqPrice * 1.05; // 청산가보다 5% 위를 손절로 강제
+  }
+
+  var stopPct  = (entry - safeStop) / entry * 100;   // 진입 대비 손절 %
+  var liqPctShow = (entry - liqPrice) / entry * 100;  // 진입 대비 청산 %
+  var tpPct    = (tp - entry) / entry * 100;           // 진입 대비 TP %
+
+  // 레버리지 손익 (5배 = 등락률 5배)
+  var winPct  = tpPct * x;   // TP 도달 시 수익률
+  var losePct = stopPct * x; // 손절 시 손실률
+
+  // 100만원 기준 금액
+  var win100  = Math.round(1000000 * winPct / 100);
+  var lose100 = Math.round(1000000 * losePct / 100);
+
+  // ── UI 업데이트 ──────────────────────────────
+  el('lev-entry').textContent = '$'+fp(entry);
+  el('lev-entry-sub').textContent = '현재가 $'+fp(livePrice)+' 대비 '+((entry-livePrice)/livePrice*100).toFixed(2)+'%';
+  el('lev-stop').textContent = '$'+fp(safeStop);
+  el('lev-stop-pct').textContent = '진입 대비 -'+stopPct.toFixed(2)+'% → 레버리지 손실 -'+losePct.toFixed(1)+'%';
+  el('lev-stop-sub').textContent = '여기서 반드시 손절 — 청산가 닿으면 원금 소멸';
+  el('lev-liq').textContent = '$'+fp(liqPrice);
+  el('lev-liq-pct').textContent = '진입 대비 -'+liqPctShow.toFixed(2)+'% (원금 전액 손실)';
+  el('lev-tp').textContent = '$'+fp(tp);
+  el('lev-tp-pct').textContent = '진입 대비 +'+tpPct.toFixed(2)+'% → 레버리지 수익 +'+winPct.toFixed(1)+'%';
+  el('lev-tp-sub').textContent = '목표가 도달 시 익절';
+
+  // 손익
+  el('lev-pnl-win').textContent = '+'+win100.toLocaleString()+'원';
+  el('lev-pnl-lose').textContent = '-'+lose100.toLocaleString()+'원';
+  el('lev-pnl-win-sub').textContent = '100만원 × '+x+'배 × +'+tpPct.toFixed(1)+'%';
+  el('lev-pnl-lose-sub').textContent = '100만원 × '+x+'배 × -'+stopPct.toFixed(1)+'%';
+
+  // ── 청산가 경고 ──────────────────────────────
+  var warn = el('liq-warn');
+  var distToLiq = (livePrice - liqPrice) / livePrice * 100; // 현재가 → 청산가 거리
+
+  if(distToLiq < 3) {
+    warn.className = 'liq-warn on danger';
+    warn.innerHTML = '💀 <b>위험!</b> 현재가에서 <b>'+distToLiq.toFixed(1)+'%</b>만 내려가면 청산됩니다.<br>'+x+'배 레버리지는 지금 진입하기에 너무 위험합니다. 배수를 낮추거나 기다리세요.';
+    el('lev-main').className = 'lev-main danger';
+  } else if(distToLiq < 8) {
+    warn.className = 'liq-warn on caution';
+    warn.innerHTML = '⚠ 청산가까지 <b>'+distToLiq.toFixed(1)+'%</b> 남았습니다.<br>반드시 <b>$'+fp(safeStop)+'</b> 에서 손절하세요. 그냥 두면 청산됩니다.';
+    el('lev-main').className = 'lev-main';
+  } else {
+    warn.className = 'liq-warn on safe';
+    warn.innerHTML = '✅ 청산가까지 <b>'+distToLiq.toFixed(1)+'%</b> 여유 있습니다.<br>손절가 <b>$'+fp(safeStop)+'</b> 를 미리 걸어두세요.';
+    el('lev-main').className = 'lev-main';
+  }
 }
 
 setTF('4h');
