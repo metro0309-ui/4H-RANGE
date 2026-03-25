@@ -618,15 +618,7 @@ html,body{background:var(--bg0);color:var(--t1);font-family:var(--ui);font-size:
   <button class="tab" onclick="switchTab('guide')">설명서</button>
 </div>
 <div class="page active" id="page-calc">
-  <div class="tfbar">
-    <button class="tfbtn" data-tf="15m" onclick="setTF('15m')">15M<span>스캘핑</span></button>
-    <div class="tfdiv"></div>
-    <button class="tfbtn" data-tf="1h" onclick="setTF('1h')">1H<span>단타</span></button>
-    <div class="tfdiv"></div>
-    <button class="tfbtn active" data-tf="4h" onclick="setTF('4h')">4H<span>스윙</span></button>
-    <div class="tfdiv"></div>
-    <button class="tfbtn" data-tf="1d" onclick="setTF('1d')">1D<span>장기</span></button>
-  </div>
+
   <div class="srow">
     <div class="sbox">
       <input class="sinput" id="sinput" type="text" placeholder="코인 검색 (BTC, ETH, AAVE...)" maxlength="10" autocomplete="off" autocorrect="off" autocapitalize="characters" spellcheck="false"/>
@@ -732,7 +724,7 @@ html,body{background:var(--bg0);color:var(--t1);font-family:var(--ui);font-size:
     </div>
   </div>
   <div class="inppanel">
-    <div class="inplbl">수동 입력</div>
+    <div class="inplbl">수동 입력 (검색 시 자동 입력됨)</div>
     <div class="inpgrid">
       <div class="ig"><span class="igl">최고가 ($)</span><input class="iginput hi" id="ih" type="number" placeholder="High" step="0.0001" value="131.98"/></div>
       <div class="ig"><span class="igl">최저가 ($)</span><input class="iginput lo" id="il" type="number" placeholder="Low" step="0.0001" value="103.68"/></div>
@@ -1352,7 +1344,7 @@ html,body{background:var(--bg0);color:var(--t1);font-family:var(--ui);font-size:
 </div>
 
 <div class="page" id="page-info">
-  <div class="isec"><div class="ittl">타임프레임별 설정</div><div class="itxt"><b style="color:var(--t1)">15M</b> 스캘핑 · ~15일 · 1시간봉 기준 · 3봉 확인<br><b style="color:var(--t1)">1H</b> 단타 · ~62일 · 4시간봉 기준 · 4봉 확인<br><b style="color:var(--t1)">4H</b> 스윙 · 90일 · 일봉 기준 · 6봉 확인<br><b style="color:var(--t1)">1D</b> 장기 · 90일 · 주봉 기준 · 5봉 확인</div></div>
+  <div class="isec"><div class="ittl">타임프레임별 설정</div><div class="itxt"><b style="color:var(--t1)">4H 기준 고정</b> · 90일 백테스트 · 스윙 트레이딩 최적<br>검색 즉시 실시간(WebSocket) 자동 연결<br>봉 마감 시 BUY가 자동 갱신</div></div>
   <div class="isec"><div class="ittl">보수적 버퍼 선택</div><div class="fm">rawBuf = argmax(WR × PF × EV) over [3%..10%]</div><div class="fm">annualFills &lt; 12 → buf +1% <span class="fc">// 희귀 진입 보정</span></div><div class="fm">annualFills &lt; 6 → buf +2% <span class="fc">// 극희귀 보정</span></div><div class="fm">cap = min(buf, 8%)</div></div>
   <div class="isec"><div class="ittl">백테스트 엔진</div><div class="fm">목적: 이 코인이 저점에서 반등을 잘 하는 코인인가 판별</div><div class="fm">진입가 기준이 아닌 반등 패턴 자체를 분석 → 코인 선별 용도</div><div class="fm">실제 진입가는 황금각 (피보나치+RSI+거래량)으로 결정</div><div class="fm">수수료+슬리피지: 0.15% 차감</div><div class="fm">Volume ≥ 20MA×80% · Close ≥ Low+Range×20%</div></div>
   <div class="isec"><div class="ittl">Monte Carlo 확률</div><div class="fm">2,000회 · hourly GBM · drift=0 (보수적)</div><div class="fm">14일 / 30일 내 각 BUY 도달 확률 계산</div></div>
@@ -1412,7 +1404,7 @@ function setTF(tf){
   el('expiry-bar').classList.remove('on');
   el('expired-banner').classList.remove('on');
   el('mtf-badge').classList.remove('on');
-  document.querySelectorAll('.tfbtn').forEach(function(b){b.classList.toggle('active',b.dataset.tf===tf);});
+  // tfbtn 제거됨
   var L=tf.toUpperCase();
   el('tclh').textContent=L+' HIGH';el('tclc').textContent=L+' CLOSE';el('tcll').textContent=L+' LOW';
   ['btcard','ticker','results','bbar','wbar','vol-panel','risk-card','lev-panel','golden-panel'].forEach(function(id){el(id).classList.remove('on');});
@@ -1476,7 +1468,7 @@ function doSearch(){
         G._candles=c4;
         renderVolume(c4, parseFloat(cur[5]));
         el('tkname').textContent=sym;
-        el('tksub').textContent=pair+' · '+cfg.lbl+' · 🔴 LIVE · '+remStr;
+        el('tksub').textContent=pair+' · 🔴 LIVE · '+remStr;
         el('tkpx').textContent='$'+fp(cl);
         var ce=el('tkchg');ce.textContent=(chg>=0?'+':'')+chg.toFixed(2)+'%';ce.className='tkchg '+(chg>=0?'up':'dn');
         el('tkh').textContent='$'+fp(h);el('tkl').textContent='$'+fp(l);el('tkc').textContent='$'+fp(cl);
@@ -1498,7 +1490,9 @@ function doSearch(){
         G.livePrice=cl;
         startExpiry();
         checkMTF(G.bm,parseInt(cur[0]),cfg);
-        if(el('ws-toggle').checked) startWS(pair,G.tf);
+        // 검색 완료 시 항상 실시간 자동 시작
+        el('ws-toggle').checked = true;
+        startWS(pair,G.tf);
         el('refresh-btn').style.display='';
         el('lock-bar').classList.add('on');
 
@@ -3632,7 +3626,7 @@ function renderSummaryCard() {
   var curPx    = el('sc-cur-price');
   var curChg   = el('sc-cur-chg');
   if(coinName) coinName.textContent = G.coin + 'USDT';
-  if(coinSub)  coinSub.textContent  = TFC[G.tf].lbl + ' · 실시간';
+  if(coinSub)  coinSub.textContent  = '4개 차트 분석 · 실시간';
   if(curPx)    curPx.textContent    = '$' + fp(lp);
   if(curChg) {
     var tkChg = el('tkchg');
