@@ -680,12 +680,13 @@ html,body{background:var(--bg0);color:var(--t1);font-family:var(--ui);font-size:
       <div class="kelly-card">
         <div class="kelly-top">
           <div>
-            <div class="kelly-lbl">Kelly Criterion — 최적 투자 비율</div>
-            <div class="kelly-sub" id="kelly-sub">승률·PF 기반 수학적 최적 베팅 크기</div>
+            <div class="kelly-lbl">이번 진입에 투자할 비율</div>
+            <div class="kelly-sub" id="kelly-sub">내 투자금의 몇 %를 넣어야 하는가</div>
           </div>
           <div class="kelly-val" id="kelly-val">—</div>
         </div>
         <div class="kelly-bar-wrap"><div class="kelly-bar" id="kelly-bar" style="width:0%"></div></div>
+        <div class="kelly-example" id="kelly-example" style="display:none;margin-top:8px;padding:7px 10px;background:var(--bg3);border-radius:4px;font-size:11px;color:var(--t2);line-height:1.7"></div>
       </div>
 
       <!-- EV Combined (MC × BT) -->
@@ -1885,9 +1886,32 @@ function renderQuant(b1, b2, b3, tp, s1, close, low, high) {
   var kEl=el('kelly-val'), kBar=el('kelly-bar');
   kEl.textContent=kpct+'%';
   kBar.style.width=Math.min(100,halfKelly*100)+'%';
-  if(halfKelly>0.35){kEl.className='kelly-val danger';kBar.className='kelly-bar danger';el('kelly-sub').textContent='⚠ 공격적 — Half Kelly '+kpct+'% (최대 권장)';}
-  else if(halfKelly>0.20){kEl.className='kelly-val warn';kBar.className='kelly-bar warn';el('kelly-sub').textContent='Half Kelly '+kpct+'% — 적정 수준';}
-  else{kEl.className='kelly-val';kBar.className='kelly-bar';el('kelly-sub').textContent='Half Kelly '+kpct+'% — 보수적 (안전)';}
+
+  // 쉬운 설명 + 금액 예시
+  var msg, colorCls, barCls;
+  if(halfKelly>0.35){
+    colorCls='kelly-val danger'; barCls='kelly-bar danger';
+    msg='⚠ 투자금의 '+kpct+'%까지 가능하지만 위험합니다. 절반 이하로 줄이세요.';
+  } else if(halfKelly>0.20){
+    colorCls='kelly-val warn'; barCls='kelly-bar warn';
+    msg='투자금의 '+kpct+'%가 적정합니다. 예: 100만원 중 '+Math.round(halfKelly*100)+'만원';
+  } else {
+    colorCls='kelly-val'; barCls='kelly-bar';
+    msg='투자금의 '+kpct+'%가 안전한 금액입니다. 예: 100만원 중 '+Math.round(halfKelly*100)+'만원';
+  }
+  kEl.className=colorCls; kBar.className=barCls;
+  el('kelly-sub').textContent='내 투자금의 '+kpct+'%를 이 코인에 투자 권장';
+
+  // 예시 카드 표시
+  var exEl=el('kelly-example');
+  if(exEl){
+    exEl.style.display='block';
+    var ex100=Math.round(halfKelly*100), ex500=Math.round(halfKelly*500);
+    exEl.innerHTML=
+      '💰 예시 — 투자금이 <b style="color:var(--t1)">100만원</b>이면 → <b style="color:var(--G)">'+ex100+'만원</b> 투자<br>'
+      +'💰 예시 — 투자금이 <b style="color:var(--t1)">500만원</b>이면 → <b style="color:var(--G)">'+ex500+'만원</b> 투자<br>'
+      +'<span style="color:var(--t3);font-size:9px">※ 나머지는 현금 보유 — 추가 하락 시 BUY2 대응용</span>';
+  }
 
   // ── Combined EV (MC 확률 사용 가능 시) ───────
   function renderCEV(elId, mcP, tpP, stP, color) {
