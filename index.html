@@ -561,6 +561,48 @@ html,body{background:var(--bg0);color:var(--t1);font-family:var(--ui);font-size:
   background:var(--bg2);border-bottom:1px solid var(--bd)}
 .tp-mode.bull{color:var(--G)}.tp-mode.bear{color:var(--A)}
 
+
+/* ── 요약 카드 ── */
+.summary-card{background:var(--bg1);border-bottom:2px solid var(--bd);padding:0}
+.sc-top{display:flex;align-items:stretch;gap:0;border-bottom:1px solid var(--bd)}
+.sc-verdict{flex:1;padding:12px 14px;display:flex;align-items:center;gap:10px}
+.sc-verdict-icon{font-size:22px;flex-shrink:0}
+.sc-verdict-body{flex:1}
+.sc-verdict-title{font-size:13px;font-weight:700;margin-bottom:2px}
+.sc-verdict-sub{font-size:10px;color:var(--t2);line-height:1.5}
+.sc-score-box{padding:12px 14px;text-align:center;border-left:1px solid var(--bd);
+  display:flex;flex-direction:column;align-items:center;justify-content:center;min-width:58px}
+.sc-score-num{font-family:var(--num);font-size:26px;font-weight:700;line-height:1}
+.sc-score-lbl{font-size:8px;color:var(--t3);text-transform:uppercase;letter-spacing:.06em;margin-top:3px}
+/* 신호 행 */
+.sc-signals{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--bd);border-bottom:1px solid var(--bd)}
+.sc-sig{background:var(--bg2);padding:7px 10px;display:flex;align-items:center;gap:6px}
+.sc-sig-icon{font-size:12px;flex-shrink:0}
+.sc-sig-lbl{font-size:10px;color:var(--t2);flex:1}
+.sc-sig-val{font-size:10px;font-weight:600;font-family:var(--num);flex-shrink:0}
+.sc-sig-val.good{color:var(--G)}.sc-sig-val.warn{color:var(--A)}.sc-sig-val.bad{color:var(--R)}.sc-sig-val.neut{color:var(--t3)}
+/* 실투자 금액 */
+.sc-invest{padding:10px 14px;display:flex;align-items:center;justify-content:space-between;
+  border-bottom:1px solid var(--bd)}
+.sc-invest-lbl{font-size:11px;color:var(--t2)}
+.sc-invest-val{font-family:var(--num);font-size:16px;font-weight:700}
+.sc-invest-sub{font-size:10px;color:var(--t3);font-family:var(--num);margin-top:1px;text-align:right}
+/* 행동 지침 */
+.sc-action{padding:10px 14px;font-size:12px;font-weight:600;text-align:center;line-height:1.6;border-bottom:1px solid var(--bd)}
+.sc-action.go{background:var(--Gd);color:var(--G)}
+.sc-action.wait{background:var(--Ad);color:var(--A)}
+.sc-action.stop{background:var(--Rd);color:var(--R)}
+/* 상세보기 토글 */
+.sc-toggle{padding:8px 14px;display:flex;align-items:center;justify-content:center;
+  gap:6px;cursor:pointer;font-size:11px;color:var(--t3);background:var(--bg2);
+  border:none;width:100%;font-family:var(--ui)}
+.sc-toggle:active{background:var(--bg3)}
+.sc-toggle-icon{transition:transform .3s}
+.sc-toggle-icon.open{transform:rotate(180deg)}
+/* 상세 컨텐츠 접기 */
+.detail-wrap{display:none}
+.detail-wrap.on{display:block}
+
 </style>
 </head>
 <body>
@@ -704,6 +746,78 @@ html,body{background:var(--bg0);color:var(--t1);font-family:var(--ui);font-size:
     </div>
   </div>
   <div class="results" id="results">
+
+    <!-- ═══ 요약 카드 ═══ -->
+    <div class="summary-card" id="summary-card" style="display:none">
+      <!-- 상단: 종합 판정 + 점수 -->
+      <div class="sc-top">
+        <div class="sc-verdict">
+          <div class="sc-verdict-icon" id="sc-icon">⏳</div>
+          <div class="sc-verdict-body">
+            <div class="sc-verdict-title" id="sc-title">분석 중...</div>
+            <div class="sc-verdict-sub" id="sc-sub">—</div>
+          </div>
+        </div>
+        <div class="sc-score-box">
+          <div class="sc-score-num" id="sc-score" style="color:var(--t3)">—</div>
+          <div class="sc-score-lbl">점수</div>
+        </div>
+      </div>
+      <!-- 핵심 신호 4가지 -->
+      <div class="sc-signals">
+        <div class="sc-sig">
+          <span class="sc-sig-icon">★</span>
+          <span class="sc-sig-lbl">장세</span>
+          <span class="sc-sig-val" id="sc-bias">—</span>
+        </div>
+        <div class="sc-sig">
+          <span class="sc-sig-icon">📊</span>
+          <span class="sc-sig-lbl">거래량</span>
+          <span class="sc-sig-val" id="sc-vol">—</span>
+        </div>
+        <div class="sc-sig">
+          <span class="sc-sig-icon">🎯</span>
+          <span class="sc-sig-lbl">반등 적합도</span>
+          <span class="sc-sig-val" id="sc-bt">—</span>
+        </div>
+        <div class="sc-sig">
+          <span class="sc-sig-icon">📈</span>
+          <span class="sc-sig-lbl">7일 방향</span>
+          <span class="sc-sig-val" id="sc-dir">—</span>
+        </div>
+        <div class="sc-sig">
+          <span class="sc-sig-icon">🌟</span>
+          <span class="sc-sig-lbl">황금각 (RSI+Fib+거래량)</span>
+          <span class="sc-sig-val" id="sc-golden">—</span>
+        </div>
+        <div class="sc-sig">
+          <span class="sc-sig-icon">💀</span>
+          <span class="sc-sig-lbl">청산까지 거리</span>
+          <span class="sc-sig-val" id="sc-liq">—</span>
+        </div>
+      </div>
+      <!-- 실투자 권장 금액 -->
+      <div class="sc-invest">
+        <div>
+          <div class="sc-invest-lbl">⚡ 실투자 권장 금액 (위험도 보정 후)</div>
+          <div style="font-size:9px;color:var(--t3);margin-top:2px" id="sc-invest-reason">—</div>
+        </div>
+        <div style="text-align:right">
+          <div class="sc-invest-val" id="sc-invest-val" style="color:var(--A)">—</div>
+          <div class="sc-invest-sub" id="sc-invest-sub">100만원 기준</div>
+        </div>
+      </div>
+      <!-- 행동 지침 -->
+      <div class="sc-action go" id="sc-action">—</div>
+      <!-- 상세보기 버튼 -->
+      <button class="sc-toggle" onclick="toggleDetail()">
+        <span id="sc-toggle-icon" class="sc-toggle-icon">▼</span>
+        <span id="sc-toggle-txt">상세 분석 펼치기</span>
+      </button>
+    </div>
+
+    <!-- ═══ 상세 컨텐츠 (접기/펼치기) ═══ -->
+    <div class="detail-wrap" id="detail-wrap">
     <!-- MODE TOGGLE -->
     <div class="mode-bar">
       <button class="mode-btn active-range" id="mode-range" onclick="setMode('range')">
@@ -1042,6 +1156,7 @@ html,body{background:var(--bg0);color:var(--t1);font-family:var(--ui);font-size:
         히스토리에 저장
       </button>
     </div>
+    </div><!-- /detail-wrap -->
   </div>
 </div>
 
@@ -1264,6 +1379,9 @@ function setTF(tf){
   var L=tf.toUpperCase();
   el('tclh').textContent=L+' HIGH';el('tclc').textContent=L+' CLOSE';el('tcll').textContent=L+' LOW';
   ['btcard','ticker','results','bbar','wbar','vol-panel','risk-card','lev-panel','golden-panel'].forEach(function(id){el(id).classList.remove('on');});
+  var sc=el('summary-card');if(sc)sc.style.display='none';
+  var dw=el('detail-wrap');if(dw)dw.classList.remove('on');
+  G._detailOpen=false;
   G._prevRSI=null;G._goldenMode=null;
   G._riskData=null;
   G.curVolRatio=null;G._candles=null;
@@ -1951,6 +2069,7 @@ function startMC(S0,dv,b1,b2,b3,tp,s1,high,low){
       G_MC={r14:[r14[0]/N,r14[1]/N,r14[2]/N],r30:[r30[0]/N,r30[1]/N,r30[2]/N],ready:true};
       if(tp&&s1&&high&&low&&G.res){renderQuant(G.res.buy1,G.res.buy2,G.res.buy3,tp,s1,S0,low,high);}
       renderDiagnosis();
+      setTimeout(renderSummaryCard,100);
       // mc 표시 제거됨
     }
   }
@@ -2311,6 +2430,8 @@ function renderDiagnosis() {
 
   el('diag-action').textContent = action;
   el('diag-action').className = 'diag-action ' + actionCls;
+  // 요약 카드 업데이트
+  setTimeout(renderSummaryCard, 50);
 }
 
 
@@ -3444,6 +3565,142 @@ function renderGoldenSignal(smart, isBull, curVolRatio, livePrice) {
 
   // 장세에 따라 TP 자동 조정 (실제 계산에 반영)
   G._goldenMode = isBull===true?'bull':'bear';
+  setTimeout(renderSummaryCard,50);
+}
+
+
+// ════════════════════════════════════════════════
+//  요약 카드 렌더링
+// ════════════════════════════════════════════════
+G._detailOpen = false;
+
+function toggleDetail() {
+  G._detailOpen = !G._detailOpen;
+  el('detail-wrap').classList.toggle('on', G._detailOpen);
+  el('sc-toggle-icon').className = 'sc-toggle-icon' + (G._detailOpen?' open':'');
+  el('sc-toggle-txt').textContent = G._detailOpen ? '상세 분석 접기' : '상세 분석 펼치기';
+}
+
+function renderSummaryCard() {
+  var card = el('summary-card');
+  if(!G.res) return;
+  card.style.display = 'block';
+
+  // ── 1. 종합진단 점수 가져오기 ──────────────────
+  var scoreEl = el('diag-score');
+  var score = scoreEl ? parseInt(scoreEl.textContent)||0 : 0;
+  var diagTitle = el('diag-title') ? el('diag-title').textContent : '—';
+
+  // ── 2. 황금각 점수 ─────────────────────────────
+  var gbScoreEl = el('gb-score');
+  var gbScore = gbScoreEl ? parseInt(gbScoreEl.textContent)||0 : 0;
+  var gbTitleEl = el('gb-title');
+  var gbTxt = gbScore>=70?'🌟 '+gbScore+'점':gbScore>=50?'👀 '+gbScore+'점':'⏳ '+gbScore+'점';
+  var gbCls = gbScore>=70?'good':gbScore>=50?'warn':'neut';
+
+  // ── 3. 장세 ────────────────────────────────────
+  var bbarOn = el('bbar').classList.contains('on');
+  var isBull = el('bbar').classList.contains('bull');
+  var biasTxt = bbarOn ? (isBull?'▲ 상승':'▼ 하락') : '—';
+  var biasCls = bbarOn ? (isBull?'good':'warn') : 'neut';
+
+  // ── 4. 거래량 ──────────────────────────────────
+  var vr = G.curVolRatio||0;
+  var volTxt = vr>=1.5?'🔥 충분':vr>=0.8?'⚡ 보통':vr>0?'⚠ 부족':'—';
+  var volCls = vr>=1.5?'good':vr>=0.8?'warn':vr>0?'bad':'neut';
+
+  // ── 5. 반등 적합도 ─────────────────────────────
+  var pillEl = el('btpill');
+  var btTxt = pillEl ? pillEl.textContent : '—';
+  var btCls = pillEl ? (pillEl.className.includes('good')?'good':pillEl.className.includes('bad')?'bad':'warn') : 'neut';
+
+  // ── 6. 7일 방향성 ──────────────────────────────
+  var upPctEl = el('dir-up-pct');
+  var upP = upPctEl ? parseFloat(upPctEl.textContent)||0 : 0;
+  var dirTxt = upP>0 ? (upP>=50?'▲ 상승 '+upP.toFixed(0)+'%':'▼ 하락 우위') : '계산 중';
+  var dirCls = upP>=50?'good':upP>=35?'warn':'bad';
+
+  // ── 7. 청산가 거리 ─────────────────────────────
+  var liqEl = el('lev-liq-pct');
+  var liqTxt = '—', liqCls = 'neut';
+  if(liqEl && liqEl.textContent && liqEl.textContent!=='—'){
+    var liqMatch = liqEl.textContent.match(/([0-9.]+)%/);
+    if(liqMatch){
+      var liqDist = parseFloat(liqMatch[1]);
+      liqTxt = liqDist.toFixed(1)+'% 여유';
+      liqCls = liqDist>=15?'good':liqDist>=8?'warn':'bad';
+    }
+  } else if(G.res && G.levX){
+    var liqPct = (1/G.levX)*0.9*100;
+    liqTxt = liqPct.toFixed(1)+'% 여유';
+    liqCls = liqPct>=15?'good':liqPct>=8?'warn':'bad';
+  }
+
+  // ── 8. 실투자 권장 금액 ────────────────────────
+  var adjKellyEl = el('risk-adj-kelly');
+  var adjKelly = adjKellyEl ? parseFloat(adjKellyEl.textContent)||0 : 0;
+  var investAmt = adjKelly>0 ? Math.round(adjKelly/100*100) : 0;
+  var investTxt = adjKelly>0 ? investAmt+'만원' : '—';
+  var investReason = '—';
+  var adjDescEl = el('risk-adj-desc');
+  if(adjDescEl) {
+    var txt = adjDescEl.textContent||'';
+    if(txt.includes('악재') || txt.includes('감지')) {
+      investReason = txt.replace(/<[^>]+>/g,'').split('
+')[0].trim();
+    } else {
+      investReason = '위험도 보정 기준';
+    }
+  }
+  if(adjKelly===0){ investTxt='계산 중'; investReason='퀀트 분석 실행 후 표시'; }
+
+  // ── UI 업데이트 ────────────────────────────────
+  // 점수 (종합진단 + 황금각 평균)
+  var finalScore = gbScore>0 ? Math.round((score+gbScore)/2) : score;
+  el('sc-score').textContent = finalScore||'—';
+  el('sc-score').style.color = finalScore>=70?'var(--G)':finalScore>=50?'var(--A)':'var(--R)';
+
+  // 제목
+  var icon, title, sub, actionCls, action;
+  if(finalScore>=70){
+    icon='🟢'; title='진입 유리 — 지금이 타이밍';
+    sub=diagTitle;
+    actionCls='go';
+    action='✅ BUY1 지정가 + 손절가 동시 등록 → 기다리세요';
+  } else if(finalScore>=50){
+    icon='🟡'; title='신중 진입 — 조건부 가능';
+    sub='일부 신호 긍정적. 황금각 개선 시 진입.';
+    actionCls='wait';
+    action='⚡ BUY1만 소량 진입. 황금각 70점 이상 될 때까지 대기.';
+  } else {
+    icon='🔴'; title='대기 — 아직 타이밍 아님';
+    sub='여러 신호 부정적. 다른 코인을 찾거나 기다리세요.';
+    actionCls='stop';
+    action='❌ 지금은 패스. 황금각 신호 또는 RSI 개선 후 재검색.';
+  }
+
+  el('sc-icon').textContent = icon;
+  el('sc-title').textContent = title;
+  el('sc-title').style.color = finalScore>=70?'var(--G)':finalScore>=50?'var(--A)':'var(--R)';
+  el('sc-sub').textContent = sub;
+
+  // 신호 6개
+  el('sc-bias').textContent = biasTxt; el('sc-bias').className='sc-sig-val '+biasCls;
+  el('sc-vol').textContent = volTxt;   el('sc-vol').className='sc-sig-val '+volCls;
+  el('sc-bt').textContent = btTxt;     el('sc-bt').className='sc-sig-val '+btCls;
+  el('sc-dir').textContent = dirTxt;   el('sc-dir').className='sc-sig-val '+dirCls;
+  el('sc-golden').textContent = gbTxt; el('sc-golden').className='sc-sig-val '+gbCls;
+  el('sc-liq').textContent = liqTxt;   el('sc-liq').className='sc-sig-val '+liqCls;
+
+  // 실투자 금액
+  el('sc-invest-val').textContent = investTxt;
+  el('sc-invest-val').style.color = adjKelly>20?'var(--R)':adjKelly>10?'var(--A)':'var(--G)';
+  el('sc-invest-reason').textContent = investReason;
+  el('sc-invest-sub').textContent = '100만원 중 권장 투자금';
+
+  // 행동 지침
+  el('sc-action').textContent = action;
+  el('sc-action').className = 'sc-action '+actionCls;
 }
 
 setTF('4h');
