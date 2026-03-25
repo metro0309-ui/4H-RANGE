@@ -562,41 +562,38 @@ html,body{background:var(--bg0);color:var(--t1);font-family:var(--ui);font-size:
 .tp-mode.bull{color:var(--G)}.tp-mode.bear{color:var(--A)}
 
 
-/* ── 요약 카드 ── */
-.summary-card{background:var(--bg1);border-bottom:2px solid var(--bd);padding:0}
-.sc-top{display:flex;align-items:stretch;gap:0;border-bottom:1px solid var(--bd)}
-.sc-verdict{flex:1;padding:12px 14px;display:flex;align-items:center;gap:10px}
-.sc-verdict-icon{font-size:22px;flex-shrink:0}
-.sc-verdict-body{flex:1}
-.sc-verdict-title{font-size:13px;font-weight:700;margin-bottom:2px}
-.sc-verdict-sub{font-size:10px;color:var(--t2);line-height:1.5}
-.sc-score-box{padding:12px 14px;text-align:center;border-left:1px solid var(--bd);
-  display:flex;flex-direction:column;align-items:center;justify-content:center;min-width:58px}
-.sc-score-num{font-family:var(--num);font-size:26px;font-weight:700;line-height:1}
-.sc-score-lbl{font-size:8px;color:var(--t3);text-transform:uppercase;letter-spacing:.06em;margin-top:3px}
-/* 신호 행 */
-.sc-signals{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--bd);border-bottom:1px solid var(--bd)}
-.sc-sig{background:var(--bg2);padding:7px 10px;display:flex;align-items:center;gap:6px}
-.sc-sig-icon{font-size:12px;flex-shrink:0}
-.sc-sig-lbl{font-size:10px;color:var(--t2);flex:1}
-.sc-sig-val{font-size:10px;font-weight:600;font-family:var(--num);flex-shrink:0}
-.sc-sig-val.good{color:var(--G)}.sc-sig-val.warn{color:var(--A)}.sc-sig-val.bad{color:var(--R)}.sc-sig-val.neut{color:var(--t3)}
-/* 실투자 금액 */
-.sc-invest{padding:10px 14px;display:flex;align-items:center;justify-content:space-between;
-  border-bottom:1px solid var(--bd)}
-.sc-invest-lbl{font-size:11px;color:var(--t2)}
-.sc-invest-val{font-family:var(--num);font-size:16px;font-weight:700}
-.sc-invest-sub{font-size:10px;color:var(--t3);font-family:var(--num);margin-top:1px;text-align:right}
+/* ── 요약 카드 (12카드 그리드) ── */
+.summary-card{background:var(--bg1);border-bottom:1px solid var(--bd);padding:0}
+/* 코인 헤더 */
+.sc-header{display:flex;align-items:center;justify-content:space-between;
+  padding:10px 14px;border-bottom:1px solid var(--bd)}
+.sc-header-coin{font-size:13px;font-weight:700;color:var(--t1)}
+.sc-header-sub{font-size:10px;color:var(--t3);margin-top:1px}
+.sc-header-price{text-align:right}
+.sc-header-px{font-family:var(--num);font-size:17px;font-weight:700;color:var(--G)}
+.sc-header-chg{font-family:var(--num);font-size:11px}
+.sc-header-chg.up{color:var(--G)}.sc-header-chg.dn{color:var(--R)}
+/* 12카드 그리드 */
+.sc-grid{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--bd)}
+.sc-card{background:var(--bg2);padding:10px 12px;display:flex;flex-direction:column;gap:3px;min-height:62px}
+.sc-card-icon{font-size:13px;line-height:1}
+.sc-card-lbl{font-size:9px;color:var(--t3);text-transform:uppercase;letter-spacing:.04em}
+.sc-card-val{font-family:var(--num);font-size:15px;font-weight:700;line-height:1.2}
+.sc-card-sub{font-size:9px;font-family:var(--num);color:var(--t3);margin-top:1px}
+/* 카드 색상 */
+.sc-card-val.good{color:var(--G)}.sc-card-val.warn{color:var(--A)}
+.sc-card-val.bad{color:var(--R)}.sc-card-val.neut{color:var(--t2)}
 /* 행동 지침 */
-.sc-action{padding:10px 14px;font-size:12px;font-weight:600;text-align:center;line-height:1.6;border-bottom:1px solid var(--bd)}
+.sc-action{padding:10px 14px;font-size:12px;font-weight:600;text-align:center;
+  line-height:1.6;border-top:1px solid var(--bd)}
 .sc-action.go{background:var(--Gd);color:var(--G)}
 .sc-action.wait{background:var(--Ad);color:var(--A)}
 .sc-action.stop{background:var(--Rd);color:var(--R)}
 /* 상세보기 토글 */
 .sc-toggle{padding:8px 14px;display:flex;align-items:center;justify-content:center;
-  gap:6px;cursor:pointer;font-size:11px;color:var(--t3);background:var(--bg2);
-  border:none;width:100%;font-family:var(--ui)}
-.sc-toggle:active{background:var(--bg3)}
+  gap:6px;cursor:pointer;font-size:11px;color:var(--t3);background:var(--bg1);
+  border:none;border-top:1px solid var(--bd);width:100%;font-family:var(--ui)}
+.sc-toggle:active{background:var(--bg2)}
 .sc-toggle-icon{transition:transform .3s}
 .sc-toggle-icon.open{transform:rotate(180deg)}
 /* 상세 컨텐츠 접기 */
@@ -747,64 +744,104 @@ html,body{background:var(--bg0);color:var(--t1);font-family:var(--ui);font-size:
   </div>
   <div class="results" id="results">
 
-    <!-- ═══ 요약 카드 ═══ -->
+    <!-- ═══ 요약 카드 (12카드) ═══ -->
     <div class="summary-card" id="summary-card" style="display:none">
-      <!-- 상단: 종합 판정 + 점수 -->
-      <div class="sc-top">
-        <div class="sc-verdict">
-          <div class="sc-verdict-icon" id="sc-icon">⏳</div>
-          <div class="sc-verdict-body">
-            <div class="sc-verdict-title" id="sc-title">분석 중...</div>
-            <div class="sc-verdict-sub" id="sc-sub">—</div>
-          </div>
-        </div>
-        <div class="sc-score-box">
-          <div class="sc-score-num" id="sc-score" style="color:var(--t3)">—</div>
-          <div class="sc-score-lbl">점수</div>
-        </div>
-      </div>
-      <!-- 핵심 신호 4가지 -->
-      <div class="sc-signals">
-        <div class="sc-sig">
-          <span class="sc-sig-icon">★</span>
-          <span class="sc-sig-lbl">장세</span>
-          <span class="sc-sig-val" id="sc-bias">—</span>
-        </div>
-        <div class="sc-sig">
-          <span class="sc-sig-icon">📊</span>
-          <span class="sc-sig-lbl">거래량</span>
-          <span class="sc-sig-val" id="sc-vol">—</span>
-        </div>
-        <div class="sc-sig">
-          <span class="sc-sig-icon">🎯</span>
-          <span class="sc-sig-lbl">반등 적합도</span>
-          <span class="sc-sig-val" id="sc-bt">—</span>
-        </div>
-        <div class="sc-sig">
-          <span class="sc-sig-icon">📈</span>
-          <span class="sc-sig-lbl">7일 방향</span>
-          <span class="sc-sig-val" id="sc-dir">—</span>
-        </div>
-        <div class="sc-sig">
-          <span class="sc-sig-icon">🌟</span>
-          <span class="sc-sig-lbl">황금각 (RSI+Fib+거래량)</span>
-          <span class="sc-sig-val" id="sc-golden">—</span>
-        </div>
-        <div class="sc-sig">
-          <span class="sc-sig-icon">💀</span>
-          <span class="sc-sig-lbl">청산까지 거리</span>
-          <span class="sc-sig-val" id="sc-liq">—</span>
-        </div>
-      </div>
-      <!-- 실투자 권장 금액 -->
-      <div class="sc-invest">
+      <!-- 코인 헤더 -->
+      <div class="sc-header">
         <div>
-          <div class="sc-invest-lbl">⚡ 실투자 권장 금액 (위험도 보정 후)</div>
-          <div style="font-size:9px;color:var(--t3);margin-top:2px" id="sc-invest-reason">—</div>
+          <div class="sc-header-coin" id="sc-coin-name">—</div>
+          <div class="sc-header-sub" id="sc-coin-sub">—</div>
         </div>
-        <div style="text-align:right">
-          <div class="sc-invest-val" id="sc-invest-val" style="color:var(--A)">—</div>
-          <div class="sc-invest-sub" id="sc-invest-sub">100만원 기준</div>
+        <div class="sc-header-price">
+          <div class="sc-header-px" id="sc-cur-price">—</div>
+          <div class="sc-header-chg" id="sc-cur-chg">—</div>
+        </div>
+      </div>
+      <!-- 12카드 그리드 -->
+      <div class="sc-grid">
+        <!-- 1. 종합 판정 -->
+        <div class="sc-card">
+          <div class="sc-card-icon" id="sc-icon">⏳</div>
+          <div class="sc-card-lbl">종합 판정</div>
+          <div class="sc-card-val" id="sc-title" style="font-size:12px">분석 중...</div>
+          <div class="sc-card-sub" id="sc-score-sub">—</div>
+        </div>
+        <!-- 2. 황금각 -->
+        <div class="sc-card">
+          <div class="sc-card-icon">🌟</div>
+          <div class="sc-card-lbl">황금각 (RSI+Fib+거래량)</div>
+          <div class="sc-card-val" id="sc-golden">—</div>
+          <div class="sc-card-sub" id="sc-golden-sub">—</div>
+        </div>
+        <!-- 3. 매수가 BUY1 -->
+        <div class="sc-card">
+          <div class="sc-card-icon">📍</div>
+          <div class="sc-card-lbl">매수가 BUY1</div>
+          <div class="sc-card-val good" id="sc-buy1">—</div>
+          <div class="sc-card-sub" id="sc-buy1-sub">—</div>
+        </div>
+        <!-- 4. 손절가 -->
+        <div class="sc-card">
+          <div class="sc-card-icon">🛑</div>
+          <div class="sc-card-lbl">손절가 (Stop)</div>
+          <div class="sc-card-val bad" id="sc-stop">—</div>
+          <div class="sc-card-sub" id="sc-stop-sub">—</div>
+        </div>
+        <!-- 5. 목표가 TP -->
+        <div class="sc-card">
+          <div class="sc-card-icon">🎯</div>
+          <div class="sc-card-lbl">목표가 (TP)</div>
+          <div class="sc-card-val warn" id="sc-tp">—</div>
+          <div class="sc-card-sub" id="sc-tp-sub">—</div>
+        </div>
+        <!-- 6. 청산가 -->
+        <div class="sc-card">
+          <div class="sc-card-icon">💀</div>
+          <div class="sc-card-lbl">청산가 (강제청산)</div>
+          <div class="sc-card-val bad" id="sc-liq">—</div>
+          <div class="sc-card-sub" id="sc-liq-sub">—</div>
+        </div>
+        <!-- 7. 투자 권장 금액 -->
+        <div class="sc-card">
+          <div class="sc-card-icon">💰</div>
+          <div class="sc-card-lbl">투자 권장 (위험도 보정)</div>
+          <div class="sc-card-val" id="sc-invest-val">—</div>
+          <div class="sc-card-sub" id="sc-invest-sub">100만원 기준</div>
+        </div>
+        <!-- 8. 레버리지 손익 -->
+        <div class="sc-card">
+          <div class="sc-card-icon">⚡</div>
+          <div class="sc-card-lbl">레버리지 손익 (5배)</div>
+          <div class="sc-card-val good" id="sc-lev-win">—</div>
+          <div class="sc-card-sub" id="sc-lev-lose">—</div>
+        </div>
+        <!-- 9. 7일 방향성 -->
+        <div class="sc-card">
+          <div class="sc-card-icon">📊</div>
+          <div class="sc-card-lbl">7일 방향성 (Monte Carlo)</div>
+          <div class="sc-card-val" id="sc-dir">—</div>
+          <div class="sc-card-sub" id="sc-dir-sub">—</div>
+        </div>
+        <!-- 10. 전체 방향 일치 -->
+        <div class="sc-card">
+          <div class="sc-card-icon">🔄</div>
+          <div class="sc-card-lbl">전체 방향 일치</div>
+          <div class="sc-card-val" id="sc-bias">—</div>
+          <div class="sc-card-sub" id="sc-bias-sub">—</div>
+        </div>
+        <!-- 11. 거래량 + 반등 적합도 -->
+        <div class="sc-card">
+          <div class="sc-card-icon">🔥</div>
+          <div class="sc-card-lbl">거래량 / 반등 적합도</div>
+          <div class="sc-card-val" id="sc-vol">—</div>
+          <div class="sc-card-sub" id="sc-bt">—</div>
+        </div>
+        <!-- 12. 퀀트 EV -->
+        <div class="sc-card">
+          <div class="sc-card-icon">📈</div>
+          <div class="sc-card-lbl">퀀트 EV / Kelly</div>
+          <div class="sc-card-val" id="sc-ev">—</div>
+          <div class="sc-card-sub" id="sc-kelly">—</div>
         </div>
       </div>
       <!-- 행동 지침 -->
@@ -3586,120 +3623,188 @@ function renderSummaryCard() {
   if(!G.res) return;
   card.style.display = 'block';
 
-  // ── 1. 종합진단 점수 가져오기 ──────────────────
-  var scoreEl = el('diag-score');
-  var score = scoreEl ? parseInt(scoreEl.textContent)||0 : 0;
-  var diagTitle = el('diag-title') ? el('diag-title').textContent : '—';
+  var res = G.res;
+  var lp = G.livePrice || res.close;
 
-  // ── 2. 황금각 점수 ─────────────────────────────
+  // ── 헤더: 코인명 + 현재가 ──────────────────────
+  var coinName = el('sc-coin-name');
+  var coinSub  = el('sc-coin-sub');
+  var curPx    = el('sc-cur-price');
+  var curChg   = el('sc-cur-chg');
+  if(coinName) coinName.textContent = G.coin + 'USDT';
+  if(coinSub)  coinSub.textContent  = TFC[G.tf].lbl + ' · 실시간';
+  if(curPx)    curPx.textContent    = '$' + fp(lp);
+  if(curChg) {
+    var tkChg = el('tkchg');
+    if(tkChg && tkChg.textContent !== '—') {
+      curChg.textContent  = tkChg.textContent;
+      curChg.className = 'sc-header-chg ' + (tkChg.className.includes('up') ? 'up' : 'dn');
+    }
+  }
+
+  // ── 1. 종합 판정 ────────────────────────────────
+  var diagScore = el('diag-score');
+  var diagTitle = el('diag-title');
+  var score = diagScore ? parseInt(diagScore.textContent)||0 : 0;
   var gbScoreEl = el('gb-score');
   var gbScore = gbScoreEl ? parseInt(gbScoreEl.textContent)||0 : 0;
+  var finalScore = gbScore>0 ? Math.round((score+gbScore)/2) : score;
+
+  var icon, titleTxt, actionCls, action;
+  if(finalScore>=70){
+    icon='🟢'; titleTxt='진입 유리';
+    actionCls='go'; action='✅ BUY1 지정가 + 손절가 동시 등록 → 기다리세요';
+  } else if(finalScore>=50){
+    icon='🟡'; titleTxt='신중 진입';
+    actionCls='wait'; action='⚡ BUY1만 소량 진입. 황금각 70점 이상 될 때까지 대기.';
+  } else {
+    icon='🔴'; titleTxt='대기 권장';
+    actionCls='stop'; action='❌ 지금은 패스. RSI 개선 또는 다른 코인 검색.';
+  }
+  var scIcon  = el('sc-icon');
+  var scTitle = el('sc-title');
+  var scScoreSub = el('sc-score-sub');
+  if(scIcon)  scIcon.textContent  = icon;
+  if(scTitle){ scTitle.textContent = titleTxt; scTitle.className = 'sc-card-val ' + actionCls.replace('go','good').replace('wait','warn').replace('stop','bad'); }
+  if(scScoreSub) scScoreSub.textContent = '종합 ' + finalScore + '점';
+
+  // ── 2. 황금각 ───────────────────────────────────
   var gbTitleEl = el('gb-title');
-  var gbTxt = gbScore>=70?'🌟 '+gbScore+'점':gbScore>=50?'👀 '+gbScore+'점':'⏳ '+gbScore+'점';
-  var gbCls = gbScore>=70?'good':gbScore>=50?'warn':'neut';
-
-  // ── 3. 장세 ────────────────────────────────────
-  var bbarOn = el('bbar').classList.contains('on');
-  var isBull = el('bbar').classList.contains('bull');
-  var biasTxt = bbarOn ? (isBull?'▲ 상승':'▼ 하락') : '—';
-  var biasCls = bbarOn ? (isBull?'good':'warn') : 'neut';
-
-  // ── 4. 거래량 ──────────────────────────────────
-  var vr = G.curVolRatio||0;
-  var volTxt = vr>=1.5?'🔥 충분':vr>=0.8?'⚡ 보통':vr>0?'⚠ 부족':'—';
-  var volCls = vr>=1.5?'good':vr>=0.8?'warn':vr>0?'bad':'neut';
-
-  // ── 5. 반등 적합도 ─────────────────────────────
-  var pillEl = el('btpill');
-  var btTxt = pillEl ? pillEl.textContent : '—';
-  var btCls = pillEl ? (pillEl.className.includes('good')?'good':pillEl.className.includes('bad')?'bad':'warn') : 'neut';
-
-  // ── 6. 7일 방향성 ──────────────────────────────
-  var upPctEl = el('dir-up-pct');
-  var upP = upPctEl ? parseFloat(upPctEl.textContent)||0 : 0;
-  var dirTxt = upP>0 ? (upP>=50?'▲ 상승 '+upP.toFixed(0)+'%':'▼ 하락 우위') : '계산 중';
-  var dirCls = upP>=50?'good':upP>=35?'warn':'bad';
-
-  // ── 7. 청산가 거리 ─────────────────────────────
-  var liqEl = el('lev-liq-pct');
-  var liqTxt = '—', liqCls = 'neut';
-  if(liqEl && liqEl.textContent && liqEl.textContent!=='—'){
-    var liqMatch = liqEl.textContent.match(/([0-9.]+)%/);
-    if(liqMatch){
-      var liqDist = parseFloat(liqMatch[1]);
-      liqTxt = liqDist.toFixed(1)+'% 여유';
-      liqCls = liqDist>=15?'good':liqDist>=8?'warn':'bad';
-    }
-  } else if(G.res && G.levX){
-    var liqPct = (1/G.levX)*0.9*100;
-    liqTxt = liqPct.toFixed(1)+'% 여유';
-    liqCls = liqPct>=15?'good':liqPct>=8?'warn':'bad';
+  var gbTxt = gbScore>=70 ? '🌟 ' + gbScore + '점' : gbScore>=50 ? '👀 ' + gbScore + '점' : '⏳ ' + gbScore + '점';
+  var gbCls = gbScore>=70 ? 'good' : gbScore>=50 ? 'warn' : 'neut';
+  var scGolden = el('sc-golden');
+  var scGoldenSub = el('sc-golden-sub');
+  if(scGolden){ scGolden.textContent = gbTxt; scGolden.className = 'sc-card-val ' + gbCls; }
+  if(scGoldenSub){
+    var rsiEl = el('sg-rsi-sub');
+    scGoldenSub.textContent = rsiEl ? rsiEl.textContent : '—';
   }
 
-  // ── 8. 실투자 권장 금액 ────────────────────────
+  // ── 3. 매수가 BUY1 ─────────────────────────────
+  var b1 = res.buy1;
+  var b1pct = ((b1-lp)/lp*100).toFixed(2);
+  var scBuy1 = el('sc-buy1'), scBuy1Sub = el('sc-buy1-sub');
+  if(scBuy1) scBuy1.textContent = '$' + fp(b1);
+  if(scBuy1Sub) scBuy1Sub.textContent = b1pct + '% (현재가 대비)';
+
+  // ── 4. 손절가 ───────────────────────────────────
+  var stop = res.stop1;
+  var stopPct = stop ? ((b1-stop)/b1*100).toFixed(2) : '—';
+  var scStop = el('sc-stop'), scStopSub = el('sc-stop-sub');
+  if(scStop) scStop.textContent = '$' + fp(stop);
+  if(scStopSub) scStopSub.textContent = stop ? '진입 대비 -' + stopPct + '%' : '—';
+
+  // ── 5. 목표가 TP ────────────────────────────────
+  var tp = res.tp;
+  var tpPct = tp ? ((tp-b1)/b1*100).toFixed(2) : '—';
+  var scTp = el('sc-tp'), scTpSub = el('sc-tp-sub');
+  if(scTp) scTp.textContent = '$' + fp(tp);
+  if(scTpSub) scTpSub.textContent = tp ? '진입 대비 +' + tpPct + '%' : '—';
+
+  // ── 6. 청산가 ───────────────────────────────────
+  var liqEl = el('lev-liq');
+  var liqDistEl = el('lev-liq-pct');
+  var scLiq = el('sc-liq'), scLiqSub = el('sc-liq-sub');
+  if(scLiq) scLiq.textContent = liqEl ? liqEl.textContent : '$' + fp(b1*(1-(1/G.levX)*0.9));
+  if(scLiqSub){
+    if(liqDistEl && liqDistEl.textContent !== '—'){
+      var liqMatch = liqDistEl.textContent.match(/([0-9.]+)%/);
+      if(liqMatch){
+        var liqDist = parseFloat(liqMatch[1]);
+        scLiqSub.textContent = liqDist.toFixed(1) + '% 여유';
+        scLiq.className = 'sc-card-val ' + (liqDist>=15?'good':liqDist>=8?'warn':'bad');
+      }
+    } else {
+      var liqPctVal = (1/G.levX)*0.9*100;
+      scLiqSub.textContent = liqPctVal.toFixed(1) + '% 여유';
+    }
+  }
+
+  // ── 7. 투자 권장 금액 ───────────────────────────
   var adjKellyEl = el('risk-adj-kelly');
   var adjKelly = adjKellyEl ? parseFloat(adjKellyEl.textContent)||0 : 0;
-  var investAmt = adjKelly>0 ? Math.round(adjKelly/100*100) : 0;
-  var investTxt = adjKelly>0 ? investAmt+'만원' : '—';
-  var investReason = '—';
-  var adjDescEl = el('risk-adj-desc');
-  if(adjDescEl) {
-    var txt = adjDescEl.textContent||'';
-    if(txt.includes('악재') || txt.includes('감지')) {
-      investReason = txt.replace(/<[^>]+>/g,'').split('\n')[0].trim();
+  var scInvest = el('sc-invest-val'), scInvestSub = el('sc-invest-sub');
+  if(scInvest){
+    if(adjKelly > 0){
+      var investAmt = Math.round(adjKelly/100*100);
+      scInvest.textContent = investAmt + '만원';
+      scInvest.className = 'sc-card-val ' + (adjKelly>20?'bad':adjKelly>10?'warn':'good');
     } else {
-      investReason = '위험도 보정 기준';
+      scInvest.textContent = '계산 중';
+      scInvest.className = 'sc-card-val neut';
     }
   }
-  if(adjKelly===0){ investTxt='계산 중'; investReason='퀀트 분석 실행 후 표시'; }
+  if(scInvestSub) scInvestSub.textContent = '100만원 기준 권장';
 
-  // ── UI 업데이트 ────────────────────────────────
-  // 점수 (종합진단 + 황금각 평균)
-  var finalScore = gbScore>0 ? Math.round((score+gbScore)/2) : score;
-  el('sc-score').textContent = finalScore||'—';
-  el('sc-score').style.color = finalScore>=70?'var(--G)':finalScore>=50?'var(--A)':'var(--R)';
+  // ── 8. 레버리지 손익 ────────────────────────────
+  var levWinEl = el('lev-pnl-win');
+  var levLoseEl = el('lev-pnl-lose');
+  var scLevWin = el('sc-lev-win'), scLevLose = el('sc-lev-lose');
+  if(scLevWin) scLevWin.textContent = levWinEl ? levWinEl.textContent : '—';
+  if(scLevLose) scLevLose.textContent = levLoseEl ? '손절 ' + levLoseEl.textContent : '—';
 
-  // 제목
-  var icon, title, sub, actionCls, action;
-  if(finalScore>=70){
-    icon='🟢'; title='진입 유리 — 지금이 타이밍';
-    sub=diagTitle;
-    actionCls='go';
-    action='✅ BUY1 지정가 + 손절가 동시 등록 → 기다리세요';
-  } else if(finalScore>=50){
-    icon='🟡'; title='신중 진입 — 조건부 가능';
-    sub='일부 신호 긍정적. 황금각 개선 시 진입.';
-    actionCls='wait';
-    action='⚡ BUY1만 소량 진입. 황금각 70점 이상 될 때까지 대기.';
-  } else {
-    icon='🔴'; title='대기 — 아직 타이밍 아님';
-    sub='여러 신호 부정적. 다른 코인을 찾거나 기다리세요.';
-    actionCls='stop';
-    action='❌ 지금은 패스. 황금각 신호 또는 RSI 개선 후 재검색.';
+  // ── 9. 7일 방향성 ───────────────────────────────
+  var upPctEl = el('dir-up-pct');
+  var dnPctEl = el('dir-dn-pct');
+  var verdictEl = el('dir-verdict');
+  var upP = upPctEl ? parseFloat(upPctEl.textContent)||0 : 0;
+  var dnP = dnPctEl ? parseFloat(dnPctEl.textContent)||0 : 0;
+  var scDir = el('sc-dir'), scDirSub = el('sc-dir-sub');
+  if(scDir){
+    if(upP > 0){
+      scDir.textContent = upP >= 50 ? '▲ 상승 ' + upP.toFixed(0) + '%' : '▼ 하락 ' + dnP.toFixed(0) + '%';
+      scDir.className = 'sc-card-val ' + (upP>=50?'good':'bad');
+    } else {
+      scDir.textContent = '계산 중';
+      scDir.className = 'sc-card-val neut';
+    }
+  }
+  if(scDirSub) scDirSub.textContent = verdictEl ? verdictEl.textContent.slice(0,16) : 'Monte Carlo 3000회';
+
+  // ── 10. 전체 방향 일치 ──────────────────────────
+  var bbarOn = el('bbar').classList.contains('on');
+  var isBull = el('bbar').classList.contains('bull');
+  var mtfOn  = el('mtf-badge').classList.contains('on');
+  var scBias = el('sc-bias'), scBiasSub = el('sc-bias-sub');
+  if(scBias){
+    if(mtfOn){
+      scBias.textContent = '★ 강추 — 전체 상승';
+      scBias.className = 'sc-card-val good';
+    } else if(bbarOn){
+      scBias.textContent = isBull ? '▲ 상승장' : '▼ 하락장';
+      scBias.className = 'sc-card-val ' + (isBull?'good':'warn');
+    } else {
+      scBias.textContent = '— 판단 중';
+      scBias.className = 'sc-card-val neut';
+    }
+  }
+  if(scBiasSub){
+    var blblEl = el('blbl');
+    scBiasSub.textContent = blblEl ? blblEl.textContent : '—';
   }
 
-  el('sc-icon').textContent = icon;
-  el('sc-title').textContent = title;
-  el('sc-title').style.color = finalScore>=70?'var(--G)':finalScore>=50?'var(--A)':'var(--R)';
-  el('sc-sub').textContent = sub;
+  // ── 11. 거래량 + 반등 적합도 ────────────────────
+  var vr = G.curVolRatio || 0;
+  var volTxt = vr>=2?'🔥 급증':vr>=1.5?'✅ 충분':vr>=0.8?'⚡ 보통':vr>0?'⚠ 부족':'—';
+  var volCls = vr>=1.5?'good':vr>=0.8?'warn':vr>0?'bad':'neut';
+  var pillEl = el('btpill');
+  var scVol = el('sc-vol'), scBt = el('sc-bt');
+  if(scVol){ scVol.textContent = volTxt; scVol.className = 'sc-card-val ' + volCls; }
+  if(scBt && pillEl) scBt.textContent = pillEl.textContent;
 
-  // 신호 6개
-  el('sc-bias').textContent = biasTxt; el('sc-bias').className='sc-sig-val '+biasCls;
-  el('sc-vol').textContent = volTxt;   el('sc-vol').className='sc-sig-val '+volCls;
-  el('sc-bt').textContent = btTxt;     el('sc-bt').className='sc-sig-val '+btCls;
-  el('sc-dir').textContent = dirTxt;   el('sc-dir').className='sc-sig-val '+dirCls;
-  el('sc-golden').textContent = gbTxt; el('sc-golden').className='sc-sig-val '+gbCls;
-  el('sc-liq').textContent = liqTxt;   el('sc-liq').className='sc-sig-val '+liqCls;
+  // ── 12. 퀀트 EV / Kelly ─────────────────────────
+  var cev1El = el('cev1');
+  var kellyEl = el('kelly-val');
+  var scEv = el('sc-ev'), scKelly = el('sc-kelly');
+  if(scEv && cev1El) {
+    scEv.textContent = 'EV ' + cev1El.textContent;
+    scEv.className = 'sc-card-val ' + (cev1El.textContent.startsWith('+') ? 'good' : cev1El.textContent === '계산중' ? 'neut' : 'bad');
+  }
+  if(scKelly && kellyEl) scKelly.textContent = 'Kelly ' + kellyEl.textContent;
 
-  // 실투자 금액
-  el('sc-invest-val').textContent = investTxt;
-  el('sc-invest-val').style.color = adjKelly>20?'var(--R)':adjKelly>10?'var(--A)':'var(--G)';
-  el('sc-invest-reason').textContent = investReason;
-  el('sc-invest-sub').textContent = '100만원 중 권장 투자금';
-
-  // 행동 지침
+  // ── 행동 지침 ───────────────────────────────────
   el('sc-action').textContent = action;
-  el('sc-action').className = 'sc-action '+actionCls;
+  el('sc-action').className = 'sc-action ' + actionCls;
 }
 
 setTF('4h');
