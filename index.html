@@ -1246,6 +1246,126 @@ function renderBias(m,ts,cfg){
   else{w.classList.remove('on');}
 }
 
+
+// ════════════════════════════════════════════════
+//  새 알고리즘: 스윙 포인트 + 피보나치 되돌림
+// ════════════════════════════════════════════════
+
+// 스윙 저점/고점 탐지 (좌우 n봉보다 낮은/높은 봉)
+function calcSwingPoints(candles, idx, n, lookback) {
+  var lows=[], highs=[];
+  var start=Math.max(n+1, idx-lookback);
+  var end=idx-n; // 현재봉에서 n봉 이전까지 (완성된 스윙)
+  for(var i=start; i<=end; i++){
+    var l=parseFloat(candles[i][3]), h=parseFloat(candles[i][2]);
+    var isLow=true, isHigh=true;
+    for(var j=i-n; j<=i+n; j++){
+      if(j===i||j<0||j>=candles.length) continue;
+      if(parseFloat(candles[j][3])<l) isLow=false;
+      if(parseFloat(candles[j][2])>h) isHigh=false;
+    }
+    if(isLow)  lows.push({p:l, i:i});
+    if(isHigh) highs.push({p:h, i:i});
+  }
+  return {lows:lows, highs:highs};
+}
+
+// RSI 계산
+function calcRSI(candles, idx, period) {
+  if(idx<period+1) return 50;
+  var gains=0, losses=0;
+  for(var i=idx-period+1; i<=idx; i++){
+    var chg=parseFloat(candles[i][4])-parseFloat(candles[i-1][4]);
+    if(chg>0) gains+=chg; else losses-=chg;
+  }
+  var avgG=gains/period, avgL=losses/period||0.0001;
+  return 100-100/(1+avgG/avgL);
+}
+
+// 핵심: 스윙 포인트 + 피보나치 기반 BUY가 계산
+function calcSmartBuy(candles, idx, atr, livePrice) {
+  var cur=candles[idx];
+  var curH=parseFloat(cur[2]), curL=parseFloat(cur[3]), curC=parseFloat(cur[4]);
+  var lp=livePrice||curC;
+
+  // 스윙 포인트 탐지 (최근 60봉, 좌우 2봉 비교)
+  var sp=calcSwingPoints(candles, idx, 2, 60);
+  var rsi=calcRSI(candles, idx, 14);
+
+  // 직전 상승파: 마지막 스윙저점 → 마지막 스윙고점
+  var fibH=null, fibL=null;
+  var recentLows=sp.lows.slice(-3);
+  var recentHighs=sp.highs.slice(-2);
+
+  // 고점이 저점보다 나중에 형성 = 상승파 확인
+  if(recentHighs.length>0 && recentLows.length>0) {
+    var lastH=recentHighs[recentHighs.length-1];
+    // 해당 고점 이전의 저점 중 가장 최근 것
+    for(var k=recentLows.length-1; k>=0; k--) {
+      if(recentLows[k].i < lastH.i) {
+        fibL=recentLows[k].p;
+        fibH=lastH.p;
+        break;
+      }
+    }
+  }
+
+  var b1, b2, tp, stop, method;
+  var fibRange=fibH&&fibL ? fibH-fibL : 0;
+
+  if(fibH && fibL && fibRange > curC*0.02) {
+    // ── 피보나치 모드 ──────────────────────────
+    var f618=fibH-fibRange*0.618;
+    var f786=fibH-fibRange*0.786;
+    var f1618=fibH+fibRange*0.618; // 확장 목표
+
+    // BUY1: Fib 61.8% (현재가 아래여야 함)
+    b1 = f618 < lp*0.999 ? f618 : lp*0.985;
+
+    // BUY2: Fib 78.6% 또는 최근 스윙 저점 중 낮은 값
+    var swingLowNear=recentLows.length>0 ? recentLows[recentLows.length-1].p : f786;
+    b2=Math.min(f786, swingLowNear);
+    if(b2>=b1) b2=b1-Math.max(atr*1.5, b1*0.025);
+
+    // TP: 직전 고점 (상승파 완성 기준)
+    tp=fibH;
+    if(tp<=b1*1.04) tp=b1*(1+Math.max(0.08,(fibRange/fibH)));
+
+    method='피보나치 ('+fibL.toFixed(0)+' → '+fibH.toFixed(0)+')';
+  } else {
+    // ── 스윙 로우 폴백 ─────────────────────────
+    if(recentLows.length>=2) {
+      b1=recentLows[recentLows.length-1].p;
+      b2=recentLows[recentLows.length-2].p;
+      if(b2>=b1) b2=b1-atr*2.0;
+    } else if(recentLows.length===1) {
+      b1=recentLows[0].p;
+      b2=b1-Math.max(atr*2.0, b1*0.03);
+    } else {
+      // 스윙 포인트 없음 → ATR 기반 (기존 방식 폴백)
+      b1=lp*0.985;
+      b2=b1-Math.max(atr*2.0, b1*0.03);
+    }
+    // TP: 직전 스윙 고점
+    tp=recentHighs.length>0 ? recentHighs[recentHighs.length-1].p : b1*1.08;
+    if(tp<=b1*1.04) tp=b1*1.08;
+    method='스윙 저점'+(recentLows.length>0?' (저점 '+recentLows.length+'개 감지)':'(ATR 폴백)');
+  }
+
+  // Stop: BUY2 아래 ATR×1.0
+  stop=b2-atr*1.0;
+
+  // 최소 간격 안전장치
+  var minGap=Math.max(atr*1.5, b1*0.02);
+  if(b1-b2<minGap) b2=b1-minGap;
+  if(b2<=stop+atr*0.5) stop=b2-atr*1.0;
+  if(tp<=b1*1.04)  tp=b1*1.08;
+
+  return {b1:b1, b2:b2, tp:tp, stop:stop, rsi:rsi,
+    fibH:fibH, fibL:fibL, method:method,
+    swingLowCount:recentLows.length, swingHighCount:recentHighs.length};
+}
+
 function calcATR(c,idx,p){
   if(idx<1)return parseFloat(c[0][2])-parseFloat(c[0][3]);
   var st=Math.max(1,idx-p*3),tr=[];
@@ -1377,33 +1497,42 @@ function calculate(noScroll){
   }
 
   // ── RANGE 모드 (기존) ─────────────────────────
-  var pv=(high+low+close)/3,ps1=2*pv-high,ps2=pv-rng,pb=ps1<low?ps1:ps2;
-  var lp=G.livePrice||close; // 현재가 기준
+  var lp=G.livePrice||close;
 
-  // BUY1: 기본값(Low+Range×buf) vs 현재가-1.5% 중 낮은 값
-  // → 현재가 근처에 BUY1이 붙지 않도록 최소 1.5% 간격 보장
-  var b1_base=low+rng*buf;
-  var b1_minGap=lp*0.985; // 현재가 -1.5%
-  var b1=Math.min(b1_base, b1_minGap);
+  // ── 새 알고리즘: 스윙 포인트 + 피보나치 되돌림 ──
+  var smart=null;
+  if(G._candles && G._candles.length>20){
+    var cidx=G._candles.length-1;
+    smart=calcSmartBuy(G._candles, cidx, atr, lp);
+  }
 
-  var s1=b1-atr*G.AS;
-  // BUY2: max(ATR×1.0, Range×18%, BUY1×1.5%) 간격 보장
-  var b2gap=Math.max(atr*1.0, rng*0.18, b1*0.015);
-  var b2=b1-b2gap;
-  // b3: 화면에서 제거됐지만 renderBar/checkAbandon/startMC 내부 파라미터로 유지
-  var b3=b2-b2gap;
-  var tp=Math.max(low+rng*0.85, b1*1.05);
+  var b1, b2, tp, s1, b3, algoMethod;
+  if(smart){
+    b1=smart.b1; b2=smart.b2; tp=smart.tp; s1=smart.stop;
+    b3=b2-(b2-s1)*0.5; // b3 내부용 (화면 미표시)
+    algoMethod=smart.method;
+  } else {
+    // 캔들 데이터 없을 때 폴백 (수동 입력 시)
+    b1=Math.min(low+rng*buf, lp*0.985);
+    var b2gap=Math.max(atr*1.5, rng*0.18, b1*0.025);
+    b2=b1-b2gap; b3=b2-b2gap;
+    tp=Math.max(high, b1*1.08);
+    s1=b2-atr*1.0;
+    algoMethod='ATR 폴백 (캔들 없음)';
+  }
 
-  // Range 너무 좁으면 경고 (가격 대비 1.5% 미만)
-  var rangeRatio=rng/lp;
-  if(rangeRatio<0.015){
+  // 스윙 포인트 부족 경고
+  if(smart && smart.swingLowCount===0 && smart.swingHighCount===0){
     var upperTf={'15m':'1시간(1H)','1h':'4시간(4H)','4h':'일봉(1D)','1d':'주봉(1W)'}[G.tf]||'상위 차트';
-    el('wbar').textContent='⚠ 현재 차트 가격 범위가 너무 좁습니다 ('+((rangeRatio*100).toFixed(1))+'%). '+upperTf+' 탭으로 바꿔서 검색하면 더 정확한 매수가를 볼 수 있습니다.';
+    el('wbar').textContent='⚠ 최근 봉에서 지지선을 찾지 못했습니다. '+upperTf+' 탭으로 바꿔서 더 넓은 범위를 확인해 보세요.';
     el('wbar').className='wbar on amber';
+  } else if(!el('wbar').classList.contains('amber') || (smart && smart.swingLowCount>0)){
+    // 바이어스 경고가 없는 경우 wbar 초기화
+    if(!el('bbar').classList.contains('bear')) el('wbar').classList.remove('on');
   }
   // 이름 원복
-  el('b1name').textContent='즉시진입 · 최적버퍼';
-  el('b2name').textContent='지지선 대기 · Pivot';
+  el('b1name').textContent='즉시진입 · 피보나치 지지선';
+  el('b2name').textContent='2차 지지선 · 스윙 저점';
   elv('b3name').textContent='딥바이 · ATR 하방';
   var l1=atr*G.AS/b1*100,l2=atr*G.AS/b2*100,l3=atr*G.AS/b3*100;
   var d=G.bt||{b1WR:0,b1PF:0,b1EV:0,b1FR:0,b2WR:0,b2PF:0,b2EV:0,b2FR:0,b3WR:0,b3PF:0,b3EV:0,b3FR:0};
@@ -1415,7 +1544,7 @@ function calculate(noScroll){
   var volMult = volBoost>=1.5 ? 1.2 : volBoost>=0.8 ? 1.0 : 0.6; // 거래량 부족 시 비중 축소
   var s1s=Math.max(0.1,d.b1FR*d.b1WR*Math.min(d.b1PF,4)*volMult)||25,s2s=Math.max(0.1,d.b2FR*d.b2WR*Math.min(d.b2PF,4)*volMult)||12,s3s=Math.max(0.1,d.b3FR*d.b3WR*Math.min(d.b3PF,4))||8;
   var st=s1s+s2s+s3s,w1=Math.round(s1s/st*100),w2=Math.round(s2s/st*100),w3=Math.max(0,100-w1-w2);
-  el('b1p').textContent='$'+fp(b1);el('b1m').textContent='Low + Range × '+(buf*100).toFixed(0)+'%';
+  el('b1p').textContent='$'+fp(b1);el('b1m').textContent=algoMethod||'피보나치 지지선';
   var lp=G.livePrice||close;
   var p1=((b1-lp)/lp*100),p2pct=((b2-lp)/lp*100),p3pct=((b3-lp)/lp*100);
   function pctStr(p){return (p>=0?'+':'')+p.toFixed(2)+'% (현재가 대비)';}
@@ -1432,7 +1561,7 @@ function calculate(noScroll){
   } else {
     el('b1m').style.color='';
   }el('b1g').textContent='↑'+((tp-b1)/b1*100).toFixed(2)+'% → TP';el('b1l').textContent='↓ 감내손실 '+l1.toFixed(2)+'%';el('b1wr').textContent=hb?d.b1WR.toFixed(1)+'%':'—';el('b1fr').textContent=hb?d.b1FR.toFixed(1)+'%':'—';el('b1pf').textContent=hb?d.b1PF.toFixed(2):'—';el('b1wt').textContent=w1+'%';el('b1ev').textContent=et(d.b1EV,hb);el('b1ev').className=ec(d.b1EV);el('lb1').style.width=Math.max(15,hb?d.b1FR:60)+'%';
-  el('b2p').textContent='$'+fp(b2);el('b2m').textContent='BUY1 − max(ATR×1.0 / Range×18% / 1.5%)';el('b2g').textContent='↑'+((tp-b2)/b2*100).toFixed(2)+'% → TP';el('b2l').textContent='↓ 감내손실 '+l2.toFixed(2)+'%';el('b2wr').textContent=hb?d.b2WR.toFixed(1)+'%':'—';el('b2fr').textContent=hb?d.b2FR.toFixed(1)+'%':'—';el('b2pf').textContent=hb?d.b2PF.toFixed(2):'—';el('b2wt').textContent=w2+'%';el('b2ev').textContent=et(d.b2EV,hb);el('b2ev').className=ec(d.b2EV);el('lb2').style.width=Math.max(8,hb?d.b2FR:40)+'%';
+  el('b2p').textContent='$'+fp(b2);el('b2m').textContent=smart?'Fib 78.6% / 스윙 저점':'ATR 기반 2차 지지선';el('b2g').textContent='↑'+((tp-b2)/b2*100).toFixed(2)+'% → TP';el('b2l').textContent='↓ 감내손실 '+l2.toFixed(2)+'%';el('b2wr').textContent=hb?d.b2WR.toFixed(1)+'%':'—';el('b2fr').textContent=hb?d.b2FR.toFixed(1)+'%':'—';el('b2pf').textContent=hb?d.b2PF.toFixed(2):'—';el('b2wt').textContent=w2+'%';el('b2ev').textContent=et(d.b2EV,hb);el('b2ev').className=ec(d.b2EV);el('lb2').style.width=Math.max(8,hb?d.b2FR:40)+'%';
   elv('b3p').textContent='$'+fp(b3);elv('b3m').textContent='Low − ATR14×0.35';elv('b3g').textContent='↑'+((tp-b3)/b3*100).toFixed(2)+'% → TP';elv('b3l').textContent='↓ 감내손실 '+l3.toFixed(2)+'%';elv('b3wr').textContent=hb?d.b3WR.toFixed(1)+'%':'—';elv('b3fr').textContent=hb?d.b3FR.toFixed(1)+'%':'—';elv('b3pf').textContent=hb?d.b3PF.toFixed(2):'—';elv('b3wt').textContent=w3+'%';elv('b3ev').textContent=et(d.b3EV,hb);elv('b3ev').className=ec(d.b3EV);elv('lb3').style.width=Math.max(4,hb?d.b3FR:25)+'%';
   el('wg1').style.flex=Math.max(w1,5);el('wg2').style.flex=Math.max(w2,5);el('wg3').style.flex=Math.max(w3,5);el('wl1').textContent='BUY1 '+w1+'%';el('wl2').textContent='BUY2 '+w2+'%';el('wl3').textContent='BUY3 '+w3+'%';
   el('rtp').textContent='$'+fp(tp);el('rstop').textContent='$'+fp(s1);el('rvol').textContent=fp(atr)+' / '+(atr/low*100).toFixed(1)+'%';
@@ -2506,11 +2635,14 @@ function doMultiSearch() {
 
           // BUY1/2 계산 (메인 calculate 로직 동일)
           var buf = bt.ab;
-          var b1_base = l+rng*buf;
-          var b1_minGap = lp*0.985;
-          var b1 = Math.min(b1_base, b1_minGap);
-          var b2gap = Math.max(atr*1.0, rng*0.18, b1*0.015);
-          var b2 = b1-b2gap;
+          // 통합분석도 동일 스윙+피보나치 알고리즘 적용
+          var smartM=candles.length>20 ? calcSmartBuy(candles, candles.length-1, atr, lp) : null;
+          var b1, b2;
+          if(smartM){ b1=smartM.b1; b2=smartM.b2; }
+          else {
+            b1=Math.min(l+rng*buf, lp*0.985);
+            b2=b1-Math.max(atr*1.5, b1*0.025);
+          }
           var tp = Math.max(l+rng*0.85, b1*1.05);
           var stop = b1-atr*2.5;
 
