@@ -932,7 +932,7 @@ var TFC={
   '15m':{iv:'15m',lim:1500,htf:'1h',hl:200,look:3,lbl:'15M 스캘핑'},
   '1h': {iv:'1h', lim:1500,htf:'4h',hl:200,look:4,lbl:'1H 단타'},
   '4h': {iv:'4h', lim:540, htf:'1d',hl:110,look:6,lbl:'4H 스윙'},
-  '1d': {iv:'1d', lim:90, htf:'1w',hl:52, look:5,lbl:'1D 장기'}
+  '1d': {iv:'1d', lim:365, htf:'1w',hl:52, look:5,lbl:'1D 장기'}
 };
 var G={coin:'AAVE',tf:'4h',bt:null,bm:null,res:null,liveTimer:null,livePair:null,liveTF:null,
   ws:null,wsOn:false,lastClosedTs:null,livePrice:null,candleCloseTs:null,expiryTimer:null,
@@ -1190,7 +1190,8 @@ function renderBT(bt,cfg){
   el('bttr').textContent=bt.b1T+'회';el('btwr').textContent=bt.b1WR.toFixed(1)+'%';el('btpf').textContent=bt.b1PF.toFixed(2);el('btev').textContent=(bt.b1EV>=0?'+':'')+bt.b1EV.toFixed(2)+'%';el('btbuf').textContent=(bt.rb*100).toFixed(0)+'%→'+(bt.ab*100).toFixed(0)+'%';el('btsk').textContent=bt.b1SK+'연속';
   el('btbpct').textContent=bt.b1WR.toFixed(1)+'%';var fi=el('btbfill');fi.style.width=Math.min(100,bt.b1WR)+'%';fi.style.background=bt.b1WR>=58?'var(--G)':bt.b1WR>=44?'var(--A)':'var(--R)';
   var sc=bt.b1WR*0.35+Math.min(bt.b1PF,5)*8+(bt.b1EV>0?10:0)-(bt.af<6?10:0);var pill=el('btpill');
-  if(sc>=42){pill.textContent='우량';pill.className='btpill good';}else if(sc>=28){pill.textContent='적정';pill.className='btpill ok';}else{pill.textContent='주의';pill.className='btpill bad';}
+  if(bt.b1T<15){pill.textContent='데이터 부족';pill.className='btpill ok';} // 샘플 15회 미만 = 통계 불안정
+  else if(sc>=42){pill.textContent='우량';pill.className='btpill good';}else if(sc>=28){pill.textContent='적정';pill.className='btpill ok';}else{pill.textContent='주의';pill.className='btpill bad';}
   el('btcard').classList.add('on');
 }
 
@@ -1707,7 +1708,11 @@ function renderDiagnosis() {
   // ── 3. 백테스트 품질 ─────────────────────────
   var wr = G.bt.b1WR || 0;
   var pf = G.bt.b1PF || 0;
-  if(wr >= 58 && pf >= 1.5) {
+  var tradeCount = G.bt.b1T||0;
+  if(tradeCount < 15) {
+    // 샘플 부족 — 점수에 영향 주지 않고 경고만
+    factors.push({icon:'⚠', lbl:'백테스트 샘플 부족', val:tradeCount+'회 (신뢰도 낮음)', cls:'warn'});
+  } else if(wr >= 58 && pf >= 1.5) {
     score += 20;
     factors.push({icon:'✅', lbl:'백테스트 우량', val:'승률 '+wr.toFixed(1)+'% · PF '+pf.toFixed(2), cls:'good'});
   } else if(wr >= 44 && pf >= 1.2) {
@@ -2104,7 +2109,7 @@ var MULTI_TF_LIST = [
   {key:'15m', iv:'15m', lim:1500, htf:'1h',  hl:200, look:3, lbl:'15분봉', cls:'tf15', color:'var(--P)'},
   {key:'1h',  iv:'1h',  lim:1500, htf:'4h',  hl:200, look:4, lbl:'1시간봉', cls:'tf1h', color:'var(--B)'},
   {key:'4h',  iv:'4h',  lim:540,  htf:'1d',  hl:110, look:6, lbl:'4시간봉', cls:'tf4h', color:'var(--G)'},
-  {key:'1d',  iv:'1d',  lim:90,   htf:'1w',  hl:52,  look:5, lbl:'일봉',    cls:'tf1d', color:'var(--A)'}
+  {key:'1d',  iv:'1d',  lim:365,  htf:'1w',  hl:52,  look:5, lbl:'일봉',    cls:'tf1d', color:'var(--A)'}
 ];
 
 el('multi-input').addEventListener('keydown', function(e){ if(e.key==='Enter') doMultiSearch(); });
@@ -2247,8 +2252,14 @@ function renderMultiCard(key, r) {
   var pillTxt = bt.b1WR>=58&&bt.b1PF>=1.5?'우량':bt.b1WR>=44?'적정':'주의';
   var biasTxt = r.isBull===true?'▲ 상승':r.isBull===false?'▼ 하락':'—';
   var biasCls = r.isBull===true?'bull':r.isBull===false?'bear':'';
-  var diagCls = score>=65?'go':score>=40?'wait':'stop';
-  var diagTxt = score>=65?'✅ 진입 유리 ('+score+'점)':score>=40?'⚡ 신중 진입 ('+score+'점)':'❌ 진입 비추 ('+score+'점)';
+  var diagCls, diagTxt;
+  if(bt.b1T<15){
+    diagCls='wait';
+    diagTxt='⚠ 샘플 부족 ('+bt.b1T+'회) — 더 긴 기간 데이터 필요';
+  } else {
+    diagCls = score>=65?'go':score>=40?'wait':'stop';
+    diagTxt = score>=65?'✅ 진입 유리 ('+score+'점)':score>=40?'⚡ 신중 진입 ('+score+'점)':'❌ 진입 비추 ('+score+'점)';
+  }
 
   var card = document.createElement('div');
   card.className = 'mtf-card';
