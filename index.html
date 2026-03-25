@@ -1127,7 +1127,10 @@ function calculate(noScroll){
 
   // ── RANGE 모드 (기존) ─────────────────────────
   var pv=(high+low+close)/3,ps1=2*pv-high,ps2=pv-rng,pb=ps1<low?ps1:ps2;
-  var b1=low+rng*buf,b2=pb,b3=low-atr*0.35,s1=b1-atr*G.AS;
+  var b1=low+rng*buf,s1=b1-atr*G.AS;
+  // BUY2: max(ATR×1.0, Range×18%, BUY1×1.5%) 간격 보장 → 최소 1.5% 차이
+  var b2gap=Math.max(atr*1.0, rng*0.18, b1*0.015);
+  var b2=b1-b2gap;
   var tp=Math.max(low+rng*0.85, b1*1.05);
   // 이름 원복
   el('b1name').textContent='즉시진입 · 최적버퍼';
@@ -1160,7 +1163,7 @@ function calculate(noScroll){
   } else {
     el('b1m').style.color='';
   }el('b1g').textContent='↑'+((tp-b1)/b1*100).toFixed(2)+'% → TP';el('b1l').textContent='↓ 감내손실 '+l1.toFixed(2)+'%';el('b1wr').textContent=hb?d.b1WR.toFixed(1)+'%':'—';el('b1fr').textContent=hb?d.b1FR.toFixed(1)+'%':'—';el('b1pf').textContent=hb?d.b1PF.toFixed(2):'—';el('b1wt').textContent=w1+'%';el('b1ev').textContent=et(d.b1EV,hb);el('b1ev').className=ec(d.b1EV);el('lb1').style.width=Math.max(15,hb?d.b1FR:60)+'%';
-  el('b2p').textContent='$'+fp(b2);el('b2m').textContent=ps1<low?'S1 = 2×Pivot−High':'S2 = Pivot−Range';el('b2g').textContent='↑'+((tp-b2)/b2*100).toFixed(2)+'% → TP';el('b2l').textContent='↓ 감내손실 '+l2.toFixed(2)+'%';el('b2wr').textContent=hb?d.b2WR.toFixed(1)+'%':'—';el('b2fr').textContent=hb?d.b2FR.toFixed(1)+'%':'—';el('b2pf').textContent=hb?d.b2PF.toFixed(2):'—';el('b2wt').textContent=w2+'%';el('b2ev').textContent=et(d.b2EV,hb);el('b2ev').className=ec(d.b2EV);el('lb2').style.width=Math.max(8,hb?d.b2FR:40)+'%';
+  el('b2p').textContent='$'+fp(b2);el('b2m').textContent='BUY1 − max(ATR×1.0 / Range×18% / 1.5%)';el('b2g').textContent='↑'+((tp-b2)/b2*100).toFixed(2)+'% → TP';el('b2l').textContent='↓ 감내손실 '+l2.toFixed(2)+'%';el('b2wr').textContent=hb?d.b2WR.toFixed(1)+'%':'—';el('b2fr').textContent=hb?d.b2FR.toFixed(1)+'%':'—';el('b2pf').textContent=hb?d.b2PF.toFixed(2):'—';el('b2wt').textContent=w2+'%';el('b2ev').textContent=et(d.b2EV,hb);el('b2ev').className=ec(d.b2EV);el('lb2').style.width=Math.max(8,hb?d.b2FR:40)+'%';
   elv('b3p').textContent='$'+fp(b3);elv('b3m').textContent='Low − ATR14×0.35';elv('b3g').textContent='↑'+((tp-b3)/b3*100).toFixed(2)+'% → TP';elv('b3l').textContent='↓ 감내손실 '+l3.toFixed(2)+'%';elv('b3wr').textContent=hb?d.b3WR.toFixed(1)+'%':'—';elv('b3fr').textContent=hb?d.b3FR.toFixed(1)+'%':'—';elv('b3pf').textContent=hb?d.b3PF.toFixed(2):'—';elv('b3wt').textContent=w3+'%';elv('b3ev').textContent=et(d.b3EV,hb);elv('b3ev').className=ec(d.b3EV);elv('lb3').style.width=Math.max(4,hb?d.b3FR:25)+'%';
   el('wg1').style.flex=Math.max(w1,5);el('wg2').style.flex=Math.max(w2,5);el('wg3').style.flex=Math.max(w3,5);el('wl1').textContent='BUY1 '+w1+'%';el('wl2').textContent='BUY2 '+w2+'%';el('wl3').textContent='BUY3 '+w3+'%';
   el('rtp').textContent='$'+fp(tp);el('rstop').textContent='$'+fp(s1);el('rvol').textContent=fp(atr)+' / '+(atr/low*100).toFixed(1)+'%';
