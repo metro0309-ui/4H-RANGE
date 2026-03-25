@@ -1127,11 +1127,26 @@ function calculate(noScroll){
 
   // ── RANGE 모드 (기존) ─────────────────────────
   var pv=(high+low+close)/3,ps1=2*pv-high,ps2=pv-rng,pb=ps1<low?ps1:ps2;
-  var b1=low+rng*buf,s1=b1-atr*G.AS;
-  // BUY2: max(ATR×1.0, Range×18%, BUY1×1.5%) 간격 보장 → 최소 1.5% 차이
+  var lp=G.livePrice||close; // 현재가 기준
+
+  // BUY1: 기본값(Low+Range×buf) vs 현재가-1.5% 중 낮은 값
+  // → 현재가 근처에 BUY1이 붙지 않도록 최소 1.5% 간격 보장
+  var b1_base=low+rng*buf;
+  var b1_minGap=lp*0.985; // 현재가 -1.5%
+  var b1=Math.min(b1_base, b1_minGap);
+
+  var s1=b1-atr*G.AS;
+  // BUY2: max(ATR×1.0, Range×18%, BUY1×1.5%) 간격 보장
   var b2gap=Math.max(atr*1.0, rng*0.18, b1*0.015);
   var b2=b1-b2gap;
   var tp=Math.max(low+rng*0.85, b1*1.05);
+
+  // Range 너무 좁으면 경고 (가격 대비 1.5% 미만)
+  var rangeRatio=rng/lp;
+  if(rangeRatio<0.015){
+    el('wbar').textContent='⚠ Range가 너무 좁습니다 ('+((rangeRatio*100).toFixed(1))+'%). 상위 TF('+TFC[G.tf].htf.toUpperCase()+')로 검색하면 더 정확한 매수가를 얻을 수 있습니다.';
+    el('wbar').className='wbar on amber';
+  }
   // 이름 원복
   el('b1name').textContent='즉시진입 · 최적버퍼';
   el('b2name').textContent='지지선 대기 · Pivot';
