@@ -1203,6 +1203,7 @@ function liveUpdate(pair,tf){
     var remStr=remH>0?(remH+'h '+pad2(remM)+'m 후 봉 마감'):(remM+'m 후 봉 마감');
     el('tksub').textContent=pair+' · '+TFC[tf].lbl+' · 🔴 LIVE · '+remStr;
     // 입력값 DOM 반영 후 계산 실행 (타이밍 보장)
+    var newClosedTs=parseInt((data[data.length-2]||cur)[0]);
     if(G.locked) {
       // 고정 모드: 현재가만 업데이트, 봉 마감 감지 시 갱신
       checkReach(cl);
@@ -1702,13 +1703,13 @@ function startMC(S0,dv,b1,b2,b3,tp,s1,high,low){
   var mc=el('mcstatus'); // 화면에 표시 안함
   ['b1p14','b1p30','b2p14','b2p30'].forEach(function(id){var e=el(id);if(e)e.textContent='…';});
   var N=2000,hv=dv/Math.sqrt(24),s14=14*24,s30=30*24;
-  var r14=[0,0,0],r30=[0,0,0],done=0,CHK=250,tgts=[b1,b2,b3];
+  var r14=[0,0],r30=[0,0],done=0,CHK=250,tgts=[b1,b2];
   function chunk(){
     var end=Math.min(done+CHK,N);
     for(var i=done;i<end;i++){
       var p=S0,mn14=S0,mn30=S0;
       for(var t=1;t<=s30;t++){p=p*Math.exp(-0.5*hv*hv+hv*randN());if(t<=s14&&p<mn14)mn14=p;if(p<mn30)mn30=p;}
-      for(var k=0;k<3;k++){if(mn14<=tgts[k])r14[k]++;if(mn30<=tgts[k])r30[k]++;}
+      for(var k=0;k<2;k++){if(mn14<=tgts[k])r14[k]++;if(mn30<=tgts[k])r30[k]++;}
     }
     done=end;
     if(done<N){setTimeout(chunk,0);}
@@ -1734,7 +1735,15 @@ function startMC(S0,dv,b1,b2,b3,tp,s1,high,low){
 function saveH(){
   if(!G.res){toast('먼저 계산하세요');return;}
   var h=getH();h.unshift(G.res);if(h.length>50)h=h.slice(0,50);
-  localStorage.setItem('rc_h',JSON.stringify(h));toast(G.res.coin+' 저장 완료');
+  try{
+    localStorage.setItem('rc_h',JSON.stringify(h));
+    toast(G.res.coin+' 저장 완료');
+  }catch(e){
+    // quota 초과 시 오래된 항목 제거 후 재시도
+    h=h.slice(0,20);
+    try{localStorage.setItem('rc_h',JSON.stringify(h));toast(G.res.coin+' 저장 완료 (오래된 기록 정리됨)');}
+    catch(e2){toast('저장 실패 — 브라우저 저장공간 부족',true);}
+  }
 }
 function getH(){try{return JSON.parse(localStorage.getItem('rc_h'))||[];}catch(e){return[];}}
 function renderH(){
