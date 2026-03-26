@@ -2374,12 +2374,13 @@ function renderSummaryCard(){
 
   // ── 8. 레버리지 손익 ──────────────────────────────────────────────
   var lwEl=el('lev-pnl-win'),llEl=el('lev-pnl-lose');
-  // lev-panel이 아직 계산 안 됐으면 직접 계산
+  // lev-panel이 이미 계산됐으면 그대로 사용 (renderLeverage가 이미 현재가 기준)
   if(lwEl&&lwEl.textContent!=='—'&&lwEl.textContent!==''){
     if(e('sc-lev-win'))e('sc-lev-win').textContent=lwEl.textContent;
-    if(e('sc-lev-lose'))e('sc-lev-lose').textContent=llEl?'-'+llEl.textContent.replace('-',''):'—';
+    if(e('sc-lev-lose'))e('sc-lev-lose').textContent=llEl?llEl.textContent:'—';
   } else if(tp&&st){
-    var tpR=(tp-b1)/b1*100*G.levX, stR=(b1-st)/b1*100*G.levX;
+    // 직접 계산 시에도 현재가(lp) 기준
+    var tpR=(tp-lp)/lp*100*G.levX, stR=(lp-st)/lp*100*G.levX;
     var w100=Math.round(1000000*tpR/100), l100=Math.round(1000000*stR/100);
     if(e('sc-lev-win'))e('sc-lev-win').textContent='+'+w100.toLocaleString()+'원';
     if(e('sc-lev-lose'))e('sc-lev-lose').textContent='-'+l100.toLocaleString()+'원';
@@ -2787,24 +2788,29 @@ function setLevX(x){
 function renderLeverage(entry,tp,stop,livePrice){
   if(!entry||entry<=0||!tp||tp<=entry){el('lev-panel').classList.remove('on');return;}
   var x=G.levX; el('lev-panel').classList.add('on');
+  // 청산가·BUY1 표시는 entry(BUY1) 기준 유지
   var liqPct=(1/x)*0.9, liqPrice=entry*(1-liqPct);
   var safeStop=stop; if(safeStop<=liqPrice*1.02)safeStop=liqPrice*1.05;
-  var stopPct=(entry-safeStop)/entry*100, liqPctShow=(entry-liqPrice)/entry*100, tpPct=(tp-entry)/entry*100;
+  // ★ 손익 계산은 현재가(livePrice) 기준으로 변경
+  var cur=livePrice&&livePrice>0?livePrice:entry;
+  var tpPct=(tp-cur)/cur*100;
+  var stopPct=(cur-safeStop)/cur*100;
+  var liqPctShow=(cur-liqPrice)/cur*100;
   var winPct=tpPct*x, losePct=stopPct*x;
   var win100=Math.round(1000000*winPct/100), lose100=Math.round(1000000*losePct/100);
   el('lev-entry').textContent='$'+fp(entry);
-  el('lev-entry-sub').textContent='현재가 $'+fp(livePrice)+' 대비 '+((entry-livePrice)/livePrice*100).toFixed(2)+'%';
+  el('lev-entry-sub').textContent='현재가 $'+fp(cur)+' 대비 '+((entry-cur)/cur*100).toFixed(2)+'%';
   el('lev-stop').textContent='$'+fp(safeStop);
-  el('lev-stop-pct').textContent='진입 대비 -'+stopPct.toFixed(2)+'% → 레버리지 -'+losePct.toFixed(1)+'%';
+  el('lev-stop-pct').textContent='현재가 대비 -'+stopPct.toFixed(2)+'% → 레버리지 -'+losePct.toFixed(1)+'%';
   el('lev-liq').textContent='$'+fp(liqPrice);
-  el('lev-liq-pct').textContent='진입 대비 -'+liqPctShow.toFixed(2)+'% (원금 전액 손실)';
+  el('lev-liq-pct').textContent='현재가 대비 -'+liqPctShow.toFixed(2)+'% (원금 전액 손실)';
   el('lev-tp').textContent='$'+fp(tp);
-  el('lev-tp-pct').textContent='진입 대비 +'+tpPct.toFixed(2)+'% → 레버리지 +'+winPct.toFixed(1)+'%';
+  el('lev-tp-pct').textContent='현재가 대비 +'+tpPct.toFixed(2)+'% → 레버리지 +'+winPct.toFixed(1)+'%';
   el('lev-pnl-win').textContent='+'+win100.toLocaleString()+'원';
   el('lev-pnl-lose').textContent='-'+lose100.toLocaleString()+'원';
-  el('lev-pnl-win-sub').textContent='100만원 × '+x+'배 × +'+tpPct.toFixed(1)+'%';
-  el('lev-pnl-lose-sub').textContent='100만원 × '+x+'배 × -'+stopPct.toFixed(1)+'%';
-  var warn=el('liq-warn'), distToLiq=(livePrice-liqPrice)/livePrice*100;
+  el('lev-pnl-win-sub').textContent='100만원 × '+x+'배 × +'+tpPct.toFixed(1)+'% (현재가 기준)';
+  el('lev-pnl-lose-sub').textContent='100만원 × '+x+'배 × -'+stopPct.toFixed(1)+'% (현재가 기준)';
+  var warn=el('liq-warn'), distToLiq=(cur-liqPrice)/cur*100;
   if(distToLiq<3){warn.className='liq-warn on danger';warn.innerHTML='💀 <b>위험!</b> '+distToLiq.toFixed(1)+'%만 하락하면 청산. 배수를 낮추세요.';el('lev-main').className='lev-main danger';}
   else if(distToLiq<8){warn.className='liq-warn on caution';warn.innerHTML='⚠ 청산가까지 <b>'+distToLiq.toFixed(1)+'%</b> 남음. 반드시 손절가를 걸어두세요.';el('lev-main').className='lev-main';}
   else{warn.className='liq-warn on safe';warn.innerHTML='✅ 청산가까지 <b>'+distToLiq.toFixed(1)+'%</b> 여유. 손절가 $'+fp(safeStop)+' 등록.';el('lev-main').className='lev-main';}
