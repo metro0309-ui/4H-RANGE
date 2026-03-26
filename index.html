@@ -615,6 +615,67 @@ html,body{background:var(--bg0);color:var(--t1);font-family:var(--ui);font-size:
 /* 상세 컨텐츠 접기 */
 .detail-wrap{display:none}
 .detail-wrap.on{display:block}
+/* ── 카드 클릭 상세 바텀시트 ── */
+.sc-card{cursor:pointer;transition:background .15s}
+.sc-card:active{background:var(--bg3)}
+.sc-card-tap{position:absolute;bottom:4px;right:6px;font-size:8px;color:var(--t3);opacity:.5}
+.sc-card{position:relative}
+.cd-overlay{position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:200;opacity:0;transition:opacity .25s;pointer-events:none}
+.cd-overlay.on{opacity:1;pointer-events:all}
+.cd-sheet{position:fixed;bottom:0;left:0;right:0;max-width:430px;margin:0 auto;background:var(--bg1);border-radius:14px 14px 0 0;z-index:201;transform:translateY(100%);transition:transform .28s cubic-bezier(.32,.72,0,1);max-height:82vh;overflow-y:auto}
+.cd-sheet.on{transform:translateY(0)}
+.cd-handle{width:36px;height:4px;background:var(--bd2);border-radius:2px;margin:10px auto 0}
+.cd-head{display:flex;align-items:center;justify-content:space-between;padding:12px 16px 8px}
+.cd-icon{font-size:18px}
+.cd-head-info{flex:1;margin-left:10px}
+.cd-title{font-size:13px;font-weight:700;color:var(--t1)}
+.cd-sub{font-size:10px;color:var(--t3);margin-top:1px}
+.cd-close{width:28px;height:28px;border-radius:50%;background:var(--bg3);border:none;color:var(--t2);font-size:14px;cursor:pointer;display:flex;align-items:center;justify-content:center}
+.cd-divider{height:1px;background:var(--bd);margin:0 16px}
+.cd-body{padding:12px 16px 28px}
+.cd-row{display:flex;align-items:center;justify-content:space-between;padding:9px 0;border-bottom:1px solid var(--bd)}
+.cd-row:last-child{border-bottom:none}
+.cd-lbl{font-size:11px;color:var(--t3)}
+.cd-val{font-family:var(--num);font-size:13px;font-weight:600;text-align:right}
+.cd-val.g{color:var(--G)}.cd-val.r{color:var(--R)}.cd-val.a{color:var(--A)}.cd-val.b{color:var(--B)}.cd-val.p{color:var(--P)}.cd-val.t{color:var(--t2)}
+.cd-section{font-size:9px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--t3);margin:12px 0 4px;padding-bottom:4px;border-bottom:1px solid var(--bd)}
+.cd-bar-row{display:flex;align-items:center;gap:8px;padding:6px 0}
+.cd-bar-lbl{font-size:10px;color:var(--t3);width:50px;flex-shrink:0}
+.cd-bar-track{flex:1;height:5px;background:var(--bg3);border-radius:3px;overflow:hidden}
+.cd-bar-fill{height:100%;border-radius:3px;transition:width .4s}
+.cd-bar-val{font-family:var(--num);font-size:10px;font-weight:600;width:38px;text-align:right;flex-shrink:0}
+.cd-tip{font-size:10px;color:var(--t3);line-height:1.6;margin-top:8px;padding:8px 10px;background:var(--bg2);border-radius:4px;border-left:3px solid var(--bd2)}
+.cd-tip b{color:var(--t2)}
+/* ── 2×2 판단 매트릭스 ── */
+.sc-matrix{grid-column:1/-1;background:var(--bg1);padding:10px 12px 8px}
+.sc-matrix-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px}
+.sc-matrix-lbl{font-size:9px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--t3)}
+.sc-matrix-icon{font-size:10px;color:var(--t3)}
+.sc-matrix-grid{display:grid;grid-template-columns:1fr 1fr;gap:4px;margin-bottom:6px}
+.sc-mx-cell{padding:7px 9px;border-radius:5px;border:1px solid var(--bd);display:flex;flex-direction:column;gap:3px;position:relative;transition:border-color .2s}
+.sc-mx-cell.active{border-width:2px}
+.sc-mx-cell.mx-go{background:rgba(0,177,64,.07);border-color:rgba(0,177,64,.4)}
+.sc-mx-cell.mx-wait-env{background:rgba(240,176,64,.06);border-color:rgba(240,176,64,.25)}
+.sc-mx-cell.mx-wait-tim{background:rgba(51,112,255,.06);border-color:rgba(51,112,255,.25)}
+.sc-mx-cell.mx-stop{background:rgba(240,64,64,.05);border-color:rgba(240,64,64,.2)}
+.sc-mx-label{font-size:8px;font-weight:700;letter-spacing:.05em;text-transform:uppercase}
+.sc-mx-cell.mx-go .sc-mx-label{color:var(--G)}
+.sc-mx-cell.mx-wait-env .sc-mx-label{color:var(--A)}
+.sc-mx-cell.mx-wait-tim .sc-mx-label{color:var(--B)}
+.sc-mx-cell.mx-stop .sc-mx-label{color:var(--R)}
+.sc-mx-desc{font-size:9px;color:var(--t3);line-height:1.4}
+.sc-mx-active-badge{position:absolute;top:5px;right:6px;font-size:9px;font-weight:700;padding:1px 5px;border-radius:3px}
+.sc-mx-cell.mx-go .sc-mx-active-badge{background:var(--Gd);color:var(--G)}
+.sc-mx-cell.mx-wait-env .sc-mx-active-badge{background:var(--Ad);color:var(--A)}
+.sc-mx-cell.mx-wait-tim .sc-mx-active-badge{background:var(--Bd);color:var(--B)}
+.sc-mx-cell.mx-stop .sc-mx-active-badge{background:var(--Rd);color:var(--R)}
+.sc-matrix-scores{display:flex;align-items:center;justify-content:space-between;padding:6px 2px 0;border-top:1px solid var(--bd);margin-top:2px}
+.sc-mx-score{display:flex;flex-direction:column;align-items:center;gap:2px}
+.sc-mx-score-lbl{font-size:8px;color:var(--t3);letter-spacing:.04em}
+.sc-mx-score-bar{width:80px;height:4px;background:var(--bg3);border-radius:2px;overflow:hidden}
+.sc-mx-score-fill{height:100%;border-radius:2px;transition:width .5s}
+.sc-mx-score-val{font-family:var(--num);font-size:11px;font-weight:700}
+.sc-mx-vs{font-size:10px;color:var(--t3)}
 
 </style>
 </head>
@@ -776,34 +837,56 @@ html,body{background:var(--bg0);color:var(--t1);font-family:var(--ui);font-size:
       <!-- 12카드 그리드 -->
       <div class="sc-grid">
 
-        <!-- 1. 종합 판정 -->
-        <div class="sc-card">
-          <div class="sc-card-top">
-            <span class="sc-card-lbl">종합 판정</span>
-            <span class="sc-card-icon" id="sc-icon">⏳</span>
+        <!-- 1+2. 2×2 판단 매트릭스 (종합환경 × 황금각타이밍) -->
+        <div class="sc-matrix" onclick="showCardDetail(1)" style="cursor:pointer">
+          <div class="sc-matrix-top">
+            <span class="sc-matrix-lbl">판단 매트릭스</span>
+            <span class="sc-matrix-icon">탭 ›</span>
           </div>
-          <div class="sc-card-row">
-            <div class="sc-card-val neut" id="sc-title">분석 중</div>
-            <div class="sc-card-aux neut" id="sc-score-sub">—점</div>
+          <div class="sc-matrix-grid">
+            <!-- A: 환경↑ + 타이밍↑ -->
+            <div class="sc-mx-cell mx-go" id="mx-go">
+              <span class="sc-mx-label">✅ 진입 최적</span>
+              <span class="sc-mx-desc">환경 유리 + 황금각 확인</span>
+            </div>
+            <!-- B: 환경↑ + 타이밍↓ -->
+            <div class="sc-mx-cell mx-wait-env" id="mx-wait-env">
+              <span class="sc-mx-label">⏳ 타이밍 대기</span>
+              <span class="sc-mx-desc">장세 좋음, RSI/Fib 개선 기다림</span>
+            </div>
+            <!-- C: 환경↓ + 타이밍↑ -->
+            <div class="sc-mx-cell mx-wait-tim" id="mx-wait-tim">
+              <span class="sc-mx-label">⚡ 소량 진입</span>
+              <span class="sc-mx-desc">황금각 나옴, 장세 불리 → 비중 ↓</span>
+            </div>
+            <!-- D: 환경↓ + 타이밍↓ -->
+            <div class="sc-mx-cell mx-stop" id="mx-stop">
+              <span class="sc-mx-label">❌ 패스</span>
+              <span class="sc-mx-desc">환경·타이밍 모두 불리</span>
+            </div>
           </div>
-          <div class="sc-card-sub" id="sc-judge-sub">—</div>
-        </div>
-
-        <!-- 2. 황금각 -->
-        <div class="sc-card">
-          <div class="sc-card-top">
-            <span class="sc-card-lbl">황금각 RSI+Fib+거래량</span>
-            <span class="sc-card-icon">🌟</span>
+          <div class="sc-matrix-scores">
+            <div class="sc-mx-score">
+              <span class="sc-mx-score-lbl">종합 환경</span>
+              <div class="sc-mx-score-bar"><div class="sc-mx-score-fill" id="mx-env-fill" style="width:0%;background:var(--G)"></div></div>
+              <span class="sc-mx-score-val good" id="mx-env-val">—점</span>
+            </div>
+            <span class="sc-mx-vs">×</span>
+            <div class="sc-mx-score">
+              <span class="sc-mx-score-lbl">황금각 타이밍</span>
+              <div class="sc-mx-score-bar"><div class="sc-mx-score-fill" id="mx-gb-fill" style="width:0%;background:var(--A)"></div></div>
+              <span class="sc-mx-score-val warn" id="mx-gb-val">—점</span>
+            </div>
+            <span class="sc-mx-vs">=</span>
+            <div class="sc-mx-score">
+              <span class="sc-mx-score-lbl">판정</span>
+              <span class="sc-mx-score-val" id="mx-verdict" style="color:var(--t2)">—</span>
+            </div>
           </div>
-          <div class="sc-card-row">
-            <div class="sc-card-val neut" id="sc-golden">—</div>
-            <div class="sc-card-aux neut" id="sc-golden-aux">—점</div>
-          </div>
-          <div class="sc-card-sub" id="sc-golden-sub">—</div>
         </div>
 
         <!-- 3. 매수가 BUY1 -->
-        <div class="sc-card">
+        <div class="sc-card" onclick="showCardDetail(3)">
           <div class="sc-card-top">
             <span class="sc-card-lbl">매수가 BUY1</span>
             <span class="sc-card-icon">📍</span>
@@ -813,10 +896,11 @@ html,body{background:var(--bg0);color:var(--t1);font-family:var(--ui);font-size:
             <div class="sc-card-aux" id="sc-buy1-sub">—</div>
           </div>
           <div class="sc-card-sub" id="sc-buy1-hint">현재가 대비</div>
+          <span class="sc-card-tap">탭 ›</span>
         </div>
 
         <!-- 4. 손절가 -->
-        <div class="sc-card">
+        <div class="sc-card" onclick="showCardDetail(4)">
           <div class="sc-card-top">
             <span class="sc-card-lbl">손절가 Stop</span>
             <span class="sc-card-icon">🛑</span>
@@ -826,10 +910,11 @@ html,body{background:var(--bg0);color:var(--t1);font-family:var(--ui);font-size:
             <div class="sc-card-aux bad" id="sc-stop-sub">—</div>
           </div>
           <div class="sc-card-sub">진입 대비</div>
+          <span class="sc-card-tap">탭 ›</span>
         </div>
 
         <!-- 5. 목표가 TP -->
-        <div class="sc-card">
+        <div class="sc-card" onclick="showCardDetail(5)">
           <div class="sc-card-top">
             <span class="sc-card-lbl">목표가 TP</span>
             <span class="sc-card-icon">🎯</span>
@@ -839,10 +924,11 @@ html,body{background:var(--bg0);color:var(--t1);font-family:var(--ui);font-size:
             <div class="sc-card-aux good" id="sc-tp-sub">—</div>
           </div>
           <div class="sc-card-sub">진입 대비</div>
+          <span class="sc-card-tap">탭 ›</span>
         </div>
 
         <!-- 6. 청산가 -->
-        <div class="sc-card">
+        <div class="sc-card" onclick="showCardDetail(6)">
           <div class="sc-card-top">
             <span class="sc-card-lbl">청산가 (강제청산)</span>
             <span class="sc-card-icon">💀</span>
@@ -852,10 +938,11 @@ html,body{background:var(--bg0);color:var(--t1);font-family:var(--ui);font-size:
             <div class="sc-card-aux good" id="sc-liq-sub">—</div>
           </div>
           <div class="sc-card-sub">여유 거리</div>
+          <span class="sc-card-tap">탭 ›</span>
         </div>
 
         <!-- 7. 투자 권장 금액 -->
-        <div class="sc-card">
+        <div class="sc-card" onclick="showCardDetail(7)">
           <div class="sc-card-top">
             <span class="sc-card-lbl">투자 권장 (보정 후)</span>
             <span class="sc-card-icon">💰</span>
@@ -865,10 +952,11 @@ html,body{background:var(--bg0);color:var(--t1);font-family:var(--ui);font-size:
             <div class="sc-card-aux neut" id="sc-invest-sub">100만원</div>
           </div>
           <div class="sc-card-sub">위험도 보정 적용</div>
+          <span class="sc-card-tap">탭 ›</span>
         </div>
 
         <!-- 8. 레버리지 손익 -->
-        <div class="sc-card">
+        <div class="sc-card" onclick="showCardDetail(8)">
           <div class="sc-card-top">
             <span class="sc-card-lbl">레버리지 손익 5배</span>
             <span class="sc-card-icon">⚡</span>
@@ -878,10 +966,11 @@ html,body{background:var(--bg0);color:var(--t1);font-family:var(--ui);font-size:
             <div class="sc-card-aux bad" id="sc-lev-lose">—</div>
           </div>
           <div class="sc-card-sub">익절 / 손절</div>
+          <span class="sc-card-tap">탭 ›</span>
         </div>
 
         <!-- 9. 7일 방향성 -->
-        <div class="sc-card">
+        <div class="sc-card" onclick="showCardDetail(9)">
           <div class="sc-card-top">
             <span class="sc-card-lbl">7일 방향성 Monte Carlo</span>
             <span class="sc-card-icon">📊</span>
@@ -891,10 +980,11 @@ html,body{background:var(--bg0);color:var(--t1);font-family:var(--ui);font-size:
             <div class="sc-card-aux neut" id="sc-dir-pct">—%</div>
           </div>
           <div class="sc-card-sub" id="sc-dir-sub">3000회 시뮬</div>
+          <span class="sc-card-tap">탭 ›</span>
         </div>
 
         <!-- 10. 전체 방향 일치 -->
-        <div class="sc-card">
+        <div class="sc-card" onclick="showCardDetail(10)">
           <div class="sc-card-top">
             <span class="sc-card-lbl">전체 방향 일치</span>
             <span class="sc-card-icon">🔄</span>
@@ -904,10 +994,11 @@ html,body{background:var(--bg0);color:var(--t1);font-family:var(--ui);font-size:
             <div class="sc-card-aux neut" id="sc-bias-aux">—</div>
           </div>
           <div class="sc-card-sub" id="sc-bias-sub">—</div>
+          <span class="sc-card-tap">탭 ›</span>
         </div>
 
         <!-- 11. 거래량 / 반등 적합도 -->
-        <div class="sc-card">
+        <div class="sc-card" onclick="showCardDetail(11)">
           <div class="sc-card-top">
             <span class="sc-card-lbl">거래량 / 반등 적합도</span>
             <span class="sc-card-icon">🔥</span>
@@ -917,10 +1008,11 @@ html,body{background:var(--bg0);color:var(--t1);font-family:var(--ui);font-size:
             <div class="sc-card-aux neut" id="sc-bt">—</div>
           </div>
           <div class="sc-card-sub" id="sc-vol-ratio">—</div>
+          <span class="sc-card-tap">탭 ›</span>
         </div>
 
         <!-- 12. 퀀트 EV / Kelly -->
-        <div class="sc-card">
+        <div class="sc-card" onclick="showCardDetail(12)">
           <div class="sc-card-top">
             <span class="sc-card-lbl">퀀트 EV / Kelly</span>
             <span class="sc-card-icon">📈</span>
@@ -930,6 +1022,7 @@ html,body{background:var(--bg0);color:var(--t1);font-family:var(--ui);font-size:
             <div class="sc-card-aux neut" id="sc-kelly">—</div>
           </div>
           <div class="sc-card-sub" id="sc-ev-sub">MC × 반등적합도</div>
+          <span class="sc-card-tap">탭 ›</span>
         </div>
 
       </div>
@@ -2173,23 +2266,54 @@ function renderSummaryCard(){
     gbScore=Math.min(99,gbScore);
   }
 
-  // 최종 점수 (합산, 항상 1~99)
-  var finalScore;
-  if(gbScore>0) finalScore=Math.round((diagScore+gbScore)/2);
-  else finalScore=diagScore;
-  finalScore=Math.max(1,Math.min(99,finalScore));
+  // ── 2×2 매트릭스 렌더링 ──────────────────────────────────────────
+  var envGood = diagScore>=50;   // 종합 환경 양호
+  var timGood = gbScore>=50;     // 황금각 타이밍 도달
+  // 4개 셀 중 현재 해당 셀에 active badge 표시
+  ['mx-go','mx-wait-env','mx-wait-tim','mx-stop'].forEach(function(id){
+    var cell=el(id); if(!cell) return;
+    // 기존 배지 제거
+    var old=cell.querySelector('.sc-mx-active-badge');
+    if(old) old.remove();
+    cell.classList.remove('active');
+  });
+  var activeId = envGood&&timGood?'mx-go': envGood&&!timGood?'mx-wait-env': !envGood&&timGood?'mx-wait-tim':'mx-stop';
+  var activeCell=el(activeId);
+  if(activeCell){
+    activeCell.classList.add('active');
+    var badge=document.createElement('span');
+    badge.className='sc-mx-active-badge';
+    badge.textContent='◀ 현재';
+    activeCell.appendChild(badge);
+  }
+  // 점수 바
+  var envFill=el('mx-env-fill'),envVal=el('mx-env-val');
+  var gbFill=el('mx-gb-fill'),gbVal=el('mx-gb-val');
+  var mxVerdict=el('mx-verdict');
+  if(envFill) envFill.style.width=diagScore+'%';
+  if(envFill) envFill.style.background=diagScore>=70?'var(--G)':diagScore>=50?'var(--A)':'var(--R)';
+  if(envVal){envVal.textContent=diagScore+'점';envVal.className='sc-mx-score-val '+(diagScore>=70?'good':diagScore>=50?'warn':'bad');}
+  if(gbFill) gbFill.style.width=(gbScore||0)+'%';
+  if(gbFill) gbFill.style.background=gbScore>=70?'var(--G)':gbScore>=50?'var(--A)':'var(--t3)';
+  if(gbVal){gbVal.textContent=(gbScore||'—')+'점';gbVal.className='sc-mx-score-val '+(gbScore>=70?'good':gbScore>=50?'warn':'neut');}
+  var verdictMap={'mx-go':'진입 최적','mx-wait-env':'타이밍 대기','mx-wait-tim':'소량 진입','mx-stop':'패스'};
+  var verdictClsMap={'mx-go':'good','mx-wait-env':'warn','mx-wait-tim':'b','mx-stop':'bad'};
+  if(mxVerdict){mxVerdict.textContent=verdictMap[activeId];mxVerdict.style.color=activeId==='mx-go'?'var(--G)':activeId==='mx-wait-env'?'var(--A)':activeId==='mx-wait-tim'?'var(--B)':'var(--R)';}
 
-  // ── 1. 종합 판정 ──────────────────────────────────────────────────
-  var icon,titleTxt,actionCls,action,titleCls;
-  if(finalScore>=70){icon='🟢';titleTxt='진입 유리';titleCls='good';actionCls='go';action='✅ BUY1 지정가 + 손절가 동시 등록 → 기다리세요';}
-  else if(finalScore>=50){icon='🟡';titleTxt='신중 진입';titleCls='warn';actionCls='wait';action='⚡ BUY1만 소량. 황금각 70점 이상 될 때까지 대기.';}
-  else{icon='🔴';titleTxt='대기 권장';titleCls='bad';actionCls='stop';action='❌ 지금은 패스. RSI 개선 또는 다른 코인 검색.';}
-  if(e('sc-icon'))e('sc-icon').textContent=icon;
-  if(e('sc-title')){e('sc-title').textContent=titleTxt;e('sc-title').className='sc-card-val '+titleCls;}
-  if(e('sc-score-sub')){e('sc-score-sub').textContent=finalScore+'점';e('sc-score-sub').className='sc-card-aux '+titleCls;}
-  if(e('sc-judge-sub'))e('sc-judge-sub').textContent=finalScore>=70?'진입 최적':finalScore>=50?'조건부 가능':'대기 권장';
+  // ── sc-action 행동지침 (매트릭스 기반) ───────────────────────────
+  var actionCls,action;
+  if(activeId==='mx-go'){actionCls='go';action='✅ BUY1 지정가 + 손절가 동시 등록 → 기다리세요';}
+  else if(activeId==='mx-wait-env'){actionCls='wait';action='⏳ 장세 좋음. 황금각(RSI↓ or Fib 수렴) 신호 올 때까지 대기.';}
+  else if(activeId==='mx-wait-tim'){actionCls='wait';action='⚡ 황금각 나옴. 장세 불리 → BUY1 소량만. BUY2까지 분산.';}
+  else{actionCls='stop';action='❌ 환경·타이밍 모두 불리. RSI 개선 또는 다른 코인 검색.';}
 
-  // ── 2. 황금각 ─────────────────────────────────────────────────────
+  // 하위 호환용 (기존 sc-title 등 숨김 처리 — 매트릭스로 대체)
+  var finalScore=Math.max(1,Math.min(99,Math.round((diagScore+(gbScore||diagScore))/2)));
+  if(e('sc-icon'))e('sc-icon').textContent='';
+  if(e('sc-title'))e('sc-title').textContent='';
+  if(e('sc-score-sub'))e('sc-score-sub').textContent='';
+  if(e('sc-judge-sub'))e('sc-judge-sub').textContent='';
+  // 황금각 카드 (매트릭스에 통합되었지만 하위 DOM 유지)
   var gbTxt,gbAux,gbCls;
   var isGbReady=(G._candles&&G._candles.length>20&&G.bt);
   if(!isGbReady){gbTxt='분석 중';gbAux='—';gbCls='neut';}
@@ -3037,9 +3161,281 @@ function renderMultiSummary(){
 
 // ═══ 거래량/유효기간/WS/BUY고정/레버리지/진단/위험도/퀀트/모드/통합분석 ═══
 
+
+// ═══ 카드 클릭 상세 바텀시트 ═══
+function closeCardDetail(){
+  el('cd-overlay').classList.remove('on');
+  el('cd-sheet').classList.remove('on');
+}
+function showCardDetail(n){
+  if(!G.res)return;
+  var res=G.res, lp=G.livePrice||res.close;
+  var bt=G.bt||{}, mc=G_MC||{};
+  var bbarOn=el('bbar').classList.contains('on');
+  var isBull=el('bbar').classList.contains('bull');
+  var vr=G.curVolRatio||0;
+  function txt(id){var e=el(id);return e?e.textContent:'—';}
+  function row(lbl,val,cls){return '<div class="cd-row"><span class="cd-lbl">'+lbl+'</span><span class="cd-val '+(cls||'t')+'">'+val+'</span></div>';}
+  function sec(t){return '<div class="cd-section">'+t+'</div>';}
+  function bar(lbl,pct,col,val){return '<div class="cd-bar-row"><span class="cd-bar-lbl">'+lbl+'</span><div class="cd-bar-track"><div class="cd-bar-fill" style="width:'+Math.min(100,pct)+'%;background:'+col+'"></div></div><span class="cd-bar-val" style="color:'+col+'">'+val+'</span></div>';}
+  function tip(t){return '<div class="cd-tip">'+t+'</div>';}
+  var icon,title,sub,body='';
+  var CARDS={
+    1:{icon:'🎯',title:'종합 판정',sub:'점수 구성 상세'},
+    2:{icon:'🌟',title:'황금각',sub:'RSI + Fib + 거래량'},
+    3:{icon:'📍',title:'매수가 3단계',sub:'BUY1 / BUY2 / BUY3'},
+    4:{icon:'🛑',title:'손절가',sub:'ATR 기반 리스크 관리'},
+    5:{icon:'🎯',title:'목표가 TP',sub:'익절 전략 상세'},
+    6:{icon:'💀',title:'청산가',sub:'레버리지 강제청산 분석'},
+    7:{icon:'💰',title:'투자 권장금액',sub:'Kelly + 위험도 보정'},
+    8:{icon:'⚡',title:'레버리지 손익',sub:'5배 기준 시나리오'},
+    9:{icon:'📊',title:'7일 방향성',sub:'Monte Carlo 3,000회'},
+    10:{icon:'🔄',title:'방향 일치',sub:'장세 바이어스 분석'},
+    11:{icon:'🔥',title:'거래량 / 반등 적합도',sub:'백테스트 통계'},
+    12:{icon:'📈',title:'퀀트 EV / Kelly',sub:'기대값 및 베팅 비율'}
+  };
+  var c=CARDS[n]||{icon:'—',title:'—',sub:'—'};
+  icon=c.icon; title=c.title; sub=c.sub;
+
+  if(n===1){
+    var finalScore=parseInt(txt('sc-score-sub'))||0;
+    var bScore=0,bLbl='없음';
+    if(el('mtf-badge').classList.contains('on')){bScore=25;bLbl='+25 (강추 — MTF 일치)';}
+    else if(bbarOn&&isBull){bScore=15;bLbl='+15 (상승장)';}
+    else if(bbarOn&&!isBull){bScore=-10;bLbl='-10 (하락장)';}
+    var vrScore=vr>=1.5?20:vr>=0.8?8:vr>0?-10:0;
+    var btScore=0;
+    if(bt.b1T>=15){btScore=(bt.b1WR>=58&&bt.b1PF>=1.5)?20:(bt.b1WR>=44&&bt.b1PF>=1.2)?10:-5;}
+    var upP=parseFloat(txt('dir-up-pct'))||0,dnP=parseFloat(txt('dir-dn-pct'))||0;
+    var mcDirScore=upP>=50?15:dnP>=55?-10:upP>0?5:0;
+    var mc14Score=mc.ready?(mc.r14[0]*100>=50?15:mc.r14[0]*100>=25?5:-5):0;
+    body+=sec('점수 구성');
+    body+=row('장세 바이어스',bLbl,bScore>0?'g':bScore<0?'r':'t');
+    body+=row('거래량',vr>0?(vr.toFixed(1)+'배 → '+(vrScore>=0?'+':'')+vrScore+'점'):'데이터 없음',vrScore>0?'g':vrScore<0?'r':'t');
+    body+=row('반등 백테스트',bt.b1T>=15?(btScore>=0?'+':'')+btScore+'점':'샘플 부족',btScore>0?'g':btScore<0?'r':'t');
+    body+=row('7일 방향성',upP>0?'상승 '+upP+'% → '+(mcDirScore>=0?'+':'')+mcDirScore+'점':'계산 중',mcDirScore>0?'g':mcDirScore<0?'r':'t');
+    body+=row('MC 도달확률',mc.ready?((mc.r14[0]*100).toFixed(0)+'% → '+(mc14Score>=0?'+':'')+mc14Score+'점'):'계산 중',mc14Score>0?'g':mc14Score<0?'r':'t');
+    body+=row('최종 종합점수',finalScore+'점',finalScore>=70?'g':finalScore>=50?'a':'r');
+    body+=sec('판정 기준');
+    body+=row('70점 이상','진입 유리 — BUY1 지정가 등록','g');
+    body+=row('50~69점','신중 진입 — BUY1 소량만','a');
+    body+=row('49점 이하','대기 권장 — 다른 코인 검색','r');
+    body+=tip('<b>종합점수</b>는 장세·거래량·백테스트·MC방향성의 복합 산출값입니다. 단일 지표가 아닌 여러 요소의 가중합산입니다.');
+  }
+  else if(n===2){
+    var gbScore=parseInt(txt('sc-golden-aux'))||0;
+    var rsiVal=txt('sg-rsi'), fibVal=txt('sg-fib'), volVal=txt('sg-vol');
+    body+=sec('황금각 신호');
+    body+=row('RSI (14)',rsiVal,parseFloat(rsiVal)<40?'g':parseFloat(rsiVal)>60?'r':'a');
+    body+=row('피보나치 위치',fibVal||txt('sg-fib-sub'),'a');
+    body+=row('거래량 신호',volVal||txt('sg-vol-sub'),vr>=1.5?'g':vr>=0.8?'a':'r');
+    var vwapEl=el('sg-vwap')||el('sg-vwap-sub');
+    if(vwapEl) body+=row('VWAP',vwapEl.textContent,'t');
+    body+=sec('황금각 점수');
+    body+=bar('황금각',gbScore,gbScore>=70?'var(--G)':gbScore>=50?'var(--A)':'var(--t3)',gbScore+'점');
+    body+=row('종합 황금각',txt('sc-golden'),gbScore>=70?'g':gbScore>=50?'a':'t');
+    body+=sec('판정 기준');
+    body+=row('70점 이상','🌟 황금각 — 최적 진입 타이밍','g');
+    body+=row('50~69점','👀 진입 고려 — 조건부 가능','a');
+    body+=row('49점 이하','⏳ 대기 — RSI/거래량 개선 필요','t');
+    body+=tip('<b>황금각</b>은 RSI 과매도 + 피보나치 지지 + 거래량 확인이 동시에 충족될 때 발생합니다. 3가지가 겹칠수록 고신뢰 진입입니다.');
+  }
+  else if(n===3){
+    var b1=res.buy1,b2=res.buy2,b3=res.buy3||res.buy2,tp=res.tp,st=res.stop1;
+    var d1=((b1-lp)/lp*100).toFixed(2),d2=((b2-lp)/lp*100).toFixed(2),d3=((b3-lp)/lp*100).toFixed(2);
+    var rr1=((tp-b1)/Math.abs(b1-st)).toFixed(2),rr2=((tp-b2)/Math.abs(b2-st)).toFixed(2);
+    body+=sec('진입가 3단계');
+    body+=row('현재가','$'+fp(lp),'t');
+    body+=row('BUY 1 (1차)','$'+fp(b1)+' ('+d1+'%)','g');
+    body+=row('BUY 2 (2차)','$'+fp(b2)+' ('+d2+'%)','b');
+    body+=row('BUY 3 (안전망)','$'+fp(b3)+' ('+d3+'%)','p');
+    body+=sec('리스크/리턴');
+    body+=row('목표가 TP','$'+fp(tp),'a');
+    body+=row('손절가 STOP','$'+fp(st),'r');
+    body+=row('BUY1 RR비율','1 : '+rr1,parseFloat(rr1)>=2?'g':parseFloat(rr1)>=1?'a':'r');
+    body+=row('BUY2 RR비율','1 : '+rr2,parseFloat(rr2)>=2?'g':parseFloat(rr2)>=1?'a':'r');
+    body+=sec('진입 전략');
+    body+=row('추천 배분','BUY1 50% → BUY2 30% → BUY3 20%','t');
+    body+=tip('<b>분할 매수</b>: BUY1에 절반 진입 후 하락 시 BUY2·3 추가매수. 손절은 BUY1 진입가 기준으로 통일. BUY3까지 도달하면 포지션 청산 고려.');
+  }
+  else if(n===4){
+    var stop=res.stop1, buy1=res.buy1;
+    var stopPct=((stop-buy1)/buy1*100).toFixed(2);
+    var atr=res.atr||0;
+    body+=sec('손절 계산');
+    body+=row('BUY1 진입가','$'+fp(buy1),'g');
+    body+=row('손절가','$'+fp(stop),'r');
+    body+=row('손절폭',Math.abs(stopPct)+'%','r');
+    body+=row('ATR (변동폭)','$'+fp(atr)+' ('+( atr/buy1*100).toFixed(2)+'%)','t');
+    body+=row('손절 배수','ATR × '+G.AS,'t');
+    body+=sec('비중별 예상 손실');
+    body+=row('100만원 진입','약 '+Math.abs(Math.round(10000*parseFloat(stopPct)/100)).toLocaleString()+'원 손실','r');
+    body+=row('500만원 진입','약 '+Math.abs(Math.round(50000*parseFloat(stopPct)/100)).toLocaleString()+'원 손실','r');
+    body+=sec('손절 원칙');
+    body+=row('반드시 지정가 등록','진입 즉시 손절가 세팅','t');
+    body+=tip('<b>손절가는 BUY1 기준</b>으로 산출됩니다. ATR × 2.5배 수준의 변동폭을 허용해 노이즈에 의한 조기 청산을 방지합니다. 심리적 손절은 금물.');
+  }
+  else if(n===5){
+    var tp2=res.tp,b12=res.buy1,st2=res.stop1;
+    var tpPct=((tp2-b12)/b12*100).toFixed(2);
+    var rr=((tp2-b12)/Math.abs(b12-st2)).toFixed(2);
+    body+=sec('목표가 계산');
+    body+=row('목표가 TP','$'+fp(tp2),'a');
+    body+=row('BUY1 대비 상승폭','+'+tpPct+'%','g');
+    body+=row('계산 방식','레인지 85% 회복 vs BUY1+5%','t');
+    body+=row('RR 비율','1 : '+rr,parseFloat(rr)>=2?'g':parseFloat(rr)>=1?'a':'r');
+    body+=sec('구간별 부분 익절 전략');
+    var mid=((tp2-b12)*0.5+b12);
+    var q1=((tp2-b12)*0.382+b12);
+    body+=row('38% (Fib 61.8%)','$'+fp(q1)+' — 1차 익절 30%','t');
+    body+=row('50% (중간)','$'+fp(mid)+' — 2차 익절 40%','t');
+    body+=row('100% (TP)','$'+fp(tp2)+' — 잔여 30%','a');
+    body+=tip('<b>추천</b>: 목표가 도달 전 1/3씩 분할 익절. TP를 한 번에 치는 전략보다 평균 수익률이 높습니다. 도중 손절가 위로 올리는 트레일링 스탑도 유효.');
+  }
+  else if(n===6){
+    var liqEl=el('liq-px'),distEl=el('liq-dist'),levEl=el('lev-x');
+    var liqPx=liqEl?liqEl.textContent:txt('sc-liq');
+    var dist=txt('sc-liq-sub');
+    var levX=levEl?levEl.textContent:'5배';
+    body+=sec('청산가 정보');
+    body+=row('레버리지',levX,'t');
+    body+=row('현재가','$'+fp(lp),'t');
+    body+=row('BUY1 진입가','$'+fp(res.buy1),'g');
+    body+=row('청산가 (강제)',liqPx,'r');
+    body+=row('청산까지 여유',dist,'g');
+    body+=sec('레버리지별 청산 거리');
+    body+=row('1배 현물','청산 없음','g');
+    body+=row('3배','진입 대비 약 -33%','a');
+    body+=row('5배','진입 대비 약 -18%','a');
+    body+=row('10배','진입 대비 약 -8%','r');
+    body+=tip('<b>손절가가 청산가보다 위에 있어야</b> 강제청산 전에 수동 손절이 가능합니다. 현재 손절폭이 청산폭보다 크면 레버리지를 낮추세요.');
+  }
+  else if(n===7){
+    var kellyEl=el('kelly-val'),kellyPct=kellyEl?kellyEl.textContent:txt('sc-kelly');
+    var investAmt=txt('sc-invest-val'), investPct=txt('sc-invest-sub');
+    body+=sec('Kelly 기준');
+    body+=row('Half-Kelly',kellyPct,'a');
+    body+=row('투자 권장',investAmt+' ('+investPct+')','g');
+    body+=sec('위험도 보정 요소');
+    var rskEl=el('risk-final-mult');
+    if(rskEl) body+=row('위험도 보정 배수',rskEl.textContent||'—','t');
+    var fgEl=el('fg-val');
+    if(fgEl) body+=row('공포탐욕 지수',fgEl.textContent||'—','t');
+    body+=row('거래량 비율',vr>0?vr.toFixed(2)+'배':'—',vr>=1.5?'g':vr>=0.8?'a':'r');
+    body+=sec('금액 시나리오');
+    var hk=parseFloat(kellyPct)/100||0.07;
+    body+=row('100만원 기준',(hk*100).toFixed(0)+'%  ≈ '+Math.round(hk*1000000).toLocaleString()+'원','t');
+    body+=row('300만원 기준',(hk*100).toFixed(0)+'%  ≈ '+Math.round(hk*3000000).toLocaleString()+'원','t');
+    body+=row('500만원 기준',(hk*100).toFixed(0)+'%  ≈ '+Math.round(hk*5000000).toLocaleString()+'원','t');
+    body+=tip('<b>Half-Kelly</b>는 Kelly 공식의 절반만 사용해 과도한 집중을 방지합니다. 여기에 ATR·공포탐욕·거래량 보정을 추가 적용합니다.');
+  }
+  else if(n===8){
+    var winEl=el('lev-win-amt'),loseEl=el('lev-lose-amt');
+    var win=txt('sc-lev-win'),lose=txt('sc-lev-lose');
+    var tpPct3=((res.tp-res.buy1)/res.buy1*100);
+    var stPct3=Math.abs((res.stop1-res.buy1)/res.buy1*100);
+    body+=sec('5배 레버리지 손익 (권장 투자금 기준)');
+    body+=row('익절 수익',win,'g');
+    body+=row('손절 손실',lose,'r');
+    body+=sec('레버리지별 비교 (100만원 진입)');
+    [1,3,5,10].forEach(function(x){
+      var w=Math.round(tpPct3*x*10000); var l=Math.round(stPct3*x*10000);
+      body+=row(x+'배','+'+w.toLocaleString()+'원 / -'+l.toLocaleString()+'원',x<=5?'t':'r');
+    });
+    body+=sec('레버리지 선택 기준');
+    body+=row('안전 (1~3배)','현물·저위험 — 초보자 권장','g');
+    body+=row('표준 (5배)','균형형 — 손절 필수','a');
+    body+=row('고위험 (10배+)','전문가 전용 — 청산 위험 높음','r');
+    body+=tip('<b>레버리지는 손익을 모두 증폭</b>합니다. 5배는 수익도 5배지만 손실도 5배. 포지션 크기를 줄여 전체 위험도를 조절하세요.');
+  }
+  else if(n===9){
+    var upPct2=txt('dir-up-pct'),dnPct2=txt('dir-dn-pct'),flatPct2=txt('dir-flat-pct');
+    var up2=parseFloat(upPct2)||0,dn2=parseFloat(dnPct2)||0,flat2=parseFloat(txt('dir-flat-pct'))||0;
+    body+=sec('7일 방향성 시뮬레이션 (3,000회)');
+    body+=bar('상승',up2,'var(--G)',upPct2);
+    body+=bar('보합',flat2,'var(--t3)',flatPct2||'—%');
+    body+=bar('하락',dn2,'var(--R)',dnPct2);
+    body+=row('7일 방향성',txt('sc-dir'),up2>=50?'g':dn2>=50?'r':'a');
+    if(mc.ready){
+      body+=sec('BUY 도달 확률 (14일)');
+      body+=bar('BUY1 도달',(mc.r14[0]*100),'var(--G)',(mc.r14[0]*100).toFixed(1)+'%');
+      body+=bar('BUY2 도달',(mc.r14[1]*100),'var(--B)',(mc.r14[1]*100).toFixed(1)+'%');
+    }
+    body+=tip('<b>Monte Carlo</b>는 과거 변동성을 기반으로 3,000번 시뮬레이션한 확률입니다. drift=0 가정이므로 트렌드는 반영하지 않습니다. 장세와 함께 해석하세요.');
+  }
+  else if(n===10){
+    var bbarEl=el('bbar'),blblEl2=el('blbl'),bvalEl2=el('bval');
+    body+=sec('장세 (20MA 기준)');
+    body+=row('현재 장세',bbarOn?(isBull?'▲ 상승장':'▼ 하락장'):'정보 없음',bbarOn?(isBull?'g':'r'):'t');
+    body+=row('20MA',txt('bval'),'t');
+    body+=row('현재가 vs 20MA',bbarOn?(isBull?'20MA 위 → 강세':'20MA 아래 → 약세'):'코인 검색 필요','t');
+    var mtfOn2=el('mtf-badge').classList.contains('on');
+    body+=row('MTF 강추',mtfOn2?'★ 단기·중기 모두 상승':'—',mtfOn2?'g':'t');
+    body+=sec('방향 일치 해석');
+    body+=row('전체 방향',txt('sc-bias'),'t');
+    body+=row('보조 판단',txt('sc-bias-sub'),'t');
+    body+=tip('<b>20MA 위 = 상승장</b>: BUY 진입 시 확률 유리. 20MA 아래 = 하락장: 반등 매수 시 비중을 줄이거나 BUY2·3까지 기다리세요.');
+  }
+  else if(n===11){
+    var wr2=bt.b1WR||0,pf2=bt.b1PF||0,ev2=bt.b1EV||0,t2=bt.b1T||0;
+    body+=sec('백테스트 통계 (BUY1 기준)');
+    body+=bar('승률',wr2,'var(--G)',wr2.toFixed(1)+'%');
+    body+=bar('수익요인(PF)',Math.min(100,pf2*33),'var(--B)',pf2.toFixed(2));
+    body+=row('반등 횟수',t2+'회 (샘플)',t2>=30?'g':t2>=15?'a':'r');
+    body+=row('기대값 (EV)',(ev2>=0?'+':'')+ev2.toFixed(2)+'%',ev2>0?'g':ev2<-1?'r':'a');
+    body+=sec('거래량');
+    body+=bar('현재 거래량',Math.min(100,vr*67),'var(--A)',vr>0?vr.toFixed(2)+'x':'—');
+    body+=row('거래량 판정',txt('sc-vol'),vr>=1.5?'g':vr>=0.8?'a':'r');
+    body+=sec('판정 기준');
+    body+=row('우량','승률 58%↑ + PF 1.5↑','g');
+    body+=row('보통','승률 44%↑ + PF 1.2↑','a');
+    body+=row('약함','그 외','r');
+    body+=tip('<b>PF (Profit Factor)</b> = 총 수익 ÷ 총 손실. 1.0 이상이면 통계적으로 수익 우위. 2.0 이상이면 우수한 전략입니다.');
+  }
+  else if(n===12){
+    var evTxt=txt('sc-ev'),kellyTxt=txt('sc-kelly');
+    var wr3=bt.b1WR||0,pf3=bt.b1PF||0,ev3=bt.b1EV||0;
+    body+=sec('기대값 (Expected Value)');
+    body+=row('BUY1 EV',(ev3>=0?'+':'')+ev3.toFixed(2)+'%',ev3>0?'g':ev3<-1?'r':'a');
+    body+=row('MC 도달 반영',mc.ready?'포함':'미반영','t');
+    body+=row('결합 EV',evTxt,'t');
+    body+=sec('Kelly 기준 베팅');
+    body+=row('Full Kelly','수학적 최적 베팅 비율','t');
+    body+=row('Half Kelly',kellyTxt,'a');
+    body+=row('초과 사용 시','장기 파산 확률 급증','r');
+    body+=sec('EV 계산 구조');
+    body+=row('MC × TP%','MC도달확률 × 목표수익률','t');
+    body+=row('(1-MC) × Stop%','미도달확률 × 손절률','t');
+    body+=row('순 기대값','두 값의 차이','t');
+    body+=tip('<b>EV > 0</b>이면 장기적으로 수익 우위인 거래입니다. EV는 통계적 기댓값이며 단일 거래 결과를 보장하지 않습니다. Kelly는 그 EV를 극대화하는 자금 배분입니다.');
+  }
+
+  el('cd-icon').textContent=icon;
+  el('cd-title').textContent=title;
+  el('cd-sub').textContent=sub;
+  el('cd-body').innerHTML=body;
+  el('cd-overlay').classList.add('on');
+  el('cd-sheet').classList.add('on');
+}
+
 setTF('4h');
 switchTab('calc');
 // 초기 자동 계산 제거 - 검색 후에만 결과 표시
 </script>
+<!-- ═══ 카드 상세 바텀시트 ═══ -->
+<div class="cd-overlay" id="cd-overlay" onclick="closeCardDetail()"></div>
+<div class="cd-sheet" id="cd-sheet">
+  <div class="cd-handle"></div>
+  <div class="cd-head">
+    <div class="cd-icon" id="cd-icon">—</div>
+    <div class="cd-head-info">
+      <div class="cd-title" id="cd-title">—</div>
+      <div class="cd-sub" id="cd-sub">—</div>
+    </div>
+    <button class="cd-close" onclick="closeCardDetail()">✕</button>
+  </div>
+  <div class="cd-divider"></div>
+  <div class="cd-body" id="cd-body"></div>
+</div>
 </body>
 </html>
