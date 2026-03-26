@@ -4,7 +4,8 @@
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no"/>
 <meta name="theme-color" content="#0b0e11"/>
-<meta name="apple-mobile-web-app-capable" content="yes"/>
+<meta name="mobile-web-app-capable" content="yes"/>
+<link rel="icon" href="data:,">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
 <title>Range Calc</title>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Roboto+Mono:wght@400;500;600&display=swap" rel="stylesheet"/>
@@ -632,7 +633,7 @@ html,body{background:var(--bg0);color:var(--t1);font-family:var(--ui);font-size:
   <button class="tab" onclick="switchTab('multi')">통합분석</button>
   <button class="tab" onclick="switchTab('guide')">설명서</button>
 </div>
-<div class="page active" id="page-calc" class="page active">
+<div class="page active" id="page-calc">
 
   <div class="srow">
     <div class="sbox">
@@ -1286,7 +1287,7 @@ html,body{background:var(--bg0);color:var(--t1);font-family:var(--ui);font-size:
   </div>
 </div>
 
-<div class="page" id="page-multi" class="page">
+<div class="page" id="page-multi">
   <!-- 검색 -->
   <div class="multi-search">
     <div class="multi-sbox">
@@ -1372,7 +1373,7 @@ html,body{background:var(--bg0);color:var(--t1);font-family:var(--ui);font-size:
   <div id="mtf-cards"></div>
 </div>
 
-<div class="page" id="page-guide" class="page">
+<div class="page" id="page-guide">
 
   <!-- HERO -->
   <div class="guide-hero">
@@ -1468,7 +1469,7 @@ html,body{background:var(--bg0);color:var(--t1);font-family:var(--ui);font-size:
   <div class="guide-ver">RANGE CALC v1.0 · 레버리지 전용</div>
 </div>
 
-<div class="page" id="page-info" class="page">
+<div class="page" id="page-info">
   <div class="isec"><div class="ittl">타임프레임별 설정</div><div class="itxt"><b style="color:var(--t1)">4H 기준 고정</b> · 90일 백테스트 · 스윙 트레이딩 최적<br>검색 즉시 실시간(WebSocket) 자동 연결<br>봉 마감 시 BUY가 자동 갱신</div></div>
   <div class="isec"><div class="ittl">보수적 버퍼 선택</div><div class="fm">rawBuf = argmax(WR × PF × EV) over [3%..10%]</div><div class="fm">annualFills &lt; 12 → buf +1% <span class="fc">// 희귀 진입 보정</span></div><div class="fm">annualFills &lt; 6 → buf +2% <span class="fc">// 극희귀 보정</span></div><div class="fm">cap = min(buf, 8%)</div></div>
   <div class="isec"><div class="ittl">백테스트 엔진</div><div class="fm">목적: 이 코인이 저점에서 반등을 잘 하는 코인인가 판별</div><div class="fm">진입가 기준이 아닌 반등 패턴 자체를 분석 → 코인 선별 용도</div><div class="fm">실제 진입가는 황금각 (피보나치+RSI+거래량)으로 결정</div><div class="fm">수수료+슬리피지: 0.15% 차감</div><div class="fm">Volume ≥ 20MA×80% · Close ≥ Low+Range×20%</div></div>
