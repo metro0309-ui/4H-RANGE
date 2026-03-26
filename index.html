@@ -696,6 +696,17 @@ html,body{background:var(--bg0);color:var(--t1);font-family:var(--ui);font-size:
 .ls-signal-txt{font-size:10px;font-weight:600}
 .ls-ts-txt{font-size:9px;color:var(--t3);font-family:var(--num)}
 
+/* ── 신뢰도 인디케이터 ── */
+.reliability-bar{display:flex;align-items:center;justify-content:space-between;padding:7px 12px;background:var(--bg2);border-bottom:1px solid var(--bd);gap:8px}
+.rel-left{display:flex;align-items:center;gap:6px;flex-shrink:0}
+.rel-label{font-size:9px;color:var(--t3);flex-shrink:0;letter-spacing:.04em}
+.rel-track{width:60px;height:4px;background:var(--bg3);border-radius:2px;overflow:hidden;flex-shrink:0}
+.rel-fill{height:100%;border-radius:2px;transition:width .6s}
+.rel-score{font-family:var(--num);font-size:11px;font-weight:800;flex-shrink:0;min-width:28px}
+.rel-right{display:flex;gap:4px;flex-wrap:wrap;justify-content:flex-end}
+.rel-chip{font-size:9px;padding:2px 6px;border-radius:3px;background:var(--bg3);color:var(--t3);font-family:var(--num);font-weight:600;white-space:nowrap}
+.rel-chip.good{background:var(--Gd);color:var(--G)}.rel-chip.warn{background:var(--Ad);color:var(--A)}.rel-chip.bad{background:var(--Rd);color:var(--R)}
+
 /* ════ 스캐너 ════ */
 .scan-header{padding:10px 16px;background:var(--bg1);border-bottom:1px solid var(--bd);display:flex;align-items:center;justify-content:space-between;gap:8px}
 .scan-title{font-size:12px;font-weight:700;color:var(--t1)}.scan-sub{font-size:9px;color:var(--t3);margin-top:1px}
@@ -1133,7 +1144,21 @@ html,body{background:var(--bg0);color:var(--t1);font-family:var(--ui);font-size:
 
       </div>
 
-      <!-- 행동 지침 -->
+      <!-- ⑧ 신뢰도 인디케이터 + BTC베타 + 펀딩비 -->
+      <div class="reliability-bar" id="reliability-bar">
+        <div class="rel-left">
+          <span class="rel-label">신뢰도</span>
+          <div class="rel-track"><div class="rel-fill" id="rel-fill" style="width:0%"></div></div>
+          <span class="rel-score" id="rel-score">—</span>
+        </div>
+        <div class="rel-right">
+          <span class="rel-chip" id="rel-beta">BTC베타 —</span>
+          <span class="rel-chip" id="rel-fund">펀딩비 —</span>
+          <span class="rel-chip" id="rel-sample">샘플 —</span>
+        </div>
+      </div>
+
+      <!-- ⑨ 행동 지침 -->
       <div class="sc-action wait" id="sc-action">분석 중...</div>
       <!-- 상세보기 버튼 -->
       <button class="sc-toggle" onclick="toggleDetail()">
@@ -1709,12 +1734,13 @@ html,body{background:var(--bg0);color:var(--t1);font-family:var(--ui);font-size:
 <div class="toast" id="toast"></div>
 <script>
 var TFC={
-  '15m':{iv:'15m',lim:1500,htf:'1h',hl:200,look:3,lbl:'15M 스캘핑'},
-  '1h': {iv:'1h', lim:1500,htf:'4h',hl:200,look:4,lbl:'1H 단타'},
-  '4h': {iv:'4h', lim:540, htf:'1d',hl:110,look:6,lbl:'4H 스윙'},
-  '1d': {iv:'1d', lim:90, htf:'1w',hl:52, look:5,lbl:'1D 장기'}
+  '15m':{iv:'15m',lim:1500,htf:'1h',hl:500,look:3,lbl:'15M 스캘핑'},
+  '1h': {iv:'1h', lim:1500,htf:'4h',hl:500,look:4,lbl:'1H 단타'},
+  '4h': {iv:'4h', lim:1000,htf:'1d',hl:730,look:6,lbl:'4H 스윙'},
+  '1d': {iv:'1d', lim:730, htf:'1w',hl:104,look:5,lbl:'1D 장기'}
 };
-var G={coin:'AAVE',tf:'4h',bt:null,bm:null,res:null,liveTimer:null,livePair:null,liveTF:null,FEE:0.0015,AP:14,VP:20,AS:2.5,CC:0.20,VR:0.80};
+// FEE: 수수료(0.05%×2) + 평균 슬리피지(0.15%) = 0.25% 현실화
+var G={coin:'AAVE',tf:'4h',bt:null,bm:null,res:null,liveTimer:null,livePair:null,liveTF:null,FEE:0.0025,AP:14,VP:20,AS:2.5,CC:0.20,VR:0.80,btcBeta:null,fundingRate:null};
 
 function el(id){return document.getElementById(id);}
 var _dummy={style:{},className:'',textContent:''};
@@ -1789,16 +1815,53 @@ function doSearch(){
   var B='https://api.binance.com/api/v3/klines';
   var u1=B+'?symbol='+pair+'&interval='+cfg.iv+'&limit='+cfg.lim;
   var u2=B+'?symbol='+pair+'&interval='+cfg.htf+'&limit='+cfg.hl;
+  // BTC 상관관계용 + 펀딩비
+  var uBtc=B+'?symbol=BTCUSDT&interval='+cfg.iv+'&limit=120';
+  var uFund='https://fapi.binance.com/fapi/v1/fundingRate?symbol='+pair+'&limit=3';
   function fetchOne(url){
     return fetch(url).then(function(r){if(!r.ok)throw new Error('status '+r.status);return r.json();})
     .catch(function(){return fetch('https://corsproxy.io/?'+url).then(function(r){if(!r.ok)throw new Error();return r.json();});});
   }
   setLoad(true,sym+' '+cfg.lbl+' 데이터 수집 중...');
   el('ticker').classList.remove('on');el('btcard').classList.remove('on');
-  Promise.all([fetchOne(u1),fetchOne(u2).catch(function(){return [];})])
+  Promise.all([
+    fetchOne(u1),
+    fetchOne(u2).catch(function(){return [];}),
+    fetchOne(uBtc).catch(function(){return [];}),
+    fetch(uFund).then(function(r){return r.json();}).catch(function(){return [];})
+  ])
   .then(function(res){
-    var c4=res[0],ch=res[1];
+    var c4=res[0],ch=res[1],btcC=res[2],fundData=res[3];
     if(!c4||c4.length<30)throw new Error('데이터 부족');
+
+    // ── BTC 베타 계산 (30봉 롤링 상관관계) ──────────────
+    G.btcBeta=null;
+    if(btcC&&btcC.length>=30&&c4.length>=30){
+      var n=Math.min(60,btcC.length,c4.length)-1;
+      var coinRet=[],btcRet=[];
+      for(var i=c4.length-n;i<c4.length;i++){
+        var cp=parseFloat(c4[i][4]),pp=parseFloat(c4[i-1][4]);
+        coinRet.push((cp-pp)/pp);
+      }
+      for(var i=btcC.length-n;i<btcC.length;i++){
+        var bp=parseFloat(btcC[i][4]),bpp=parseFloat(btcC[i-1][4]);
+        btcRet.push((bp-bpp)/bpp);
+      }
+      var len=Math.min(coinRet.length,btcRet.length);
+      var mc=0,mb=0;
+      for(var i=0;i<len;i++){mc+=coinRet[i];mb+=btcRet[i];}
+      mc/=len;mb/=len;
+      var cov=0,varB=0;
+      for(var i=0;i<len;i++){cov+=(coinRet[i]-mc)*(btcRet[i]-mb);varB+=(btcRet[i]-mb)*(btcRet[i]-mb);}
+      if(varB>0)G.btcBeta=cov/varB;
+    }
+
+    // ── 펀딩비 (8시간 누적 → 일 환산) ─────────────────────
+    G.fundingRate=null;
+    if(Array.isArray(fundData)&&fundData.length){
+      var avgFund=fundData.reduce(function(s,d){return s+parseFloat(d.fundingRate||0);},0)/fundData.length;
+      G.fundingRate=avgFund; // 8시간당 비율
+    }
     setLoad(true,cfg.lbl+' 백테스트 실행 중 ('+c4.length+'봉)...');
     setTimeout(function(){
       try{
@@ -2083,23 +2146,39 @@ function checkAbandon(close,low,high,b1,b2,b3){
 
 function randN(){var u=0,v=0;while(u===0)u=Math.random();while(v===0)v=Math.random();return Math.sqrt(-2*Math.log(u))*Math.cos(2*Math.PI*v);}
 
+function calcDrift(candles, period){
+  // 최근 period봉의 평균 로그 수익률 → 시간당 drift
+  if(!candles||candles.length<period+1)return 0;
+  var sum=0,n=0;
+  for(var i=candles.length-period;i<candles.length;i++){
+    var r=Math.log(parseFloat(candles[i][4])/parseFloat(candles[i-1][4]));
+    sum+=r;n++;
+  }
+  // 봉 단위 → 시간당 (4H봉이면 /4)
+  var tfHours={'15m':0.25,'1h':1,'4h':4,'1d':24};
+  var h=tfHours[G.tf]||4;
+  return n>0?(sum/n)/h:0; // 시간당 drift
+}
+
 function calcDirection(S0, dv) {
-  // 7일 이내 상승/하락/보합 확률 계산
-  // 보합 기준: 현재가 ±3% 이내
-  var N = 3000, hv = dv / Math.sqrt(24), steps = 7 * 24;
-  var flat_thresh = 0.03; // ±3%
-  var up = 0, dn = 0, flat = 0;
-  for (var i = 0; i < N; i++) {
-    var p = S0;
-    for (var t = 0; t < steps; t++) {
-      p = p * Math.exp(-0.5*hv*hv + hv*randN());
+  var N=3000, hv=dv/Math.sqrt(24), steps=7*24;
+  var flat_thresh=0.03;
+  // ★ 실제 추세 drift 반영 (최근 30봉 로그수익률 평균)
+  var drift=G._candles?calcDrift(G._candles,30):0;
+  // drift 너무 크면 0.001/h 로 캡 (과적합 방지)
+  drift=Math.max(-0.001,Math.min(0.001,drift));
+  var up=0,dn=0,flat=0;
+  for(var i=0;i<N;i++){
+    var p=S0;
+    for(var t=0;t<steps;t++){
+      p=p*Math.exp((drift-0.5*hv*hv)+hv*randN());
     }
-    var chg = (p - S0) / S0;
-    if (Math.abs(chg) <= flat_thresh) flat++;
-    else if (chg > 0) up++;
+    var chg=(p-S0)/S0;
+    if(Math.abs(chg)<=flat_thresh)flat++;
+    else if(chg>0)up++;
     else dn++;
   }
-  return { up: up/N, dn: dn/N, flat: flat/N };
+  return{up:up/N,dn:dn/N,flat:flat/N};
 }
 
 function renderDirection(S0, dv) {
@@ -2118,7 +2197,10 @@ function renderDirection(S0, dv) {
     el('dir-up-pct').textContent   = upP + '%';
     el('dir-dn-pct').textContent   = dnP + '%';
     el('dir-flat-pct').textContent = flatP + '%';
-    el('dir-sub').textContent      = '기준: 현재가 ±3% 이내 = 보합 · 3,000회 시뮬레이션 · drift=0';
+    var drift2=G._candles?calcDrift(G._candles,30):0;
+    drift2=Math.max(-0.001,Math.min(0.001,drift2));
+    var driftLbl=drift2>0.0003?'↑상승 drift':drift2<-0.0003?'↓하락 drift':'중립 drift';
+    el('dir-sub').textContent='±3% = 보합 · 3,000회 시뮬 · '+driftLbl+' 반영';
 
     var v = el('dir-verdict');
     if (r.up >= 0.55) {
@@ -2143,13 +2225,16 @@ function renderDirection(S0, dv) {
 function startMC(S0,dv,b1,b2,b3){
   var mc=el('mcstatus');mc.textContent='⏳ Monte Carlo 2,000회 계산 중...';mc.classList.add('on');
   ['b1p14','b1p30','b2p14','b2p30','b3p14','b3p30'].forEach(function(id){var e=el(id);if(e)e.textContent='…';});
+  // ★ 실제 drift 반영
+  var drift=G._candles?calcDrift(G._candles,30):0;
+  drift=Math.max(-0.001,Math.min(0.001,drift));
   var N=2000,hv=dv/Math.sqrt(24),s14=14*24,s30=30*24;
   var r14=[0,0,0],r30=[0,0,0],done=0,CHK=250,tgts=[b1,b2,b3];
   function chunk(){
     var end=Math.min(done+CHK,N);
     for(var i=done;i<end;i++){
       var p=S0,mn14=S0,mn30=S0;
-      for(var t=1;t<=s30;t++){p=p*Math.exp(-0.5*hv*hv+hv*randN());if(t<=s14&&p<mn14)mn14=p;if(p<mn30)mn30=p;}
+      for(var t=1;t<=s30;t++){p=p*Math.exp((drift-0.5*hv*hv)+hv*randN());if(t<=s14&&p<mn14)mn14=p;if(p<mn30)mn30=p;}
       for(var k=0;k<3;k++){if(mn14<=tgts[k])r14[k]++;if(mn30<=tgts[k])r30[k]++;}
     }
     done=end;
@@ -2159,8 +2244,9 @@ function startMC(S0,dv,b1,b2,b3){
       sp('b1b14','b1b30','b1p14','b1p30',r14[0]/N,r30[0]/N);
       sp('b2b14','b2b30','b2p14','b2p30',r14[1]/N,r30[1]/N);
       sp('b3b14','b3b30','b3p14','b3p30',r14[2]/N,r30[2]/N);
-      mc.textContent='✓ Monte Carlo 완료 (2,000회 · drift=0)';
-      G_MC={r14:[r14[0]/N,r14[1]/N,r14[2]/N],r30:[r30[0]/N,r30[1]/N,r30[2]/N],ready:true};
+      var driftLabel=drift>0.0003?'↑추세':drift<-0.0003?'↓추세':'중립';
+      mc.textContent='✓ Monte Carlo 완료 (2,000회 · '+driftLabel+' drift 반영)';
+      G_MC={r14:[r14[0]/N,r14[1]/N,r14[2]/N],r30:[r30[0]/N,r30[1]/N,r30[2]/N],ready:true,drift:drift};
       if(G.res){renderQuant(G.res.buy1,G.res.buy2,G.res.buy3||G.res.buy2,G.res.tp,G.res.stop1,G.res.close,G.res.low,G.res.high);}
       renderDiagnosis();
       setTimeout(renderSummaryCard,100);
@@ -2573,6 +2659,58 @@ function renderSummaryCard(){
   }
 
   // ── 행동 지침 ─────────────────────────────────────────────────────
+  // ── 신뢰도 점수 계산 ───────────────────────────────────────────
+  var relScore=50; // 기본값
+  var bt2=G.bt;
+  if(bt2){
+    // 1. 백테스트 샘플 품질 (최대 25점)
+    var sampleScore=bt2.b1T>=100?25:bt2.b1T>=60?18:bt2.b1T>=30?12:bt2.b1T>=15?6:0;
+    relScore+=sampleScore-15; // 기본 50 기준으로 조정
+    // 2. 백테스트 기간 (최대 10점)
+    var dayScore=bt2.bd>=365?10:bt2.bd>=180?7:bt2.bd>=90?4:0;
+    relScore+=dayScore;
+    // 3. PF 품질 (최대 10점)
+    relScore+=bt2.b1PF>=2?10:bt2.b1PF>=1.5?7:bt2.b1PF>=1.2?4:0;
+    // 4. BTC 베타 (±5점)
+    if(G.btcBeta!==null){
+      if(G.btcBeta>=0.5&&G.btcBeta<=2.0)relScore+=5; // 적정 베타
+      else if(G.btcBeta>3||G.btcBeta<0)relScore-=5;  // 불안정
+    }
+    // 5. MC drift 반영됨 (+3점)
+    if(G_MC&&G_MC.ready&&G_MC.drift!==undefined)relScore+=3;
+  }
+  relScore=Math.max(30,Math.min(95,relScore));
+  var relCol=relScore>=75?'var(--G)':relScore>=55?'var(--A)':'var(--R)';
+  var relFillEl=el('rel-fill'),relScoreEl=el('rel-score');
+  if(relFillEl){relFillEl.style.width=relScore+'%';relFillEl.style.background=relCol;}
+  if(relScoreEl){relScoreEl.textContent=relScore+'점';relScoreEl.style.color=relCol;}
+  // BTC 베타 칩
+  var betaChip=el('rel-beta');
+  if(betaChip){
+    if(G.btcBeta!==null){
+      var bv=G.btcBeta.toFixed(2);
+      betaChip.textContent='BTC베타 β'+bv;
+      betaChip.className='rel-chip '+(G.btcBeta>=0.5&&G.btcBeta<=2?'good':G.btcBeta>3?'bad':'warn');
+    }else{betaChip.textContent='BTC베타 —';betaChip.className='rel-chip';}
+  }
+  // 펀딩비 칩
+  var fundChip=el('rel-fund');
+  if(fundChip){
+    if(G.fundingRate!==null){
+      var fp24=G.fundingRate*3*100; // 하루 3회 × 비율
+      var fundTxt='펀딩 '+(fp24>=0?'+':'')+fp24.toFixed(3)+'%/일';
+      fundChip.textContent=fundTxt;
+      fundChip.className='rel-chip '+(fp24<-0.05?'bad':fp24>0.05?'bad':'good');
+    }else{fundChip.textContent='펀딩비 —';fundChip.className='rel-chip';}
+  }
+  // 샘플 칩
+  var sampleChip=el('rel-sample');
+  if(sampleChip&&bt2){
+    var sDays=Math.round(bt2.bd);
+    sampleChip.textContent='샘플 '+bt2.b1T+'회/'+sDays+'일';
+    sampleChip.className='rel-chip '+(bt2.b1T>=60?'good':bt2.b1T>=30?'warn':'bad');
+  }
+
   if(el('sc-action')){el('sc-action').textContent=action;el('sc-action').className='sc-action '+actionCls;}
 }
 
