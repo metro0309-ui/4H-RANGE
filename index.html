@@ -677,16 +677,24 @@ html,body{background:var(--bg0);color:var(--t1);font-family:var(--ui);font-size:
 .sc-mx-score-val{font-family:var(--num);font-size:11px;font-weight:700}
 .sc-mx-vs{font-size:10px;color:var(--t3)}
 
-/* ── 롱/숏 비율 바 ── */
-.ls-bar{display:flex;height:22px;overflow:hidden}
-.ls-long{background:rgba(0,177,64,.25);display:flex;align-items:center;justify-content:flex-start;padding-left:8px;transition:width .6s;min-width:0}
-.ls-short{background:rgba(240,64,64,.22);display:flex;align-items:center;justify-content:flex-end;padding-right:8px;transition:width .6s;min-width:0}
-.ls-long-txt{font-family:var(--num);font-size:10px;font-weight:700;color:var(--G);white-space:nowrap}
-.ls-short-txt{font-family:var(--num);font-size:10px;font-weight:700;color:var(--R);white-space:nowrap}
-.ls-sub-row{display:flex;align-items:center;gap:6px;padding:4px 12px 5px;background:var(--bg2);border-bottom:1px solid var(--bd)}
-.ls-sub-lbl{font-size:9px;color:var(--t3);flex-shrink:0}
-.ls-sub-val{font-size:10px;font-weight:600;flex:1}
-.ls-sub-ts{font-size:9px;color:var(--t3);font-family:var(--num)}
+/* ── 롱/숏 7단계 게이지 ── */
+.ls-wrap{background:var(--bg1);border-bottom:1px solid var(--bd);padding:8px 12px 6px}
+.ls-gauge-row{display:flex;gap:2px;margin-bottom:5px}
+.ls-stage{flex:1;height:18px;border-radius:3px;display:flex;align-items:center;justify-content:center;font-size:7px;font-weight:700;font-family:var(--num);cursor:default;transition:all .4s;opacity:.25;white-space:nowrap}
+.ls-stage.active{opacity:1;transform:scaleY(1.18)}
+.ls-s1{background:rgba(0,177,64,.35);color:var(--G)}   /* 풀롱 */
+.ls-s2{background:rgba(0,177,64,.22);color:var(--G)}   /* 롱 */
+.ls-s3{background:rgba(0,177,64,.12);color:var(--G)}   /* 롱중립 */
+.ls-s4{background:rgba(150,150,150,.15);color:var(--t2)} /* 횡보 */
+.ls-s5{background:rgba(240,64,64,.12);color:var(--R)}  /* 숏중립 */
+.ls-s6{background:rgba(240,64,64,.22);color:var(--R)}  /* 숏 */
+.ls-s7{background:rgba(240,64,64,.35);color:var(--R)}  /* 풀숏 */
+.ls-info-row{display:flex;align-items:center;justify-content:space-between}
+.ls-pct-row{display:flex;gap:8px}
+.ls-pct-long{font-family:var(--num);font-size:11px;font-weight:800;color:var(--G)}
+.ls-pct-short{font-family:var(--num);font-size:11px;font-weight:800;color:var(--R)}
+.ls-signal-txt{font-size:10px;font-weight:600}
+.ls-ts-txt{font-size:9px;color:var(--t3);font-family:var(--num)}
 
 /* ════ 스캐너 ════ */
 .scan-header{padding:10px 16px;background:var(--bg1);border-bottom:1px solid var(--bd);display:flex;align-items:center;justify-content:space-between;gap:8px}
@@ -911,19 +919,25 @@ html,body{background:var(--bg0);color:var(--t1);font-family:var(--ui);font-size:
         <span class="sc-bias-right" id="sc-bias-right">20MA —</span>
       </div>
 
-      <!-- 롱/숏 비율 바 -->
-      <div class="ls-bar" id="ls-bar">
-        <div class="ls-long" id="ls-long-fill" style="width:50%">
-          <span class="ls-long-txt" id="ls-long-txt">롱 —%</span>
+      <!-- 롱/숏 7단계 게이지 -->
+      <div class="ls-wrap" id="ls-bar">
+        <div class="ls-gauge-row">
+          <div class="ls-stage ls-s1" id="ls-st1">풀롱</div>
+          <div class="ls-stage ls-s2" id="ls-st2">롱</div>
+          <div class="ls-stage ls-s3" id="ls-st3">롱중립</div>
+          <div class="ls-stage ls-s4" id="ls-st4">횡보</div>
+          <div class="ls-stage ls-s5" id="ls-st5">숏중립</div>
+          <div class="ls-stage ls-s6" id="ls-st6">숏</div>
+          <div class="ls-stage ls-s7" id="ls-st7">풀숏</div>
         </div>
-        <div class="ls-short" id="ls-short-fill" style="width:50%">
-          <span class="ls-short-txt" id="ls-short-txt">숏 —%</span>
+        <div class="ls-info-row">
+          <div class="ls-pct-row">
+            <span class="ls-pct-long" id="ls-long-txt">롱 —%</span>
+            <span class="ls-pct-short" id="ls-short-txt">숏 —%</span>
+          </div>
+          <span class="ls-signal-txt" id="ls-signal">로딩 중...</span>
+          <span class="ls-ts-txt" id="ls-ts"></span>
         </div>
-      </div>
-      <div class="ls-sub-row">
-        <span class="ls-sub-lbl">롱/숏 비율</span>
-        <span class="ls-sub-val" id="ls-signal">로딩 중...</span>
-        <span class="ls-sub-ts" id="ls-ts"></span>
       </div>
 
       <!-- 12카드 그리드 -->
@@ -1977,7 +1991,7 @@ function renderBT(bt,cfg){
   el('btcard').classList.add('on');
 }
 
-function calculate(){
+function calculate(isLive){
   var high=parseFloat(el('ih').value),low=parseFloat(el('il').value),close=parseFloat(el('ic').value);
   if(isNaN(high)||isNaN(low)||high<=low){toast('최고가 > 최저가 이어야 합니다',true);return;}
   if(isNaN(close)||close<=0)close=(high+low)/2;
@@ -2005,7 +2019,7 @@ function calculate(){
   checkAbandon(close,low,high,b1,b2,b3);
   G.res={coin:G.coin,tf:G.tf,high,low,close,buy1:b1,buy2:b2,buy3:b3,tp,stop1:s1,buf,atr,ts:Date.now(),b1WR:hb?d.b1WR:null,b1EV:hb?d.b1EV:null,af:hb?G.bt.af:null};
   el('results').classList.add('on');
-  setTimeout(function(){el('results').scrollIntoView({behavior:'smooth',block:'start'});},80);
+  if(!isLive) setTimeout(function(){el('results').scrollIntoView({behavior:'smooth',block:'start'});},80);
   renderDirection(close, G.bt?(G.bt.la/low*Math.sqrt(24)):0.039);
   // 현재가 (lp)
   var lp=G.livePrice||close;
@@ -3550,46 +3564,61 @@ function showCardDetail(n){
 //  롱/숏 비율 (Binance Futures)
 // ════════════════════════════════════════════════
 function fetchLongShort(sym){
-  var bar=el('ls-bar'),sig=el('ls-signal'),ts=el('ls-ts');
-  var lf=el('ls-long-fill'),sf=el('ls-short-fill');
+  var bar=el('ls-bar');if(!bar)return;
+  var sig=el('ls-signal'),ts=el('ls-ts');
   var lt=el('ls-long-txt'),st2=el('ls-short-txt');
-  if(!bar)return;
-  // Binance 선물 글로벌 롱숏 비율 API
-  var url='https://fapi.binance.com/futures/data/globalLongShortAccountRatio?symbol='+sym+'USDT&period=5m&limit=3';
-  fetch(url).then(function(r){return r.json();}).then(function(data){
-    if(!Array.isArray(data)||!data.length)throw new Error('no data');
-    var latest=data[data.length-1];
-    var longPct=parseFloat(latest.longAccount)*100;
-    var shortPct=parseFloat(latest.shortAccount)*100;
-    if(isNaN(longPct))throw new Error('parse fail');
-    // 비율 바 업데이트
-    lf.style.width=longPct.toFixed(1)+'%';
-    sf.style.width=shortPct.toFixed(1)+'%';
-    lt.textContent='롱 '+longPct.toFixed(1)+'%';
-    st2.textContent='숏 '+shortPct.toFixed(1)+'%';
+
+  function applyLS(longPct,shortPct,isBtcFallback){
+    if(isNaN(longPct)||longPct<=0)return;
+    // 7단계 판정
+    // 1:풀롱(롱≥68%) 2:롱(63~68%) 3:롱중립(55~63%)
+    // 4:횡보(45~55%) 5:숏중립(37~45%) 6:숏(32~37%) 7:풀숏(숏≥68%)
+    var stage,stageTxt,stageCol;
+    if(longPct>=68){stage=1;stageTxt='풀롱';stageCol='var(--R)';} // 과매수 → 위험
+    else if(longPct>=63){stage=2;stageTxt='롱';stageCol='var(--A)';}
+    else if(longPct>=55){stage=3;stageTxt='롱 (중립)';stageCol='var(--A)';}
+    else if(longPct>=45){stage=4;stageTxt='횡보';stageCol='var(--t2)';}
+    else if(longPct>=37){stage=5;stageTxt='숏 (중립)';stageCol='var(--G)';}
+    else if(longPct>=32){stage=6;stageTxt='숏';stageCol='var(--G)';}
+    else{stage=7;stageTxt='풀숏';stageCol='var(--G)';} // 과매도 → 기회
+
     // 신호 해석
-    var diff=longPct-shortPct;
-    var sigTxt,sigCol;
-    if(longPct>=65){sigTxt='⚠ 과도한 롱 포지션 — 롱 청산 주의';sigCol='var(--R)';}
-    else if(shortPct>=60){sigTxt='✅ 숏 과다 — 숏 스퀴즈 가능성 (매수 유리)';sigCol='var(--G)';}
-    else if(diff>=10){sigTxt='롱 우세 — 중립 접근';sigCol='var(--A)';}
-    else if(diff<=-10){sigTxt='숏 우세 — 반등 가능성 주목';sigCol='var(--G)';}
-    else{sigTxt='롱/숏 균형 — 방향성 불분명';sigCol='var(--t2)';}
-    if(sig){sig.textContent=sigTxt;sig.style.color=sigCol;}
-    if(ts)ts.textContent='5m 기준';
-    bar.style.display='flex';
+    var sigMsgs=[
+      '',
+      '⚠ 풀롱 — 청산 폭탄 주의. 진입 자제.',
+      '롱 우세 — 과열 접근. 비중 줄이기.',
+      '롱 (중립) — 조심스럽게 접근.',
+      '횡보 — 방향 불분명. 황금각 신호 기다림.',
+      '숏 (중립) — 반등 가능성 감지.',
+      '숏 우세 — 숏 스퀴즈 가능. 매수 유리.',
+      '✅ 풀숏 — 최고 반등 환경. 강한 매수 신호.'
+    ];
+
+    // 게이지 활성화
+    for(var i=1;i<=7;i++){
+      var cell=el('ls-st'+i);
+      if(!cell)continue;
+      cell.classList.toggle('active',i===stage);
+    }
+
+    if(lt)lt.textContent='롱 '+longPct.toFixed(1)+'%';
+    if(st2)st2.textContent='숏 '+shortPct.toFixed(1)+'%';
+    if(sig){sig.textContent=(isBtcFallback?'[BTC] ':'')+sigMsgs[stage];sig.style.color=stageCol;}
+    if(ts)ts.textContent='5m';
+    bar.style.display='';
+  }
+
+  var url='https://fapi.binance.com/futures/data/globalLongShortAccountRatio?symbol='+sym+'USDT&period=5m&limit=1';
+  fetch(url).then(function(r){return r.json();}).then(function(data){
+    if(!Array.isArray(data)||!data.length)throw new Error();
+    var d=data[0];
+    applyLS(parseFloat(d.longAccount)*100, parseFloat(d.shortAccount)*100, false);
   }).catch(function(){
-    // 선물 없는 코인이면 BTC 기준으로 대체
     fetch('https://fapi.binance.com/futures/data/globalLongShortAccountRatio?symbol=BTCUSDT&period=5m&limit=1')
       .then(function(r){return r.json();}).then(function(data){
         if(!Array.isArray(data)||!data.length)return;
         var d=data[0];
-        var lp=parseFloat(d.longAccount)*100,sp=parseFloat(d.shortAccount)*100;
-        lf.style.width=lp.toFixed(1)+'%';sf.style.width=sp.toFixed(1)+'%';
-        lt.textContent='롱 '+lp.toFixed(1)+'%';st2.textContent='숏 '+sp.toFixed(1)+'%';
-        if(sig){sig.textContent='BTC 기준 ('+sym+' 선물 미지원)';sig.style.color='var(--t3)';}
-        if(ts)ts.textContent='5m';
-        bar.style.display='flex';
+        applyLS(parseFloat(d.longAccount)*100, parseFloat(d.shortAccount)*100, true);
       }).catch(function(){if(bar)bar.style.display='none';});
   });
 }
