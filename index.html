@@ -676,6 +676,56 @@ html,body{background:var(--bg0);color:var(--t1);font-family:var(--ui);font-size:
 .sc-mx-score-fill{height:100%;border-radius:2px;transition:width .5s}
 .sc-mx-score-val{font-family:var(--num);font-size:11px;font-weight:700}
 .sc-mx-vs{font-size:10px;color:var(--t3)}
+/* ════ 코인 스캐너 ════ */
+.scan-header{padding:10px 16px;background:var(--bg1);border-bottom:1px solid var(--bd);display:flex;align-items:center;justify-content:space-between;gap:8px}
+.scan-title{font-size:12px;font-weight:700;color:var(--t1)}
+.scan-sub{font-size:9px;color:var(--t3);margin-top:1px}
+.scan-run-btn{background:var(--G);border:none;color:#fff;font-family:var(--ui);font-size:11px;font-weight:700;padding:7px 14px;border-radius:4px;cursor:pointer;white-space:nowrap;flex-shrink:0}
+.scan-run-btn:active{background:var(--Gdk)}
+.scan-run-btn.loading{background:var(--bg3);color:var(--t3);pointer-events:none}
+.scan-filters{display:flex;gap:1px;background:var(--bd);border-bottom:1px solid var(--bd)}
+.scan-filter{flex:1;background:var(--bg2);border:none;font-family:var(--ui);font-size:11px;font-weight:500;color:var(--t3);padding:8px 0;cursor:pointer;text-align:center}
+.scan-filter.active{background:var(--bg1);color:var(--t1);font-weight:700}
+.scan-progress{padding:10px 16px;background:var(--bg2);border-bottom:1px solid var(--bd);display:none}
+.scan-progress.on{display:block}
+.scan-prog-bar-wrap{height:3px;background:var(--bg3);border-radius:2px;margin-bottom:6px;overflow:hidden}
+.scan-prog-bar{height:100%;background:var(--G);border-radius:2px;transition:width .3s}
+.scan-prog-txt{font-size:10px;color:var(--t2);font-family:var(--num)}
+.scan-sort-bar{display:flex;align-items:center;justify-content:space-between;padding:6px 16px;background:var(--bg1);border-bottom:1px solid var(--bd)}
+.scan-sort-lbl{font-size:9px;color:var(--t3)}
+.scan-sort-btns{display:flex;gap:4px}
+.scan-sort-btn{background:var(--bg3);border:1px solid var(--bd);color:var(--t3);font-size:9px;padding:3px 8px;border-radius:3px;cursor:pointer;font-family:var(--ui)}
+.scan-sort-btn.active{background:var(--Bd);border-color:var(--B);color:var(--B)}
+.scan-list{background:var(--bg0)}
+.scan-empty{padding:40px 16px;text-align:center;color:var(--t3);font-size:12px}
+.scan-row{display:flex;align-items:center;padding:10px 16px;background:var(--bg1);border-bottom:1px solid var(--bd);gap:10px;cursor:pointer;transition:background .12s}
+.scan-row:active{background:var(--bg2)}
+.scan-rank{font-family:var(--num);font-size:11px;color:var(--t3);width:18px;flex-shrink:0;text-align:center}
+.scan-grade{width:32px;height:32px;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:800;flex-shrink:0;font-family:var(--num)}
+.scan-grade.A{background:rgba(0,177,64,.15);color:var(--G);border:1px solid rgba(0,177,64,.3)}
+.scan-grade.B{background:rgba(240,176,64,.12);color:var(--A);border:1px solid rgba(240,176,64,.25)}
+.scan-grade.C{background:rgba(51,112,255,.10);color:var(--B);border:1px solid rgba(51,112,255,.2)}
+.scan-grade.D{background:var(--bg3);color:var(--t3);border:1px solid var(--bd)}
+.scan-info{flex:1;min-width:0}
+.scan-sym{font-size:13px;font-weight:700;color:var(--t1)}
+.scan-meta{font-size:9px;color:var(--t3);margin-top:2px;font-family:var(--num)}
+.scan-nums{display:flex;flex-direction:column;align-items:flex-end;gap:3px;flex-shrink:0}
+.scan-price{font-family:var(--num);font-size:12px;font-weight:600;color:var(--t1)}
+.scan-chg{font-family:var(--num);font-size:10px;font-weight:600}
+.scan-chg.up{color:var(--G)}.scan-chg.dn{color:var(--R)}
+.scan-badges{display:flex;gap:3px;margin-top:2px;flex-wrap:wrap;justify-content:flex-end}
+.scan-badge{font-size:8px;padding:1px 5px;border-radius:2px;font-family:var(--num);font-weight:600}
+.scan-badge.rsi-low{background:var(--Gd);color:var(--G)}
+.scan-badge.rsi-mid{background:var(--Ad);color:var(--A)}
+.scan-badge.rsi-high{background:var(--Rd);color:var(--R)}
+.scan-badge.vol-hi{background:var(--Gd);color:var(--G)}
+.scan-badge.vol-lo{background:var(--bg3);color:var(--t3)}
+.scan-badge.beat{background:var(--Pd);color:var(--P)}
+.scan-score-wrap{display:flex;flex-direction:column;align-items:center;gap:2px;flex-shrink:0;width:36px}
+.scan-score{font-family:var(--num);font-size:15px;font-weight:800}
+.scan-score.A{color:var(--G)}.scan-score.B{color:var(--A)}.scan-score.C{color:var(--B)}.scan-score.D{color:var(--t3)}
+.scan-score-lbl{font-size:8px;color:var(--t3)}
+.scan-timestamp{padding:8px 16px;font-size:10px;color:var(--t3);text-align:center;background:var(--bg1);border-top:1px solid var(--bd)}
 
 </style>
 </head>
@@ -691,6 +741,7 @@ html,body{background:var(--bg0);color:var(--t1);font-family:var(--ui);font-size:
 </div>
 <div class="tabs">
   <button class="tab active" onclick="switchTab('calc')">계산기</button>
+  <button class="tab" onclick="switchTab('scanner')">🔍 스캐너</button>
   <button class="tab" onclick="switchTab('multi')">통합분석</button>
   <button class="tab" onclick="switchTab('guide')">설명서</button>
 </div>
@@ -1466,6 +1517,44 @@ html,body{background:var(--bg0);color:var(--t1);font-family:var(--ui);font-size:
   <div id="mtf-cards"></div>
 </div>
 
+<div class="page" id="page-scanner">
+  <!-- 헤더 -->
+  <div class="scan-header">
+    <div>
+      <div class="scan-title">🔍 매수 기회 스캐너</div>
+      <div class="scan-sub" id="scan-sub-txt">상위 35개 코인 RSI·거래량·변동성 동시 분석</div>
+    </div>
+    <button class="scan-run-btn" id="scan-run-btn" onclick="runScanner()">▶ 스캔 시작</button>
+  </div>
+  <!-- 필터 -->
+  <div class="scan-filters">
+    <button class="scan-filter active" id="sf-all" onclick="setScanFilter('all')">전체</button>
+    <button class="scan-filter" id="sf-good" onclick="setScanFilter('good')">✅ 매수 적합</button>
+    <button class="scan-filter" id="sf-wait" onclick="setScanFilter('wait')">⏳ 대기</button>
+    <button class="scan-filter" id="sf-pass" onclick="setScanFilter('pass')">❌ 패스</button>
+  </div>
+  <!-- 진행 바 -->
+  <div class="scan-progress" id="scan-progress">
+    <div class="scan-prog-bar-wrap"><div class="scan-prog-bar" id="scan-prog-bar" style="width:0%"></div></div>
+    <div class="scan-prog-txt" id="scan-prog-txt">분석 준비 중...</div>
+  </div>
+  <!-- 정렬 바 -->
+  <div class="scan-sort-bar" id="scan-sort-bar" style="display:none">
+    <span class="scan-sort-lbl">정렬</span>
+    <div class="scan-sort-btns">
+      <button class="scan-sort-btn active" id="ss-score" onclick="setScanSort('score')">점수↓</button>
+      <button class="scan-sort-btn" id="ss-rsi" onclick="setScanSort('rsi')">RSI↑</button>
+      <button class="scan-sort-btn" id="ss-chg" onclick="setScanSort('chg')">낙폭↓</button>
+      <button class="scan-sort-btn" id="ss-vol" onclick="setScanSort('vol')">거래량↓</button>
+    </div>
+  </div>
+  <!-- 결과 리스트 -->
+  <div class="scan-list" id="scan-list">
+    <div class="scan-empty">▶ 스캔 시작을 눌러 분석하세요<br><span style="font-size:10px;margin-top:4px;display:block">약 20~30초 소요 · Binance API 기반</span></div>
+  </div>
+  <div class="scan-timestamp" id="scan-timestamp" style="display:none"></div>
+</div>
+
 <div class="page" id="page-guide">
 
   <!-- HERO -->
@@ -1599,19 +1688,18 @@ function toast(msg,err){var t=el('toast');t.textContent=msg;t.className='toast'+
 function setLoad(on,msg){el('lov').classList.toggle('on',on);if(msg)el('ltxt').textContent=msg;el('sgo').style.opacity=on?'0.4':'';el('sgo').style.pointerEvents=on?'none':'';}
 
 function switchTab(n){
-  // 탭 버튼 active
-  var tabNames=['calc','multi','guide'];
+  var tabNames=['calc','scanner','multi','guide'];
   document.querySelectorAll('.tab').forEach(function(btn,i){
     if(tabNames[i]) btn.classList.toggle('active', tabNames[i]===n);
   });
-  // 페이지 active (모두 숨기고 해당만 표시)
-  ['page-calc','page-multi','page-guide','page-info'].forEach(function(pid){
+  ['page-calc','page-scanner','page-multi','page-guide','page-info'].forEach(function(pid){
     var p=document.getElementById(pid);
     if(p) p.classList.remove('active');
   });
   var target=document.getElementById('page-'+n);
   if(target) target.classList.add('active');
   if(n==='history')renderH();
+  if(n==='scanner'&&!SCAN.ran)runScanner();
 }
 
 function setTF(tf){
@@ -3422,6 +3510,214 @@ function showCardDetail(n){
   el('cd-body').innerHTML=body;
   el('cd-overlay').classList.add('on');
   el('cd-sheet').classList.add('on');
+}
+
+
+// ═══════════════════════════════════════════════════════
+//  코인 스캐너
+// ═══════════════════════════════════════════════════════
+var SCAN={ran:false,results:[],filter:'all',sort:'score'};
+var SCAN_COINS=[
+  'BTC','ETH','BNB','SOL','XRP','DOGE','ADA','AVAX','LINK','DOT',
+  'UNI','AAVE','ATOM','INJ','ARB','OP','APT','SUI','NEAR','WLD',
+  'STX','IMX','JTO','PENDLE','BLUR','TIA','PYTH','W','STRK','ONDO',
+  'LTC','BCH','FIL','SAND','MANA'
+];
+
+function setScanFilter(f){
+  SCAN.filter=f;
+  ['all','good','wait','pass'].forEach(function(k){
+    var b=document.getElementById('sf-'+k);
+    if(b) b.classList.toggle('active',k===f);
+  });
+  renderScanList();
+}
+function setScanSort(s){
+  SCAN.sort=s;
+  ['score','rsi','chg','vol'].forEach(function(k){
+    var b=document.getElementById('ss-'+k);
+    if(b) b.classList.toggle('active',k===s);
+  });
+  renderScanList();
+}
+
+function runScanner(){
+  var btn=document.getElementById('scan-run-btn');
+  var prog=document.getElementById('scan-progress');
+  var progBar=document.getElementById('scan-prog-bar');
+  var progTxt=document.getElementById('scan-prog-txt');
+  btn.textContent='⏳ 스캔 중...'; btn.classList.add('loading');
+  prog.classList.add('on');
+  document.getElementById('scan-sort-bar').style.display='none';
+  document.getElementById('scan-timestamp').style.display='none';
+  SCAN.results=[];
+  var done=0, total=SCAN_COINS.length;
+  var B='https://api.binance.com/api/v3/klines';
+  var T='https://api.binance.com/api/v3/ticker/24hr';
+
+  function fetchOne(sym){
+    var pair=sym+'USDT';
+    var kUrl=B+'?symbol='+pair+'&interval=4h&limit=120';
+    var tUrl=T+'?symbol='+pair;
+    return Promise.all([
+      fetch(kUrl).then(function(r){return r.json();}).catch(function(){return null;}),
+      fetch(tUrl).then(function(r){return r.json();}).catch(function(){return null;})
+    ]).then(function(res){
+      done++;
+      var pct=Math.round(done/total*100);
+      progBar.style.width=pct+'%';
+      progTxt.textContent='분석 중 '+done+'/'+total+' · '+sym;
+      var candles=res[0], ticker=res[1];
+      if(!candles||!Array.isArray(candles)||candles.length<20)return null;
+      if(!ticker||ticker.code)return null;
+      // 기본 데이터
+      var cl=parseFloat(ticker.lastPrice)||parseFloat(candles[candles.length-1][4]);
+      var chg24=parseFloat(ticker.priceChangePercent)||0;
+      var vol24=parseFloat(ticker.quoteVolume)||0;
+      // RSI 계산 (4H 14봉)
+      var rsi=scanCalcRSI(candles,candles.length-1,14);
+      // 거래량 비율 (현재 vs 20봉 평균)
+      var curVol=parseFloat(candles[candles.length-1][5])*cl;
+      var avgVol=0; for(var i=candles.length-21;i<candles.length-1;i++) avgVol+=parseFloat(candles[i][5])*parseFloat(candles[i][4]);
+      avgVol/=20; var volRatio=avgVol>0?curVol/avgVol:0;
+      // ATR 14
+      var atr=scanCalcATR(candles,candles.length-1,14);
+      // 레인지 (최근 1D 고저)
+      var h=parseFloat(candles[candles.length-1][2]),l=parseFloat(candles[candles.length-1][3]);
+      var rng=h-l;
+      // BUY1 추정
+      var buy1=l+rng*0.06;
+      var buy1Pct=(buy1-cl)/cl*100;
+      // 점수 산출
+      var score=0;
+      // RSI
+      if(rsi<25){score+=35;}else if(rsi<35){score+=25;}else if(rsi<45){score+=15;}else if(rsi<55){score+=5;}else if(rsi>70){score-=15;}
+      // 24h 낙폭 (떨어진 코인이 기회)
+      if(chg24<=-10){score+=20;}else if(chg24<=-5){score+=15;}else if(chg24<=-2){score+=8;}else if(chg24>=10){score-=15;}else if(chg24>=5){score-=8;}
+      // 거래량 (많을수록 좋음)
+      if(volRatio>=2){score+=20;}else if(volRatio>=1.5){score+=14;}else if(volRatio>=0.8){score+=6;}else{score-=8;}
+      // ATR 비율 (너무 높으면 위험)
+      var atrPct=atr/cl*100;
+      if(atrPct>=3&&atrPct<=8){score+=8;}else if(atrPct>12){score-=10;}
+      // BUY1이 현재가 근처 (1~4% 아래)
+      if(buy1Pct>=-4&&buy1Pct<=-0.5){score+=12;}
+      score=Math.max(0,Math.min(99,score));
+      var grade=score>=65?'A':score>=45?'B':score>=25?'C':'D';
+      return{sym:sym,cl:cl,chg24:chg24,rsi:rsi,volRatio:volRatio,atr:atr,atrPct:atrPct,buy1:buy1,buy1Pct:buy1Pct,score:score,grade:grade,vol24:vol24};
+    }).catch(function(){done++;return null;});
+  }
+
+  // 병렬 5개씩 처리
+  var idx=0;
+  function nextBatch(){
+    var batch=SCAN_COINS.slice(idx,idx+5).map(fetchOne);
+    idx+=5;
+    Promise.all(batch).then(function(results){
+      results.forEach(function(r){if(r)SCAN.results.push(r);});
+      if(idx<SCAN_COINS.length){setTimeout(nextBatch,200);}
+      else{scanDone();}
+    });
+  }
+  nextBatch();
+
+  function scanDone(){
+    btn.textContent='↺ 재스캔'; btn.classList.remove('loading');
+    prog.classList.remove('on');
+    document.getElementById('scan-sort-bar').style.display='';
+    var ts=document.getElementById('scan-timestamp');
+    ts.style.display='';
+    var now=new Date();
+    ts.textContent='마지막 스캔: '+now.toLocaleTimeString('ko-KR')+' · '+SCAN.results.length+'개 코인 분석 완료';
+    SCAN.ran=true;
+    document.getElementById('scan-sub-txt').textContent=SCAN.results.length+'개 코인 분석 완료 · 4H 기준';
+    renderScanList();
+  }
+}
+
+function scanCalcRSI(candles,idx,period){
+  var start=Math.max(1,idx-period*2);
+  var gains=0,losses=0,cnt=0;
+  for(var i=start+1;i<=Math.min(start+period,idx);i++){
+    var c=parseFloat(candles[i][4]),p=parseFloat(candles[i-1][4]);
+    var d=c-p; if(d>0)gains+=d; else losses-=d; cnt++;
+  }
+  if(cnt===0)return 50;
+  var ag=gains/cnt,al=losses/cnt;
+  for(var j=start+period+1;j<=idx;j++){
+    var cc=parseFloat(candles[j][4]),pp=parseFloat(candles[j-1][4]);
+    var dd=cc-pp;
+    if(dd>0){ag=(ag*(period-1)+dd)/period;al=(al*(period-1))/period;}
+    else{ag=(ag*(period-1))/period;al=(al*(period-1)+(-dd))/period;}
+  }
+  if(al===0)return 100;
+  return 100-100/(1+ag/al);
+}
+function scanCalcATR(candles,idx,period){
+  var sum=0,n=0;
+  for(var i=Math.max(1,idx-period+1);i<=idx;i++){
+    var h=parseFloat(candles[i][2]),l=parseFloat(candles[i][3]),pc=parseFloat(candles[i-1][4]);
+    sum+=Math.max(h-l,Math.abs(h-pc),Math.abs(l-pc)); n++;
+  }
+  return n>0?sum/n:0;
+}
+
+function renderScanList(){
+  var list=document.getElementById('scan-list');
+  if(!SCAN.results.length){list.innerHTML='<div class="scan-empty">결과 없음</div>';return;}
+  // 필터
+  var filtered=SCAN.results.filter(function(r){
+    if(SCAN.filter==='good') return r.grade==='A';
+    if(SCAN.filter==='wait') return r.grade==='B'||r.grade==='C';
+    if(SCAN.filter==='pass') return r.grade==='D';
+    return true;
+  });
+  // 정렬
+  filtered.sort(function(a,b){
+    if(SCAN.sort==='score') return b.score-a.score;
+    if(SCAN.sort==='rsi') return a.rsi-b.rsi;
+    if(SCAN.sort==='chg') return a.chg24-b.chg24;
+    if(SCAN.sort==='vol') return b.volRatio-a.volRatio;
+    return 0;
+  });
+  if(!filtered.length){list.innerHTML='<div class="scan-empty">해당 필터에 결과 없음</div>';return;}
+  var html='';
+  filtered.forEach(function(r,i){
+    var rsiCls=r.rsi<35?'rsi-low':r.rsi<50?'rsi-mid':'rsi-high';
+    var rsiTxt=r.rsi<35?'RSI '+r.rsi.toFixed(0)+' 과매도':r.rsi<50?'RSI '+r.rsi.toFixed(0):r.rsi.toFixed(0);
+    var volTxt=r.volRatio>=1.5?'거래량 '+r.volRatio.toFixed(1)+'x':'';
+    var volCls=r.volRatio>=1.5?'vol-hi':'vol-lo';
+    var chgCls=r.chg24>=0?'up':'dn';
+    var chgTxt=(r.chg24>=0?'+':'')+r.chg24.toFixed(2)+'%';
+    var metaTxt='BUY1 $'+fp(r.buy1)+' ('+r.buy1Pct.toFixed(1)+'%) · ATR '+r.atrPct.toFixed(1)+'%';
+    html+='<div class="scan-row" onclick="loadScanCoin(\''+r.sym+'\')">'
+      +'<span class="scan-rank">'+(i+1)+'</span>'
+      +'<div class="scan-grade '+r.grade+'">'+r.grade+'</div>'
+      +'<div class="scan-info">'
+        +'<div class="scan-sym">'+r.sym+'<span style="font-size:9px;color:var(--t3);font-weight:400;margin-left:4px">USDT</span></div>'
+        +'<div class="scan-meta">'+metaTxt+'</div>'
+        +'<div class="scan-badges">'
+          +'<span class="scan-badge '+rsiCls+'">'+rsiTxt+'</span>'
+          +(volTxt?'<span class="scan-badge '+volCls+'">'+volTxt+'</span>':'')
+          +(r.chg24<=-5?'<span class="scan-badge beat">낙폭'+r.chg24.toFixed(1)+'%</span>':'')
+        +'</div>'
+      +'</div>'
+      +'<div class="scan-nums">'
+        +'<span class="scan-price">$'+fp(r.cl)+'</span>'
+        +'<span class="scan-chg '+chgCls+'">'+chgTxt+'</span>'
+      +'</div>'
+      +'<div class="scan-score-wrap">'
+        +'<span class="scan-score '+r.grade+'">'+r.score+'</span>'
+        +'<span class="scan-score-lbl">점</span>'
+      +'</div>'
+    +'</div>';
+  });
+  list.innerHTML=html;
+}
+
+function loadScanCoin(sym){
+  el('sinput').value=sym;
+  switchTab('calc');
+  setTimeout(doSearch,80);
 }
 
 setTF('4h');
