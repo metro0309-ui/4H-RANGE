@@ -58,7 +58,7 @@ html,body{background:var(--bg0);color:var(--t1);font-family:var(--ui);font-size:
 .wbar{padding:8px 16px;font-size:11px;line-height:1.55;display:none;border-bottom:1px solid}
 .wbar.on{display:block}.wbar.amber{background:rgba(240,176,64,.07);border-color:rgba(240,176,64,.2);color:var(--A)}
 .btcard{background:var(--bg1);border-bottom:1px solid var(--bd);padding:12px 16px;display:none}
-.btcard.on{display:block}
+.btcard.on{display:none}
 .bth{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:10px}
 .bttl{font-size:12px;font-weight:600;color:var(--t1);margin-bottom:3px}
 .btts{font-family:var(--num);font-size:10px;color:var(--t3);line-height:1.6}.btts b{color:var(--t2)}
@@ -285,7 +285,7 @@ html,body{background:var(--bg0);color:var(--t1);font-family:var(--ui);font-size:
 
 /* ── VOLUME PANEL ── */
 .vol-panel{background:var(--bg1);border-bottom:1px solid var(--bd);padding:10px 16px;display:none}
-.vol-panel.on{display:block}
+.vol-panel.on{display:none}
 .vol-rows{display:grid;grid-template-columns:1fr 1fr;gap:6px}
 .vrow{background:var(--bg2);border:1px solid var(--bd);border-radius:4px;padding:8px 10px}
 .vrow-lbl{font-size:9px;color:var(--t3);text-transform:uppercase;letter-spacing:.04em;margin-bottom:4px}
@@ -677,52 +677,16 @@ html,body{background:var(--bg0);color:var(--t1);font-family:var(--ui);font-size:
 .sc-mx-score-val{font-family:var(--num);font-size:11px;font-weight:700}
 .sc-mx-vs{font-size:10px;color:var(--t3)}
 
-/* ════ 새 요약 뷰 ════ */
-/* 판정 히어로 */
-.sv-verdict{display:flex;align-items:center;justify-content:space-between;padding:12px 14px;background:var(--bg2);border-bottom:1px solid var(--bd);gap:10px}
-.sv-v-left{display:flex;align-items:center;gap:10px;flex:1;min-width:0}
-.sv-v-icon{font-size:22px;flex-shrink:0}
-.sv-v-title{font-size:16px;font-weight:800;color:var(--t1);line-height:1}
-.sv-v-sub{font-size:10px;color:var(--t3);margin-top:3px}
-.sv-v-scores{display:flex;flex-direction:column;gap:5px;flex-shrink:0;min-width:110px}
-.sv-score-item{display:flex;flex-direction:column;gap:2px}
-.sv-score-bar-wrap{height:3px;background:var(--bg3);border-radius:2px;overflow:hidden}
-.sv-score-bar{height:100%;border-radius:2px;background:var(--G);transition:width .5s}
-.sv-bar-gold{background:var(--A)}
-.sv-score-row{display:flex;justify-content:space-between;align-items:center}
-.sv-score-lbl{font-size:8px;color:var(--t3)}
-.sv-score-num{font-family:var(--num);font-size:10px;font-weight:700;color:var(--t2)}
-/* 3분할 패널 */
-.sv-trio{display:grid;grid-template-columns:1fr 1fr 1fr;gap:1px;background:var(--bd);border-bottom:1px solid var(--bd)}
-.sv-trio-cell{background:var(--bg1);padding:10px 10px 8px;display:flex;flex-direction:column;gap:2px;cursor:pointer;transition:background .12s}
-.sv-trio-cell:active{background:var(--bg2)}
-.sv-trio-lbl{font-size:9px;color:var(--t3);letter-spacing:.03em}
-.sv-trio-price{font-family:var(--num);font-size:15px;font-weight:800;line-height:1;margin-top:2px}
-.sv-trio-pct{font-family:var(--num);font-size:11px;font-weight:600;margin-top:1px}
-.sv-trio-hint{font-size:8px;color:var(--t3);margin-top:2px}
-.sv-buy .sv-trio-price{color:var(--G)}.sv-buy .sv-trio-pct{color:var(--G)}
-.sv-tp-val{color:var(--A)}.sv-tp-pct{color:var(--G)}
-.sv-stop-val{color:var(--R)}.sv-stop-pct{color:var(--R)}
-/* 가격 사다리 */
-.sv-ladder-wrap{padding:6px 12px 2px;background:var(--bg1);border-bottom:1px solid var(--bd)}
-.sv-ladder-canvas{width:100%;display:block}
-.sv-ladder-labels{display:flex;justify-content:space-between;padding:0 2px 4px;font-size:8px;color:var(--t3);font-family:var(--num)}
-/* 4 퀵스탯 */
-.sv-stats{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--bd);border-bottom:1px solid var(--bd)}
-.sv-stat{background:var(--bg1);padding:8px 6px;text-align:center;cursor:pointer;transition:background .12s}
-.sv-stat:active{background:var(--bg2)}
-.sv-stat-icon{font-size:11px;margin-bottom:3px}
-.sv-stat-val{font-family:var(--num);font-size:12px;font-weight:800;color:var(--t2);line-height:1}
-.sv-win{color:var(--G)}.sv-lose{color:var(--R)}
-.sv-stat-sub{font-size:8px;color:var(--t3);margin-top:2px;font-family:var(--num)}
-/* 태그 행 */
-.sv-tags{display:flex;align-items:center;flex-wrap:wrap;gap:5px;padding:7px 12px;background:var(--bg2);border-bottom:1px solid var(--bd)}
-.sv-tag{font-size:10px;font-weight:600;padding:2px 7px;border-radius:3px;font-family:var(--num);white-space:nowrap}
-.sv-tag-vol{background:var(--bg3);color:var(--t2)}
-.sv-tag-bt{background:var(--bg3);color:var(--t2)}
-.sv-tag-ev{background:var(--bg3);color:var(--t2)}
-.sv-tag-kelly{background:var(--bg3);color:var(--t2)}
-.sv-tag-mc{background:var(--bg3);color:var(--t2)}
+/* ── 롱/숏 비율 바 ── */
+.ls-bar{display:flex;height:22px;overflow:hidden}
+.ls-long{background:rgba(0,177,64,.25);display:flex;align-items:center;justify-content:flex-start;padding-left:8px;transition:width .6s;min-width:0}
+.ls-short{background:rgba(240,64,64,.22);display:flex;align-items:center;justify-content:flex-end;padding-right:8px;transition:width .6s;min-width:0}
+.ls-long-txt{font-family:var(--num);font-size:10px;font-weight:700;color:var(--G);white-space:nowrap}
+.ls-short-txt{font-family:var(--num);font-size:10px;font-weight:700;color:var(--R);white-space:nowrap}
+.ls-sub-row{display:flex;align-items:center;gap:6px;padding:4px 12px 5px;background:var(--bg2);border-bottom:1px solid var(--bd)}
+.ls-sub-lbl{font-size:9px;color:var(--t3);flex-shrink:0}
+.ls-sub-val{font-size:10px;font-weight:600;flex:1}
+.ls-sub-ts{font-size:9px;color:var(--t3);font-family:var(--num)}
 
 /* ════ 스캐너 ════ */
 .scan-header{padding:10px 16px;background:var(--bg1);border-bottom:1px solid var(--bd);display:flex;align-items:center;justify-content:space-between;gap:8px}
@@ -755,7 +719,7 @@ html,body{background:var(--bg0);color:var(--t1);font-family:var(--ui);font-size:
 .scan-badge.vol-hi{background:var(--Gd);color:var(--G)}.scan-badge.beat{background:var(--Pd);color:var(--P)}
 .scan-score-wrap{display:flex;flex-direction:column;align-items:center;gap:2px;flex-shrink:0;width:36px}
 .scan-score{font-family:var(--num);font-size:15px;font-weight:800}.scan-score.A{color:var(--G)}.scan-score.B{color:var(--A)}.scan-score.C{color:var(--B)}.scan-score.D{color:var(--t3)}
-.scan-score-lbl{font-size:8px;color:var(--t3)}.scan-timestamp{padding:8px 16px;font-size:10px;color:var(--t3);text-align:center;background:var(--bg1)}
+.scan-score-lbl{font-size:8px;color:var(--t3)}.scan-timestamp{padding:8px 16px;font-size:10px;color:var(--t3);text-align:center;background:var(--bg1);border-top:1px solid var(--bd)}
 /* ════ 시장 온도계 ════ */
 .pulse-header{padding:10px 16px;background:var(--bg1);border-bottom:1px solid var(--bd);display:flex;align-items:center;justify-content:space-between}
 .pulse-title-wrap .pulse-title{font-size:12px;font-weight:700;color:var(--t1)}.pulse-title-wrap .pulse-sub{font-size:9px;color:var(--t3);margin-top:1px}
@@ -804,6 +768,7 @@ html,body{background:var(--bg0);color:var(--t1);font-family:var(--ui);font-size:
   <button class="tab active" onclick="switchTab('calc')">계산기</button>
   <button class="tab" onclick="switchTab('scanner')">🔍 스캐너</button>
   <button class="tab" onclick="switchTab('pulse')">🌡️ 시장</button>
+  <button class="tab" onclick="switchTab('multi')">통합분석</button>
   <button class="tab" onclick="switchTab('guide')">설명서</button>
 </div>
 <div class="page active" id="page-calc">
@@ -925,10 +890,10 @@ html,body{background:var(--bg0);color:var(--t1);font-family:var(--ui);font-size:
   </div>
   <div class="results" id="results">
 
-    <!-- ═══ 새 요약 카드 ═══ -->
+    <!-- ═══ 요약 카드 (12카드) ═══ -->
     <div class="summary-card" id="summary-card" style="display:none">
 
-      <!-- ① 코인 헤더 -->
+      <!-- 코인 헤더 -->
       <div class="sc-header">
         <div>
           <div class="sc-header-coin" id="sc-coin-name">—</div>
@@ -940,128 +905,227 @@ html,body{background:var(--bg0);color:var(--t1);font-family:var(--ui);font-size:
         </div>
       </div>
 
-      <!-- ② 장세 배너 -->
+      <!-- 바이어스 배너 (장세) -->
       <div class="sc-bias-bar neut" id="sc-bias-bar">
         <span class="sc-bias-left neut" id="sc-bias-left">— 분석 중</span>
         <span class="sc-bias-right" id="sc-bias-right">20MA —</span>
       </div>
 
-      <!-- ③ 판정 히어로 (클릭→상세) -->
-      <div class="sv-verdict" id="sv-verdict" onclick="showCardDetail(1)" style="cursor:pointer">
-        <div class="sv-v-left">
-          <div class="sv-v-icon" id="sv-icon">⏳</div>
-          <div>
-            <div class="sv-v-title" id="sv-title">분석 중</div>
-            <div class="sv-v-sub" id="sv-sub">—</div>
+      <!-- 롱/숏 비율 바 -->
+      <div class="ls-bar" id="ls-bar">
+        <div class="ls-long" id="ls-long-fill" style="width:50%">
+          <span class="ls-long-txt" id="ls-long-txt">롱 —%</span>
+        </div>
+        <div class="ls-short" id="ls-short-fill" style="width:50%">
+          <span class="ls-short-txt" id="ls-short-txt">숏 —%</span>
+        </div>
+      </div>
+      <div class="ls-sub-row">
+        <span class="ls-sub-lbl">롱/숏 비율</span>
+        <span class="ls-sub-val" id="ls-signal">로딩 중...</span>
+        <span class="ls-sub-ts" id="ls-ts"></span>
+      </div>
+
+      <!-- 12카드 그리드 -->
+      <div class="sc-grid">
+
+        <!-- 1+2. 2×2 판단 매트릭스 (종합환경 × 황금각타이밍) -->
+        <div class="sc-matrix" onclick="showCardDetail(1)" style="cursor:pointer">
+          <div class="sc-matrix-top">
+            <span class="sc-matrix-lbl">판단 매트릭스</span>
+            <span class="sc-matrix-icon">탭 ›</span>
+          </div>
+          <div class="sc-matrix-grid">
+            <!-- A: 환경↑ + 타이밍↑ -->
+            <div class="sc-mx-cell mx-go" id="mx-go">
+              <span class="sc-mx-label">✅ 진입 최적</span>
+              <span class="sc-mx-desc">환경 유리 + 황금각 확인</span>
+            </div>
+            <!-- B: 환경↑ + 타이밍↓ -->
+            <div class="sc-mx-cell mx-wait-env" id="mx-wait-env">
+              <span class="sc-mx-label">⏳ 타이밍 대기</span>
+              <span class="sc-mx-desc">장세 좋음, RSI/Fib 개선 기다림</span>
+            </div>
+            <!-- C: 환경↓ + 타이밍↑ -->
+            <div class="sc-mx-cell mx-wait-tim" id="mx-wait-tim">
+              <span class="sc-mx-label">⚡ 소량 진입</span>
+              <span class="sc-mx-desc">황금각 나옴, 장세 불리 → 비중 ↓</span>
+            </div>
+            <!-- D: 환경↓ + 타이밍↓ -->
+            <div class="sc-mx-cell mx-stop" id="mx-stop">
+              <span class="sc-mx-label">❌ 패스</span>
+              <span class="sc-mx-desc">환경·타이밍 모두 불리</span>
+            </div>
+          </div>
+          <div class="sc-matrix-scores">
+            <div class="sc-mx-score">
+              <span class="sc-mx-score-lbl">종합 환경</span>
+              <div class="sc-mx-score-bar"><div class="sc-mx-score-fill" id="mx-env-fill" style="width:0%;background:var(--G)"></div></div>
+              <span class="sc-mx-score-val good" id="mx-env-val">—점</span>
+            </div>
+            <span class="sc-mx-vs">×</span>
+            <div class="sc-mx-score">
+              <span class="sc-mx-score-lbl">황금각 타이밍</span>
+              <div class="sc-mx-score-bar"><div class="sc-mx-score-fill" id="mx-gb-fill" style="width:0%;background:var(--A)"></div></div>
+              <span class="sc-mx-score-val warn" id="mx-gb-val">—점</span>
+            </div>
+            <span class="sc-mx-vs">=</span>
+            <div class="sc-mx-score">
+              <span class="sc-mx-score-lbl">판정</span>
+              <span class="sc-mx-score-val" id="mx-verdict" style="color:var(--t2)">—</span>
+            </div>
           </div>
         </div>
-        <div class="sv-v-scores">
-          <div class="sv-score-item">
-            <div class="sv-score-bar-wrap"><div class="sv-score-bar" id="mx-env-fill" style="width:0%"></div></div>
-            <div class="sv-score-row"><span class="sv-score-lbl">환경</span><span class="sv-score-num" id="mx-env-val">—</span></div>
+
+        <!-- 3. 매수가 BUY1 -->
+        <div class="sc-card" onclick="showCardDetail(3)">
+          <div class="sc-card-top">
+            <span class="sc-card-lbl">매수가 BUY1</span>
+            <span class="sc-card-icon">📍</span>
           </div>
-          <div class="sv-score-item">
-            <div class="sv-score-bar-wrap"><div class="sv-score-bar sv-bar-gold" id="mx-gb-fill" style="width:0%"></div></div>
-            <div class="sv-score-row"><span class="sv-score-lbl">황금각</span><span class="sv-score-num" id="mx-gb-val">—</span></div>
+          <div class="sc-card-row">
+            <div class="sc-card-val good" id="sc-buy1">—</div>
+            <div class="sc-card-aux" id="sc-buy1-sub">—</div>
           </div>
+          <div class="sc-card-sub" id="sc-buy1-hint">현재가 대비</div>
+          <span class="sc-card-tap">탭 ›</span>
         </div>
+
+        <!-- 4. 손절가 -->
+        <div class="sc-card" onclick="showCardDetail(4)">
+          <div class="sc-card-top">
+            <span class="sc-card-lbl">손절가 Stop</span>
+            <span class="sc-card-icon">🛑</span>
+          </div>
+          <div class="sc-card-row">
+            <div class="sc-card-val bad" id="sc-stop">—</div>
+            <div class="sc-card-aux bad" id="sc-stop-sub">—</div>
+          </div>
+          <div class="sc-card-sub">진입 대비</div>
+          <span class="sc-card-tap">탭 ›</span>
+        </div>
+
+        <!-- 5. 목표가 TP -->
+        <div class="sc-card" onclick="showCardDetail(5)">
+          <div class="sc-card-top">
+            <span class="sc-card-lbl">목표가 TP</span>
+            <span class="sc-card-icon">🎯</span>
+          </div>
+          <div class="sc-card-row">
+            <div class="sc-card-val warn" id="sc-tp">—</div>
+            <div class="sc-card-aux good" id="sc-tp-sub">—</div>
+          </div>
+          <div class="sc-card-sub">진입 대비</div>
+          <span class="sc-card-tap">탭 ›</span>
+        </div>
+
+        <!-- 6. 청산가 -->
+        <div class="sc-card" onclick="showCardDetail(6)">
+          <div class="sc-card-top">
+            <span class="sc-card-lbl">청산가 (강제청산)</span>
+            <span class="sc-card-icon">💀</span>
+          </div>
+          <div class="sc-card-row">
+            <div class="sc-card-val bad" id="sc-liq">—</div>
+            <div class="sc-card-aux good" id="sc-liq-sub">—</div>
+          </div>
+          <div class="sc-card-sub">여유 거리</div>
+          <span class="sc-card-tap">탭 ›</span>
+        </div>
+
+        <!-- 7. 투자 권장 금액 -->
+        <div class="sc-card" onclick="showCardDetail(7)">
+          <div class="sc-card-top">
+            <span class="sc-card-lbl">투자 권장 (보정 후)</span>
+            <span class="sc-card-icon">💰</span>
+          </div>
+          <div class="sc-card-row">
+            <div class="sc-card-val warn" id="sc-invest-val">—</div>
+            <div class="sc-card-aux neut" id="sc-invest-sub">100만원</div>
+          </div>
+          <div class="sc-card-sub">위험도 보정 적용</div>
+          <span class="sc-card-tap">탭 ›</span>
+        </div>
+
+        <!-- 8. 레버리지 손익 -->
+        <div class="sc-card" onclick="showCardDetail(8)">
+          <div class="sc-card-top">
+            <span class="sc-card-lbl">레버리지 손익 5배</span>
+            <span class="sc-card-icon">⚡</span>
+          </div>
+          <div class="sc-card-row">
+            <div class="sc-card-val good" id="sc-lev-win">—</div>
+            <div class="sc-card-aux bad" id="sc-lev-lose">—</div>
+          </div>
+          <div class="sc-card-sub">익절 / 손절</div>
+          <span class="sc-card-tap">탭 ›</span>
+        </div>
+
+        <!-- 9. 7일 방향성 -->
+        <div class="sc-card" onclick="showCardDetail(9)">
+          <div class="sc-card-top">
+            <span class="sc-card-lbl">7일 방향성 Monte Carlo</span>
+            <span class="sc-card-icon">📊</span>
+          </div>
+          <div class="sc-card-row">
+            <div class="sc-card-val neut" id="sc-dir">계산 중</div>
+            <div class="sc-card-aux neut" id="sc-dir-pct">—%</div>
+          </div>
+          <div class="sc-card-sub" id="sc-dir-sub">3000회 시뮬</div>
+          <span class="sc-card-tap">탭 ›</span>
+        </div>
+
+        <!-- 10. 전체 방향 일치 -->
+        <div class="sc-card" onclick="showCardDetail(10)">
+          <div class="sc-card-top">
+            <span class="sc-card-lbl">전체 방향 일치</span>
+            <span class="sc-card-icon">🔄</span>
+          </div>
+          <div class="sc-card-row">
+            <div class="sc-card-val neut" id="sc-bias">—</div>
+            <div class="sc-card-aux neut" id="sc-bias-aux">—</div>
+          </div>
+          <div class="sc-card-sub" id="sc-bias-sub">—</div>
+          <span class="sc-card-tap">탭 ›</span>
+        </div>
+
+        <!-- 11. 거래량 / 반등 적합도 -->
+        <div class="sc-card" onclick="showCardDetail(11)">
+          <div class="sc-card-top">
+            <span class="sc-card-lbl">거래량 / 반등 적합도</span>
+            <span class="sc-card-icon">🔥</span>
+          </div>
+          <div class="sc-card-row">
+            <div class="sc-card-val neut" id="sc-vol">—</div>
+            <div class="sc-card-aux neut" id="sc-bt">—</div>
+          </div>
+          <div class="sc-card-sub" id="sc-vol-ratio">—</div>
+          <span class="sc-card-tap">탭 ›</span>
+        </div>
+
+        <!-- 12. 퀀트 EV / Kelly -->
+        <div class="sc-card" onclick="showCardDetail(12)">
+          <div class="sc-card-top">
+            <span class="sc-card-lbl">퀀트 EV / Kelly</span>
+            <span class="sc-card-icon">📈</span>
+          </div>
+          <div class="sc-card-row">
+            <div class="sc-card-val neut" id="sc-ev">—</div>
+            <div class="sc-card-aux neut" id="sc-kelly">—</div>
+          </div>
+          <div class="sc-card-sub" id="sc-ev-sub">MC × 반등적합도</div>
+          <span class="sc-card-tap">탭 ›</span>
+        </div>
+
       </div>
 
-      <!-- ④ 핵심 3가지: BUY1 / TP / STOP -->
-      <div class="sv-trio">
-        <div class="sv-trio-cell sv-buy" onclick="showCardDetail(3)">
-          <div class="sv-trio-lbl">📍 BUY 1</div>
-          <div class="sv-trio-price" id="sc-buy1">—</div>
-          <div class="sv-trio-pct" id="sc-buy1-sub">—</div>
-          <div class="sv-trio-hint" id="sc-buy1-hint">현재가 대비</div>
-        </div>
-        <div class="sv-trio-cell sv-tp" onclick="showCardDetail(5)">
-          <div class="sv-trio-lbl">🎯 TP</div>
-          <div class="sv-trio-price sv-tp-val" id="sc-tp">—</div>
-          <div class="sv-trio-pct sv-tp-pct" id="sc-tp-sub">—</div>
-          <div class="sv-trio-hint">진입 대비</div>
-        </div>
-        <div class="sv-trio-cell sv-stop" onclick="showCardDetail(4)">
-          <div class="sv-trio-lbl">🛑 STOP</div>
-          <div class="sv-trio-price sv-stop-val" id="sc-stop">—</div>
-          <div class="sv-trio-pct sv-stop-pct" id="sc-stop-sub">—</div>
-          <div class="sv-trio-hint">진입 대비</div>
-        </div>
-      </div>
-
-      <!-- ⑤ 가격 사다리 바 -->
-      <div class="sv-ladder-wrap">
-        <canvas class="sv-ladder-canvas" id="sv-ladder" height="44"></canvas>
-        <div class="sv-ladder-labels" id="sv-ladder-labels"></div>
-      </div>
-
-      <!-- ⑥ 4개 퀵 스탯 -->
-      <div class="sv-stats">
-        <div class="sv-stat" onclick="showCardDetail(9)">
-          <div class="sv-stat-icon">📊</div>
-          <div class="sv-stat-val" id="sc-dir">—</div>
-          <div class="sv-stat-sub" id="sc-dir-pct">7일MC</div>
-        </div>
-        <div class="sv-stat" onclick="showCardDetail(8)">
-          <div class="sv-stat-icon">⚡</div>
-          <div class="sv-stat-val sv-win" id="sc-lev-win">—</div>
-          <div class="sv-stat-sub sv-lose" id="sc-lev-lose">레버리지</div>
-        </div>
-        <div class="sv-stat" onclick="showCardDetail(7)">
-          <div class="sv-stat-icon">💰</div>
-          <div class="sv-stat-val" id="sc-invest-val">—</div>
-          <div class="sv-stat-sub" id="sc-invest-sub">투자권장</div>
-        </div>
-        <div class="sv-stat" onclick="showCardDetail(6)">
-          <div class="sv-stat-icon">💀</div>
-          <div class="sv-stat-val" id="sc-liq">—</div>
-          <div class="sv-stat-sub" id="sc-liq-sub">청산여유</div>
-        </div>
-      </div>
-
-      <!-- ⑦ 태그 행: 거래량·반등·EV·Kelly -->
-      <div class="sv-tags" onclick="showCardDetail(11)" style="cursor:pointer">
-        <span class="sv-tag sv-tag-vol" id="sv-tag-vol">거래량 —</span>
-        <span class="sv-tag sv-tag-bt" id="sv-tag-bt">반등 —</span>
-        <span class="sv-tag sv-tag-ev" id="sv-tag-ev">EV —</span>
-        <span class="sv-tag sv-tag-kelly" id="sv-tag-kelly">Kelly —</span>
-        <span class="sv-tag sv-tag-mc" id="sv-tag-mc">MC14 —</span>
-      </div>
-
-      <!-- ⑧ 행동 지침 -->
+      <!-- 행동 지침 -->
       <div class="sc-action wait" id="sc-action">분석 중...</div>
-
-      <!-- ⑨ 상세보기 -->
+      <!-- 상세보기 버튼 -->
       <button class="sc-toggle" onclick="toggleDetail()">
         <span id="sc-toggle-icon" class="sc-toggle-icon">▼</span>
         <span id="sc-toggle-txt">상세 분석 펼치기</span>
       </button>
-
-      <!-- JS 하위 호환용 hidden IDs -->
-      <span id="sc-icon" style="display:none"></span>
-      <span id="sc-title" style="display:none"></span>
-      <span id="sc-score-sub" style="display:none"></span>
-      <span id="sc-judge-sub" style="display:none"></span>
-      <span id="sc-golden" style="display:none"></span>
-      <span id="sc-golden-aux" style="display:none"></span>
-      <span id="sc-golden-sub" style="display:none"></span>
-      <span id="sc-bias" style="display:none"></span>
-      <span id="sc-bias-aux" style="display:none"></span>
-      <span id="sc-bias-sub" style="display:none"></span>
-      <span id="sc-vol" style="display:none"></span>
-      <span id="sc-bt" style="display:none"></span>
-      <span id="sc-vol-ratio" style="display:none"></span>
-      <span id="sc-ev" style="display:none"></span>
-      <span id="sc-kelly" style="display:none"></span>
-      <span id="sc-ev-sub" style="display:none"></span>
-      <span id="sc-dir-sub" style="display:none"></span>
-      <span id="mx-verdict" style="display:none"></span>
-      <!-- 2×2 matrix cells (JS가 사용) -->
-      <span id="mx-go" style="display:none"></span>
-      <span id="mx-wait-env" style="display:none"></span>
-      <span id="mx-wait-tim" style="display:none"></span>
-      <span id="mx-stop" style="display:none"></span>
-
     </div>
 
     <!-- ═══ 상세 컨텐츠 (접기/펼치기) ═══ -->
@@ -1508,7 +1572,7 @@ html,body{background:var(--bg0);color:var(--t1);font-family:var(--ui);font-size:
 <div class="page" id="page-pulse">
   <div class="pulse-header"><div class="pulse-title-wrap"><div class="pulse-title">🌡️ 시장 온도계</div><div class="pulse-sub">공포탐욕 · BTC · 급등급락</div></div><button class="pulse-refresh-btn" onclick="runPulse()">↺ 새로고침</button></div>
   <div class="fg-card">
-    <div class="fg-top"><div><div class="fg-label">공포탐욕 지수 (Fear &amp; Greed)</div><div style="font-size:9px;color:var(--t3);margin-top:2px" id="fg-updated">—</div></div><div class="fg-val-wrap"><div class="fg-num" id="fg-num">—</div><div class="fg-txt" id="fg-txt" style="color:var(--t2)">—</div></div></div>
+    <div class="fg-top"><div><div class="fg-label">공포탐욕 지수</div><div style="font-size:9px;color:var(--t3);margin-top:2px" id="fg-updated">—</div></div><div class="fg-val-wrap"><div class="fg-num" id="fg-num">—</div><div class="fg-txt" id="fg-txt" style="color:var(--t2)">—</div></div></div>
     <div class="fg-bar-track"><div class="fg-bar-needle" id="fg-needle" style="left:50%"></div></div>
     <div class="fg-bar-labels"><span>0 극공포</span><span>25</span><span>50</span><span>75</span><span>100 탐욕</span></div>
     <div class="fg-history" id="fg-history"></div>
@@ -1657,7 +1721,7 @@ function toast(msg,err){var t=el('toast');t.textContent=msg;t.className='toast'+
 function setLoad(on,msg){el('lov').classList.toggle('on',on);if(msg)el('ltxt').textContent=msg;el('sgo').style.opacity=on?'0.4':'';el('sgo').style.pointerEvents=on?'none':'';}
 
 function switchTab(n){
-  var tabNames=['calc','scanner','pulse','guide'];
+  var tabNames=['calc','scanner','pulse','multi','guide'];
   document.querySelectorAll('.tab').forEach(function(btn,i){
     if(tabNames[i]) btn.classList.toggle('active', tabNames[i]===n);
   });
@@ -1667,7 +1731,7 @@ function switchTab(n){
   var target=document.getElementById('page-'+n);
   if(target) target.classList.add('active');
   if(n==='history') renderH();
-  if(n==='scanner' && !SCAN.ran) runScanner();
+  if(n==='scanner'&&!SCAN.ran) runScanner();
   if(n==='pulse') runPulse();
 }
 
@@ -1782,7 +1846,7 @@ function doSearch(){
         el('refresh-btn').style.display='';
         el('lock-bar').classList.add('on');
         setLoad(false);toast(sym+' 완료 · 실승률 '+bt.b1WR.toFixed(1)+'% · 연'+bt.af.toFixed(0)+'회 · 🔴LIVE');
-        el('sinput').blur();calculate();
+        el('sinput').blur();calculate();fetchLongShort(sym);
       }catch(e2){setLoad(false);toast('처리 오류: '+e2.message,true);console.error(e2);}
     },30);
   })
@@ -2495,28 +2559,6 @@ function renderSummaryCard(){
   }
 
   // ── 행동 지침 ─────────────────────────────────────────────────────
-  // ── 새 판정 히어로 ─────────────────────────────────────────────
-  var verdictMap={'mx-go':['✅','진입 최적','환경 유리 + 황금각 확인','good'],
-    'mx-wait-env':['⏳','타이밍 대기','장세 좋음 — RSI/Fib 개선 기다림','warn'],
-    'mx-wait-tim':['⚡','소량 진입','황금각 나옴, 장세 불리 → 비중 ↓','b'],
-    'mx-stop':['❌','지금은 패스','환경·타이밍 모두 불리','bad']};
-  var vm=verdictMap[activeId]||verdictMap['mx-stop'];
-  var colMap={good:'var(--G)',warn:'var(--A)',b:'var(--B)',bad:'var(--R)'};
-  if(e('sv-icon'))e('sv-icon').textContent=vm[0];
-  if(e('sv-title')){e('sv-title').textContent=vm[1];e('sv-title').style.color=colMap[vm[3]]||'var(--t1)';}
-  if(e('sv-sub'))e('sv-sub').textContent=vm[2];
-  if(e('sv-verdict')){var vb=e('sv-verdict');vb.style.borderLeft='3px solid '+(colMap[vm[3]]||'var(--bd)');}
-  // ── 태그 행 ────────────────────────────────────────────────────
-  function setTag(id,text,cls){var t=e(id);if(!t)return;t.textContent=text;t.className='sv-tag sv-tag-'+id.replace('sv-tag-','')+(cls?' '+cls:'');}
-  var volTagCls=vr>=1.5?'good':vr>=0.8?'mid':'low';
-  var volTagStyle={good:'background:var(--Gd);color:var(--G)',mid:'background:var(--Ad);color:var(--A)',low:'background:var(--bg3);color:var(--t3)'};
-  if(e('sv-tag-vol')){e('sv-tag-vol').textContent='거래량 '+(vr>0?vr.toFixed(1)+'x':'—');e('sv-tag-vol').style.cssText=volTagStyle[volTagCls]||'';}
-  if(e('sv-tag-bt')){var btEl=el('btpill');var btTxt=btEl&&btEl.textContent!=='—'?btEl.textContent:'반등 —';e('sv-tag-bt').textContent=btTxt;var btGood=(btEl&&btEl.classList.contains('good'));e('sv-tag-bt').style.cssText=btGood?'background:var(--Gd);color:var(--G)':'background:var(--bg3);color:var(--t2)';}
-  var evEl2=el('cev1');if(e('sv-tag-ev')&&evEl2&&evEl2.textContent!=='계산중'){var evTxt='EV '+evEl2.textContent;e('sv-tag-ev').textContent=evTxt;e('sv-tag-ev').style.cssText=evEl2.textContent.startsWith('+')&&evEl2.textContent.length>1?'background:var(--Gd);color:var(--G)':'background:var(--Rd);color:var(--R)';}
-  var kEl2=el('kelly-val');if(e('sv-tag-kelly')&&kEl2&&kEl2.textContent!=='—'){e('sv-tag-kelly').textContent='Kelly '+kEl2.textContent;e('sv-tag-kelly').style.cssText='background:var(--bg3);color:var(--t2)';}
-  if(G_MC&&G_MC.ready&&e('sv-tag-mc')){var mc14Pct=(G_MC.r14[0]*100).toFixed(0);e('sv-tag-mc').textContent='MC14 '+mc14Pct+'%';e('sv-tag-mc').style.cssText=parseInt(mc14Pct)>=40?'background:var(--Gd);color:var(--G)':parseInt(mc14Pct)>=20?'background:var(--Ad);color:var(--A)':'background:var(--bg3);color:var(--t3)';}
-  // ── 사다리 캔버스 ───────────────────────────────────────────────
-  setTimeout(function(){renderLadder();},100);
   if(el('sc-action')){el('sc-action').textContent=action;el('sc-action').className='sc-action '+actionCls;}
 }
 
@@ -3505,47 +3547,55 @@ function showCardDetail(n){
 
 
 // ════════════════════════════════════════════════
-//  가격 사다리 캔버스 렌더
+//  롱/숏 비율 (Binance Futures)
 // ════════════════════════════════════════════════
-function renderLadder(){
-  var cvs=el('sv-ladder');if(!cvs||!G.res)return;
-  var res=G.res,lp=G.livePrice||res.close;
-  var stop=res.stop1,b1=res.buy1,tp=res.tp;
-  if(!stop||!b1||!tp)return;
-  var DPR=window.devicePixelRatio||1;
-  var W=cvs.offsetWidth||300,H=44;
-  cvs.width=W*DPR;cvs.height=H*DPR;
-  var ctx=cvs.getContext('2d');ctx.scale(DPR,DPR);
-  var pts=[stop,b1,lp,tp];
-  var mn=Math.min.apply(null,pts)*0.998,mx=Math.max.apply(null,pts)*1.002;
-  var span=mx-mn;
-  function px(v){return((v-mn)/span*(W-20)+10);}
-  // 배경 구간
-  ctx.fillStyle='rgba(240,64,64,.08)';ctx.fillRect(px(mn),8,px(stop)-px(mn),20);
-  ctx.fillStyle='rgba(240,176,64,.06)';ctx.fillRect(px(stop),8,px(b1)-px(stop),20);
-  ctx.fillStyle='rgba(0,177,64,.06)';ctx.fillRect(px(b1),8,px(tp)-px(b1),20);
-  // 선
-  ctx.strokeStyle='rgba(255,255,255,.08)';ctx.lineWidth=1;
-  [stop,b1,tp].forEach(function(v){ctx.beginPath();ctx.moveTo(px(v),4);ctx.lineTo(px(v),36);ctx.stroke();});
-  // 포인트들
-  var points=[
-    {v:stop,c:'#f04040',l:'SL',y:38},
-    {v:b1,c:'#00b140',l:'B1',y:38},
-    {v:tp,c:'#f0b040',l:'TP',y:38}
-  ];
-  points.forEach(function(p){
-    ctx.fillStyle=p.c;ctx.beginPath();ctx.arc(px(p.v),18,4,0,Math.PI*2);ctx.fill();
+function fetchLongShort(sym){
+  var bar=el('ls-bar'),sig=el('ls-signal'),ts=el('ls-ts');
+  var lf=el('ls-long-fill'),sf=el('ls-short-fill');
+  var lt=el('ls-long-txt'),st2=el('ls-short-txt');
+  if(!bar)return;
+  // Binance 선물 글로벌 롱숏 비율 API
+  var url='https://fapi.binance.com/futures/data/globalLongShortAccountRatio?symbol='+sym+'USDT&period=5m&limit=3';
+  fetch(url).then(function(r){return r.json();}).then(function(data){
+    if(!Array.isArray(data)||!data.length)throw new Error('no data');
+    var latest=data[data.length-1];
+    var longPct=parseFloat(latest.longAccount)*100;
+    var shortPct=parseFloat(latest.shortAccount)*100;
+    if(isNaN(longPct))throw new Error('parse fail');
+    // 비율 바 업데이트
+    lf.style.width=longPct.toFixed(1)+'%';
+    sf.style.width=shortPct.toFixed(1)+'%';
+    lt.textContent='롱 '+longPct.toFixed(1)+'%';
+    st2.textContent='숏 '+shortPct.toFixed(1)+'%';
+    // 신호 해석
+    var diff=longPct-shortPct;
+    var sigTxt,sigCol;
+    if(longPct>=65){sigTxt='⚠ 과도한 롱 포지션 — 롱 청산 주의';sigCol='var(--R)';}
+    else if(shortPct>=60){sigTxt='✅ 숏 과다 — 숏 스퀴즈 가능성 (매수 유리)';sigCol='var(--G)';}
+    else if(diff>=10){sigTxt='롱 우세 — 중립 접근';sigCol='var(--A)';}
+    else if(diff<=-10){sigTxt='숏 우세 — 반등 가능성 주목';sigCol='var(--G)';}
+    else{sigTxt='롱/숏 균형 — 방향성 불분명';sigCol='var(--t2)';}
+    if(sig){sig.textContent=sigTxt;sig.style.color=sigCol;}
+    if(ts)ts.textContent='5m 기준';
+    bar.style.display='flex';
+  }).catch(function(){
+    // 선물 없는 코인이면 BTC 기준으로 대체
+    fetch('https://fapi.binance.com/futures/data/globalLongShortAccountRatio?symbol=BTCUSDT&period=5m&limit=1')
+      .then(function(r){return r.json();}).then(function(data){
+        if(!Array.isArray(data)||!data.length)return;
+        var d=data[0];
+        var lp=parseFloat(d.longAccount)*100,sp=parseFloat(d.shortAccount)*100;
+        lf.style.width=lp.toFixed(1)+'%';sf.style.width=sp.toFixed(1)+'%';
+        lt.textContent='롱 '+lp.toFixed(1)+'%';st2.textContent='숏 '+sp.toFixed(1)+'%';
+        if(sig){sig.textContent='BTC 기준 ('+sym+' 선물 미지원)';sig.style.color='var(--t3)';}
+        if(ts)ts.textContent='5m';
+        bar.style.display='flex';
+      }).catch(function(){if(bar)bar.style.display='none';});
   });
-  // 현재가 마커
-  ctx.fillStyle='#fff';ctx.beginPath();ctx.arc(px(lp),18,5,0,Math.PI*2);ctx.fill();
-  ctx.fillStyle='#0b0e11';ctx.beginPath();ctx.arc(px(lp),18,3,0,Math.PI*2);ctx.fill();
-  // 레이블
-  var lbls=el('sv-ladder-labels');
-  if(lbls)lbls.innerHTML='<span>SL $'+fp(stop)+'</span><span style="color:#fff">NOW $'+fp(lp)+'</span><span>TP $'+fp(tp)+'</span>';
 }
 
 // ════════════════════════════════════════════════
-//  필살기 1 — 코인 스캐너
+//  스캐너
 // ════════════════════════════════════════════════
 var SCAN={ran:false,results:[],filter:'all',sort:'score'};
 var SCAN_COINS=['BTC','ETH','BNB','SOL','XRP','DOGE','ADA','AVAX','LINK','DOT','UNI','AAVE','ATOM','INJ','ARB','OP','APT','SUI','NEAR','WLD','STX','IMX','JTO','PENDLE','TIA','PYTH','ONDO','LTC','FIL','SAND','MANA','CRV','LDO','SNX','COMP'];
@@ -3555,23 +3605,22 @@ function runScanner(){
   var btn=el('scan-run-btn'),prog=el('scan-progress'),progBar=el('scan-prog-bar'),progTxt=el('scan-prog-txt');
   if(!btn)return;
   btn.textContent='⏳ 스캔 중...';btn.classList.add('loading');if(prog)prog.classList.add('on');
-  var sb=el('scan-sort-bar');if(sb)sb.style.display='none';var ts=el('scan-timestamp');if(ts)ts.style.display='none';
+  var sb=el('scan-sort-bar');if(sb)sb.style.display='none';
   SCAN.results=[];var done=0,total=SCAN_COINS.length;
-  var B='https://api.binance.com/api/v3/klines',T='https://api.binance.com/api/v3/ticker/24hr';
   function fetchOne(sym){
     return Promise.all([
-      fetch(B+'?symbol='+sym+'USDT&interval=4h&limit=120').then(function(r){return r.json();}).catch(function(){return null;}),
-      fetch(T+'?symbol='+sym+'USDT').then(function(r){return r.json();}).catch(function(){return null;})
+      fetch('https://api.binance.com/api/v3/klines?symbol='+sym+'USDT&interval=4h&limit=120').then(function(r){return r.json();}).catch(function(){return null;}),
+      fetch('https://api.binance.com/api/v3/ticker/24hr?symbol='+sym+'USDT').then(function(r){return r.json();}).catch(function(){return null;})
     ]).then(function(res){
       done++;if(progBar)progBar.style.width=Math.round(done/total*100)+'%';if(progTxt)progTxt.textContent='분석 '+done+'/'+total+' · '+sym;
       var candles=res[0],ticker=res[1];
       if(!candles||!Array.isArray(candles)||candles.length<20||!ticker||ticker.code)return null;
       var cl=parseFloat(ticker.lastPrice)||0,chg24=parseFloat(ticker.priceChangePercent)||0;
-      var rsi=scanRSI(candles,candles.length-1,14);
+      var rsi=sRSI(candles,candles.length-1,14);
       var curVol=parseFloat(candles[candles.length-1][5])*cl,avgVol=0;
       for(var i=candles.length-21;i<candles.length-1;i++)avgVol+=parseFloat(candles[i][5])*parseFloat(candles[i][4]);
       avgVol/=20;var volRatio=avgVol>0?curVol/avgVol:0;
-      var atr=scanATR(candles,candles.length-1,14),atrPct=atr/cl*100;
+      var atr=sATR(candles,candles.length-1,14),atrPct=atr/cl*100;
       var h=parseFloat(candles[candles.length-1][2]),l=parseFloat(candles[candles.length-1][3]);
       var buy1=l+(h-l)*0.06,buy1Pct=(buy1-cl)/cl*100;
       var score=0;
@@ -3590,12 +3639,12 @@ function runScanner(){
   nextBatch();
   function scanDone(){
     btn.textContent='↺ 재스캔';btn.classList.remove('loading');if(prog)prog.classList.remove('on');
-    if(sb)sb.style.display='';if(ts){ts.style.display='';ts.textContent='스캔: '+new Date().toLocaleTimeString('ko-KR')+' · '+SCAN.results.length+'개';}
-    SCAN.ran=true;var st=el('scan-sub-txt');if(st)st.textContent=SCAN.results.length+'개 분석 완료 · 4H';renderScanList();
+    if(sb)sb.style.display='';SCAN.ran=true;renderScanList();
+    var ts=el('scan-timestamp');if(ts){ts.style.display='';ts.textContent='스캔: '+new Date().toLocaleTimeString('ko-KR')+' · '+SCAN.results.length+'개';}
   }
 }
-function scanRSI(c,idx,p){var ag=0,al=0,n=0;for(var i=Math.max(1,idx-p*2+1);i<=idx;i++){var d=parseFloat(c[i][4])-parseFloat(c[i-1][4]);if(d>0)ag+=d;else al-=d;n++;}if(!n)return 50;ag/=n;al/=n;return al===0?100:100-100/(1+ag/al);}
-function scanATR(c,idx,p){var s=0,n=0;for(var i=Math.max(1,idx-p+1);i<=idx;i++){var h=parseFloat(c[i][2]),l=parseFloat(c[i][3]),pc=parseFloat(c[i-1][4]);s+=Math.max(h-l,Math.abs(h-pc),Math.abs(l-pc));n++;}return n?s/n:0;}
+function sRSI(c,idx,p){var ag=0,al=0,n=0;for(var i=Math.max(1,idx-p*2+1);i<=idx;i++){var d=parseFloat(c[i][4])-parseFloat(c[i-1][4]);if(d>0)ag+=d;else al-=d;n++;}if(!n)return 50;ag/=n;al/=n;return al===0?100:100-100/(1+ag/al);}
+function sATR(c,idx,p){var s=0,n=0;for(var i=Math.max(1,idx-p+1);i<=idx;i++){var h=parseFloat(c[i][2]),l=parseFloat(c[i][3]),pc=parseFloat(c[i-1][4]);s+=Math.max(h-l,Math.abs(h-pc),Math.abs(l-pc));n++;}return n?s/n:0;}
 function renderScanList(){
   var list=el('scan-list');if(!list)return;
   if(!SCAN.results.length){list.innerHTML='<div class="scan-empty">결과 없음</div>';return;}
@@ -3605,8 +3654,7 @@ function renderScanList(){
   list.innerHTML=filtered.map(function(r,i){
     var rc=r.rsi<35?'rsi-low':r.rsi<50?'rsi-mid':'rsi-high';
     return '<div class="scan-row" onclick="loadScanCoin(\''+r.sym+'\')">'
-      +'<span class="scan-rank">'+(i+1)+'</span>'
-      +'<div class="scan-grade '+r.grade+'">'+r.grade+'</div>'
+      +'<span class="scan-rank">'+(i+1)+'</span><div class="scan-grade '+r.grade+'">'+r.grade+'</div>'
       +'<div class="scan-info"><div class="scan-sym">'+r.sym+'<span style="font-size:9px;color:var(--t3);font-weight:400;margin-left:4px">USDT</span></div>'
       +'<div class="scan-meta">BUY1 $'+fp(r.buy1)+' ('+r.buy1Pct.toFixed(1)+'%) · ATR '+r.atrPct.toFixed(1)+'%</div>'
       +'<div class="scan-badges"><span class="scan-badge '+rc+'">RSI '+r.rsi.toFixed(0)+'</span>'
@@ -3619,7 +3667,7 @@ function renderScanList(){
 function loadScanCoin(sym){el('sinput').value=sym;switchTab('calc');setTimeout(doSearch,80);}
 
 // ════════════════════════════════════════════════
-//  필살기 2 — 시장 온도계
+//  시장 온도계
 // ════════════════════════════════════════════════
 function runPulse(){
   var ts=el('pulse-ts');if(ts)ts.textContent='로딩 중...';
@@ -3636,7 +3684,7 @@ function runPulse(){
       if(el('fg-num')){el('fg-num').textContent=val;el('fg-num').style.color=col;}
       if(el('fg-txt')){el('fg-txt').textContent=label;el('fg-txt').style.color=col;}
       if(el('fg-needle'))el('fg-needle').style.left=val+'%';
-      if(el('fg-updated'))el('fg-updated').textContent='오늘 기준 · Alternative.me';
+      if(el('fg-updated'))el('fg-updated').textContent='오늘 기준';
       var hist='';[6,5,4,3,2,1,0].forEach(function(i){var d=fng.data[i];if(!d)return;var v=parseInt(d.value);var c=v<=35?'var(--R)':v<=50?'var(--A)':v<=65?'var(--t2)':'var(--G)';var dl=i===0?'오늘':i===1?'어제':(i+'일전');hist+='<div class="fg-hist-item"><div class="fg-hist-val" style="color:'+c+'">'+v+'</div><div class="fg-hist-lbl">'+dl+'</div></div>';});
       if(el('fg-history'))el('fg-history').innerHTML=hist;
     }
@@ -3646,14 +3694,14 @@ function runPulse(){
       sortable.sort(function(a,b){return parseFloat(b.priceChangePercent)-parseFloat(a.priceChangePercent);});
       if(btc){var bp=parseFloat(btc.lastPrice),bc=parseFloat(btc.priceChangePercent);if(el('mkt-btc-px')){el('mkt-btc-px').textContent='$'+fp(bp);el('mkt-btc-px').className='mkt-cell-val '+(bc>=0?'g':'r');}if(el('mkt-btc-pct')){el('mkt-btc-pct').textContent=(bc>=0?'+':'')+bc.toFixed(2)+'%';el('mkt-btc-pct').className='mkt-cell-val '+(bc>=0?'g':'r');}if(el('mkt-btc-chg'))el('mkt-btc-chg').textContent='$'+(parseFloat(btc.priceChange)>=0?'+':'')+fp(parseFloat(btc.priceChange));if(el('mkt-btc-sub'))el('mkt-btc-sub').textContent=bc>3?'상승 모멘텀':bc<-3?'하락 압력':'횡보';}
       if(btc&&eth&&el('mkt-ethbtc')){var eb=parseFloat(eth.lastPrice)/parseFloat(btc.lastPrice);el('mkt-ethbtc').textContent=eb.toFixed(5);el('mkt-ethbtc').className='mkt-cell-val '+(eb>0.055?'g':eb<0.045?'r':'t');if(el('mkt-ethbtc-sub'))el('mkt-ethbtc-sub').textContent=eb>0.055?'알트 강세':eb<0.045?'BTC 도미넌스':'중립';}
-      if(el('pulse-gainers'))el('pulse-gainers').innerHTML=sortable.slice(0,5).map(function(t){var sym=t.symbol.replace('USDT',''),c=parseFloat(t.priceChangePercent);return '<div class="mover-row" onclick="loadScanCoin(\''+sym+'\')"><span class="mover-sym">'+sym+'</span><span class="mover-chg g">+'+c.toFixed(2)+'%</span></div>';}).join('');
-      if(el('pulse-losers'))el('pulse-losers').innerHTML=sortable.slice(-5).reverse().map(function(t){var sym=t.symbol.replace('USDT',''),c=parseFloat(t.priceChangePercent);return '<div class="mover-row" onclick="loadScanCoin(\''+sym+'\')"><span class="mover-sym">'+sym+'</span><span class="mover-chg r">'+c.toFixed(2)+'%</span></div>';}).join('');
+      if(el('pulse-gainers'))el('pulse-gainers').innerHTML=sortable.slice(0,5).map(function(t){var sym=t.symbol.replace('USDT','');return '<div class="mover-row" onclick="loadScanCoin(\''+sym+'\')"><span class="mover-sym">'+sym+'</span><span class="mover-chg g">+'+parseFloat(t.priceChangePercent).toFixed(2)+'%</span></div>';}).join('');
+      if(el('pulse-losers'))el('pulse-losers').innerHTML=sortable.slice(-5).reverse().map(function(t){var sym=t.symbol.replace('USDT','');return '<div class="mover-row" onclick="loadScanCoin(\''+sym+'\')"><span class="mover-sym">'+sym+'</span><span class="mover-chg r">'+parseFloat(t.priceChangePercent).toFixed(2)+'%</span></div>';}).join('');
       var fgVal=parseInt((el('fg-num')||{textContent:'50'}).textContent)||50,btcChg=btc?parseFloat(btc.priceChangePercent):0;
       var adv=el('pulse-advice-inner'),at=el('pulse-advice-title'),ab=el('pulse-advice-body');
-      if(adv&&at&&ab){if(fgVal>=65&&btcChg>=2){adv.className='pulse-advice-inner bull';at.textContent='🚀 탐욕 구간 — 추격 주의';ab.textContent='공포탐욕 탐욕+BTC 상승. 신규 진입 자제, 보유 포지션 익절 시작 고려.';}else if(fgVal<=30&&btcChg<=-2){adv.className='pulse-advice-inner bear';at.textContent='💀 극도 공포 — 최고 기회';ab.textContent='역사적으로 이 구간이 최고 매수 타이밍. 스캐너에서 RSI 30이하 코인 분할 매수 준비.';}else if(fgVal<=45){adv.className='pulse-advice-inner neut';at.textContent='⏳ 공포 구간 — 분할 매수 준비';ab.textContent='RSI 과매도 + 거래량 증가 코인 위주 접근. BUY1~2 분할 진입 전략 유효.';}else{adv.className='pulse-advice-inner neut';at.textContent='📊 중립 — 선별적 접근';ab.textContent='뚜렷한 방향성 없음. 황금각 + 환경 동시 충족 시에만 진입. 비중 50~70% 제한.';}}}
-    if(btcC&&Array.isArray(btcC)&&btcC.length>14){var atr2=scanATR(btcC,btcC.length-1,14),cl2=parseFloat(btcC[btcC.length-1][4]),ap=(atr2/cl2*100).toFixed(2);if(el('mkt-btc-atr')){el('mkt-btc-atr').textContent=ap+'%';el('mkt-btc-atr').className='mkt-cell-val '+(parseFloat(ap)>3?'r':parseFloat(ap)<1.5?'g':'t');}}
+      if(adv&&at&&ab){if(fgVal>=65&&btcChg>=2){adv.className='pulse-advice-inner bull';at.textContent='🚀 탐욕 구간 — 추격 주의';ab.textContent='공포탐욕 탐욕+BTC 상승. 신규 진입 자제, 보유 익절 시작.';}else if(fgVal<=30&&btcChg<=-2){adv.className='pulse-advice-inner bear';at.textContent='💀 극도 공포 — 최고 기회';ab.textContent='역사적 최고 매수 타이밍. 스캐너에서 RSI 30이하 코인 분할 매수 준비.';}else if(fgVal<=45){adv.className='pulse-advice-inner neut';at.textContent='⏳ 공포 구간 — 분할 매수 준비';ab.textContent='RSI 과매도+거래량 증가 코인 위주 접근. BUY1~2 분할 진입 유효.';}else{adv.className='pulse-advice-inner neut';at.textContent='📊 중립 — 선별적 접근';ab.textContent='황금각+환경 동시 충족 시에만 진입. 비중 50~70% 제한.';}}}
+    if(btcC&&Array.isArray(btcC)&&btcC.length>14){var atr2=sATR(btcC,btcC.length-1,14),cl2=parseFloat(btcC[btcC.length-1][4]),ap=(atr2/cl2*100).toFixed(2);if(el('mkt-btc-atr')){el('mkt-btc-atr').textContent=ap+'%';el('mkt-btc-atr').className='mkt-cell-val '+(parseFloat(ap)>3?'r':parseFloat(ap)<1.5?'g':'t');}}
     if(ts)ts.textContent='업데이트: '+new Date().toLocaleTimeString('ko-KR');
-  }).catch(function(){if(ts)ts.textContent='로드 실패 — 재시도';});
+  }).catch(function(){if(ts)ts.textContent='로드 실패';});
 }
 function quickLoad(sym){el('sinput').value=sym;switchTab('calc');setTimeout(doSearch,80);}
 
