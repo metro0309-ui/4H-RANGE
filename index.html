@@ -771,6 +771,45 @@ html,body{background:var(--bg0);color:var(--t1);font-family:var(--ui);font-size:
 .pulse-advice-inner.bull .pulse-advice-title{color:var(--G)}.pulse-advice-inner.bear .pulse-advice-title{color:var(--R)}.pulse-advice-inner.neut .pulse-advice-title{color:var(--A)}
 .pulse-advice-body{font-size:11px;color:var(--t2);line-height:1.6}.pulse-ts{padding:8px 16px;font-size:10px;color:var(--t3);text-align:center;background:var(--bg1)}
 
+/* ── Walk-Forward 검증 패널 ── */
+.wf-row{display:flex;align-items:center;justify-content:space-between;margin-top:6px;padding-top:6px;border-top:1px solid var(--bd)}
+.wf-lbl{font-size:9px;color:var(--t3);text-transform:uppercase;letter-spacing:.04em}
+.wf-val{font-family:var(--num);font-size:11px;font-weight:600}
+.wf-val.good{color:var(--G)}.wf-val.warn{color:var(--A)}.wf-val.bad{color:var(--R)}
+.wf-segs{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--bd);border-radius:3px;overflow:hidden;margin-top:5px}
+.wf-seg{background:var(--bg2);padding:4px 5px;text-align:center}
+.wf-seg-l{font-size:8px;color:var(--t3)}.wf-seg-v{font-family:var(--num);font-size:10px;font-weight:600}
+
+/* ── OI + 거래소 순유입 패널 ── */
+.oi-panel{background:var(--bg1);border-bottom:1px solid var(--bd);padding:10px 16px;display:none}
+.oi-panel.on{display:block}
+.oi-title{font-size:9px;color:var(--t3);text-transform:uppercase;letter-spacing:.06em;margin-bottom:8px;display:flex;align-items:center;justify-content:space-between}
+.oi-grid{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--bd);border-radius:4px;overflow:hidden;margin-bottom:8px}
+.oi-cell{background:var(--bg2);padding:7px 10px}
+.oi-cell-l{font-size:9px;color:var(--t3);margin-bottom:3px}
+.oi-cell-v{font-family:var(--num);font-size:13px;font-weight:700}
+.oi-cell-v.up{color:var(--G)}.oi-cell-v.dn{color:var(--R)}.oi-cell-v.flat{color:var(--t2)}
+.oi-cell-s{font-size:9px;color:var(--t3);margin-top:2px}
+.oi-signal{padding:6px 8px;border-radius:3px;font-size:11px;font-weight:600}
+.oi-signal.bull{background:var(--Gd);color:var(--G)}.oi-signal.bear{background:var(--Rd);color:var(--R)}.oi-signal.flat{background:var(--bg2);color:var(--t2)}
+
+/* ── 거시 지표 (BTC Dom + USDT.D) ── */
+.macro-panel{background:var(--bg1);border-bottom:1px solid var(--bd);padding:10px 16px;display:none}
+.macro-panel.on{display:block}
+.macro-title{font-size:9px;color:var(--t3);text-transform:uppercase;letter-spacing:.06em;margin-bottom:8px}
+.macro-grid{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-bottom:8px}
+.macro-card{background:var(--bg2);border:1px solid var(--bd);border-radius:4px;padding:7px 9px}
+.macro-card-l{font-size:9px;color:var(--t3);margin-bottom:3px}
+.macro-card-v{font-family:var(--num);font-size:15px;font-weight:700}
+.macro-card-v.bull{color:var(--G)}.macro-card-v.bear{color:var(--R)}.macro-card-v.flat{color:var(--t2)}
+.macro-card-s{font-size:9px;color:var(--t3);margin-top:2px}
+.altseason-bar{padding:7px 10px;border-radius:4px;font-size:11px;font-weight:600;text-align:center}
+.altseason-bar.alt{background:var(--Gd);color:var(--G)}.altseason-bar.btc{background:var(--Ad);color:var(--A)}.altseason-bar.neut{background:var(--bg2);color:var(--t2)}
+
+/* ── 가중치 최적화 배지 ── */
+.wopt-badge{display:inline-flex;align-items:center;gap:5px;padding:3px 8px;background:var(--Pd);border:1px solid rgba(155,89,247,.3);border-radius:3px;font-size:9px;font-family:var(--num);color:var(--P);margin-top:4px}
+.wopt-badge.on{display:inline-flex}.wopt-badge.off{display:none}
+
 </style>
 </head>
 <body>
@@ -781,7 +820,7 @@ html,body{background:var(--bg0);color:var(--t1);font-family:var(--ui);font-size:
     <div class="logo">RC</div>
     <div class="htitle">RANGE CALC <span>/ USDT</span></div>
   </div>
-  <div class="ver">v1.0</div>
+  <div class="ver">v2.0</div>
 </div>
 <div class="tabs">
   <button class="tab active" onclick="switchTab('calc')">계산기</button>
@@ -884,6 +923,76 @@ html,body{background:var(--bg0);color:var(--t1);font-family:var(--ui);font-size:
     </div>
     <div class="btblbl"><span>반등 성공률</span><span id="btbpct">0%</span></div>
     <div class="btrack"><div class="bfill" id="btbfill" style="width:0%"></div></div>
+    <!-- Walk-Forward 검증 결과 -->
+    <div class="wf-row">
+      <span class="wf-lbl">Walk-Forward 신뢰도</span>
+      <span class="wf-val" id="wf-score">—</span>
+    </div>
+    <div class="wf-segs" id="wf-segs" style="display:none">
+      <div class="wf-seg"><div class="wf-seg-l">구간1</div><div class="wf-seg-v" id="wf-s1">—</div></div>
+      <div class="wf-seg"><div class="wf-seg-l">구간2</div><div class="wf-seg-v" id="wf-s2">—</div></div>
+      <div class="wf-seg"><div class="wf-seg-l">구간3</div><div class="wf-seg-v" id="wf-s3">—</div></div>
+      <div class="wf-seg"><div class="wf-seg-l">구간4</div><div class="wf-seg-v" id="wf-s4">—</div></div>
+    </div>
+  </div>
+
+  <!-- OI + 거래소 순유입 패널 -->
+  <div class="oi-panel" id="oi-panel">
+    <div class="oi-title">
+      <span>📊 미결제약정 (OI) + 포지션 분석</span>
+      <span style="font-family:var(--num);font-size:9px;color:var(--t3)" id="oi-ts">—</span>
+    </div>
+    <div class="oi-grid">
+      <div class="oi-cell">
+        <div class="oi-cell-l">현재 OI</div>
+        <div class="oi-cell-v" id="oi-cur">—</div>
+        <div class="oi-cell-s" id="oi-cur-sub">—</div>
+      </div>
+      <div class="oi-cell">
+        <div class="oi-cell-l">OI 변화 (1h)</div>
+        <div class="oi-cell-v" id="oi-chg">—</div>
+        <div class="oi-cell-s" id="oi-chg-sub">—</div>
+      </div>
+      <div class="oi-cell">
+        <div class="oi-cell-l">펀딩비 (8h)</div>
+        <div class="oi-cell-v" id="oi-fund">—</div>
+        <div class="oi-cell-s" id="oi-fund-sub">—</div>
+      </div>
+      <div class="oi-cell">
+        <div class="oi-cell-l">OI 추세 (6h)</div>
+        <div class="oi-cell-v" id="oi-trend">—</div>
+        <div class="oi-cell-s" id="oi-trend-sub">—</div>
+      </div>
+    </div>
+    <div class="oi-signal flat" id="oi-signal">OI 데이터 분석 중...</div>
+  </div>
+
+  <!-- 거시 지표 패널 (BTC Dom + USDT.D + 알트시즌) -->
+  <div class="macro-panel" id="macro-panel">
+    <div class="macro-title">🌐 거시 지표 — BTC 도미넌스 + USDT.D</div>
+    <div class="macro-grid">
+      <div class="macro-card">
+        <div class="macro-card-l">BTC 도미넌스</div>
+        <div class="macro-card-v flat" id="macro-btcdom">—</div>
+        <div class="macro-card-s" id="macro-btcdom-sub">CoinGecko 기준</div>
+      </div>
+      <div class="macro-card">
+        <div class="macro-card-l">알트코인 시장점유율</div>
+        <div class="macro-card-v flat" id="macro-altdom">—</div>
+        <div class="macro-card-s" id="macro-altdom-sub">전체 - BTC</div>
+      </div>
+      <div class="macro-card">
+        <div class="macro-card-l">시장 총 시가 24h</div>
+        <div class="macro-card-v flat" id="macro-mktchg">—</div>
+        <div class="macro-card-s" id="macro-mktchg-sub">—</div>
+      </div>
+      <div class="macro-card">
+        <div class="macro-card-l">알트시즌 지수</div>
+        <div class="macro-card-v flat" id="macro-altidx">—</div>
+        <div class="macro-card-s" id="macro-altidx-sub">BTC Dom &lt; 48% 기준</div>
+      </div>
+    </div>
+    <div class="altseason-bar neut" id="altseason-bar">알트시즌 판단 중...</div>
   </div>
   <div class="ticker" id="ticker">
     <div class="tktop">
@@ -1155,6 +1264,7 @@ html,body{background:var(--bg0);color:var(--t1);font-family:var(--ui);font-size:
           <span class="rel-chip" id="rel-beta">BTC베타 —</span>
           <span class="rel-chip" id="rel-fund">펀딩비 —</span>
           <span class="rel-chip" id="rel-sample">샘플 —</span>
+          <span class="rel-chip" id="rel-wf">WF —</span>
         </div>
       </div>
 
@@ -1196,6 +1306,8 @@ html,body{background:var(--bg0);color:var(--t1);font-family:var(--ui);font-size:
           <div class="gb-score-lbl">황금각</div>
         </div>
       </div>
+      <!-- 가중치 최적화 배지 -->
+      <div class="wopt-badge off" id="wopt-badge">🔬 가중치 최적화 완료: RSI <span id="wopt-rsi">—</span> / Fib <span id="wopt-fib">—</span> / Vol <span id="wopt-vol">—</span></div>
       <!-- TP 모드 표시 -->
       <div class="tp-mode bull" id="tp-mode-bar" style="display:none">
         <span id="tp-mode-icon">📈</span>
@@ -1623,6 +1735,25 @@ html,body{background:var(--bg0);color:var(--t1);font-family:var(--ui);font-size:
     <div class="mkt-cell"><div class="mkt-cell-lbl">BTC 변동성 ATR</div><div class="mkt-cell-val t" id="mkt-btc-atr">—</div><div class="mkt-cell-sub">4H 기준</div></div>
   </div>
   <div class="movers-section"><div class="movers-title">24H 급등·급락 (TOP 5)</div><div class="movers-grid"><div><div class="movers-col-title g">🚀 상승</div><div id="pulse-gainers"></div></div><div><div class="movers-col-title r">💀 하락</div><div id="pulse-losers"></div></div></div></div>
+  <!-- 거시 지표 인라인 (시장 탭) -->
+  <div style="background:var(--bg1);border-bottom:1px solid var(--bd);padding:10px 16px" id="pulse-macro-wrap">
+    <div style="font-size:9px;color:var(--t3);text-transform:uppercase;letter-spacing:.06em;margin-bottom:8px">🌐 BTC 도미넌스 · 알트시즌 지수 (CoinGecko)</div>
+    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;margin-bottom:8px">
+      <div style="background:var(--bg2);border:1px solid var(--bd);border-radius:4px;padding:7px 9px;text-align:center">
+        <div style="font-size:9px;color:var(--t3);margin-bottom:3px">BTC 도미넌스</div>
+        <div style="font-family:var(--num);font-size:16px;font-weight:700" id="pulse-btcdom">—</div>
+      </div>
+      <div style="background:var(--bg2);border:1px solid var(--bd);border-radius:4px;padding:7px 9px;text-align:center">
+        <div style="font-size:9px;color:var(--t3);margin-bottom:3px">알트 점유율</div>
+        <div style="font-family:var(--num);font-size:16px;font-weight:700" id="pulse-altdom">—</div>
+      </div>
+      <div style="background:var(--bg2);border:1px solid var(--bd);border-radius:4px;padding:7px 9px;text-align:center">
+        <div style="font-size:9px;color:var(--t3);margin-bottom:3px">시총 24h</div>
+        <div style="font-family:var(--num);font-size:14px;font-weight:700" id="pulse-mktchg">—</div>
+      </div>
+    </div>
+    <div class="altseason-bar neut" id="pulse-altbar">거시 지표 로딩 중...</div>
+  </div>
   <div class="pulse-advice"><div class="pulse-advice-inner neut" id="pulse-advice-inner"><div class="pulse-advice-title" id="pulse-advice-title">분석 중...</div><div class="pulse-advice-body" id="pulse-advice-body">데이터 로딩 중.</div></div></div>
   <div class="pulse-ts" id="pulse-ts">—</div>
 </div>
@@ -1740,7 +1871,7 @@ var TFC={
   '1d': {iv:'1d', lim:730, htf:'1w',hl:104,look:5,lbl:'1D 장기'}
 };
 // FEE: 수수료(0.05%×2) + 평균 슬리피지(0.15%) = 0.25% 현실화
-var G={coin:'AAVE',tf:'4h',bt:null,bm:null,res:null,liveTimer:null,livePair:null,liveTF:null,FEE:0.0025,AP:14,VP:20,AS:2.5,CC:0.20,VR:0.80,btcBeta:null,fundingRate:null};
+var G={coin:'AAVE',tf:'4h',bt:null,bm:null,res:null,liveTimer:null,livePair:null,liveTF:null,FEE:0.0025,AP:14,VP:20,AS:2.5,CC:0.20,VR:0.80,btcBeta:null,fundingRate:null,goldenWeights:null,_wfScore:null,_wfSegs:null,_oiScore:0};
 
 function el(id){return document.getElementById(id);}
 var _dummy={style:{},className:'',textContent:''};
@@ -1773,6 +1904,7 @@ function switchTab(n){
   if(n==='history') renderH();
   if(n==='scanner'&&!SCAN.ran) runScanner();
   if(n==='pulse') runPulse();
+  if(n==='pulse') setTimeout(fetchMacroDom,500); // 거시지표 갱신
 }
 
 function setTF(tf){
@@ -1787,6 +1919,7 @@ function setTF(tf){
   G.locked=false; G.lockedB1=null; G.lockedB2=null;
   G.b1Reached=false; G.b2Reached=false;
   G.livePair=null; G.liveTF=null;
+  G.goldenWeights=null; G._wfScore=null; G._wfSegs=null; G._oiScore=0;
   // UI 초기화
   var L=tf.toUpperCase();
   el('tclh').textContent=L+' HIGH';
@@ -1794,7 +1927,7 @@ function setTF(tf){
   el('tcll').textContent=L+' LOW';
   ['btcard','ticker','results','bbar','wbar',
    'vol-panel','lev-panel','qpanel','risk-card','golden-panel',
-   'expiry-bar','lock-bar','mtf-badge'].forEach(function(id){
+   'expiry-bar','lock-bar','mtf-badge','oi-panel','macro-panel'].forEach(function(id){
     var p=el(id); if(p) p.classList.remove('on');
   });
   var sc=el('summary-card'); if(sc) sc.style.display='none';
@@ -1869,6 +2002,22 @@ function doSearch(){
         // 백테스트는 완성된 봉만 사용 (length-2까지)
         var bt=runBT(c4,G.bm,cfg);G.bt=bt;
 
+        // ★ Walk-Forward + 가중치 그리드서치 (비동기로 UI 블로킹 방지)
+        G.goldenWeights=null; G._wfScore=null; G._oiScore=0;
+        setTimeout(function(){try{runWalkForward(c4,G.bm,cfg);}catch(e){}},80);
+        setTimeout(function(){try{gridSearchWeights(c4,G.bm,cfg);}catch(e){}},160);
+        // ★ OI + 거시 지표 비동기 로딩
+        setTimeout(function(){fetchOI(sym);},200);
+        setTimeout(function(){fetchMacroDom();},300);
+
+        // ★ Walk-Forward + 가중치 그리드 서치 (비동기 분리)
+        G.goldenWeights=null; G._wfScore=null; G._oiScore=0;
+        setTimeout(function(){try{runWalkForward(c4,G.bm,cfg);}catch(e){}},60);
+        setTimeout(function(){try{gridSearchWeights(c4,G.bm,cfg);}catch(e){}},120);
+        // ★ OI + 거시 지표 호출
+        setTimeout(function(){try{fetchOI(sym);}catch(e){}},200);
+        setTimeout(function(){try{fetchMacroDom();}catch(e){}},400);
+
         // ★ 핵심: 현재 형성 중인 봉(실시간) = length-1
         var cur=c4[c4.length-1];   // 현재 봉 (아직 완성 안됨 - 실시간)
         var prev2=c4[c4.length-2]; // 직전 완성 봉
@@ -1924,6 +2073,9 @@ function doSearch(){
         el('lock-bar').classList.add('on');
         setLoad(false);toast(sym+' 완료 · 실승률 '+bt.b1WR.toFixed(1)+'% · 연'+bt.af.toFixed(0)+'회 · 🔴LIVE');
         el('sinput').blur();calculate();fetchLongShort(sym);
+        // ★ OI + 거시 지표 로드
+        setTimeout(function(){fetchOI(sym);},200);
+        setTimeout(function(){fetchMacroDom();},400);
       }catch(e2){setLoad(false);toast('처리 오류: '+e2.message,true);console.error(e2);}
     },30);
   })
@@ -2041,6 +2193,107 @@ function runBT(candles,bm,cfg){
   return{rb,ab,af,bd,sTs,eTs,vc:t1,la,b1WR:wr1,b1PF:pf1,b1EV:ev1,b1FR:fr1,b1SK:best.ms,b1T:t1,b2WR:wr2,b2PF:pf2,b2EV:ev2,b2FR:fr2,b2T:t2,b3WR:wr3,b3PF:pf3,b3EV:ev3,b3FR:fr3,b3T:t3,fv:best.fv,fc:best.fc,fb:best.fb};
 }
 
+// ════════════════════════════════════════════════
+//  Walk-Forward 검증 (80% 최적화 / 20% 검증, 4구간 롤링)
+// ════════════════════════════════════════════════
+function runWalkForward(candles, bm, cfg){
+  var n=candles.length;
+  var minLen=60; // 최소 봉 수
+  if(n<minLen*2){renderWF(null);return;}
+  var segLen=Math.floor(n/4); // 전체를 4구간으로 분할
+  var optRatio=0.8;
+  var segResults=[];
+  for(var s=0;s<4;s++){
+    var segStart=s*segLen;
+    var segEnd=Math.min(segStart+segLen, n);
+    var seg=candles.slice(segStart, segEnd);
+    if(seg.length<40) continue;
+    var optLen=Math.floor(seg.length*optRatio);
+    var optSlice=seg.slice(0, optLen);
+    var valSlice=seg.slice(optLen);
+    if(valSlice.length<8) continue;
+    // 최적화 구간으로 최적 buf 탐색
+    var bufs=[0.03,0.04,0.05,0.06,0.07,0.08];
+    var bestBuf=0.06, bestScore=-Infinity;
+    bufs.forEach(function(buf){
+      var w=0,l=0,gp=0,gl=0;
+      var st=Math.max(G.AP+2,G.VP+1);
+      for(var i=st;i<optSlice.length-cfg.look-2;i++){
+        var c=optSlice[i],h=parseFloat(c[2]),lo=parseFloat(c[3]),cl=parseFloat(c[4]),vol=parseFloat(c[5]);
+        var rng=h-lo;if(rng<=0)continue;
+        var atr=calcATR(optSlice,i,G.AP),av=calcAV(optSlice,i,G.VP);
+        var vok=av<=0||vol>=av*G.VR,cok=cl>=lo+rng*G.CC;
+        if(!vok||!cok)continue;
+        var tp=lo+rng*0.618, buy=lo+rng*buf, stop=buy-atr*G.AS;
+        if(buy>=h||tp<=buy||stop>=buy)continue;
+        var fut=[];for(var j=1;j<=cfg.look+4;j++)if(i+j<optSlice.length)fut.push({h:parseFloat(optSlice[i+j][2]),l:parseFloat(optSlice[i+j][3])});
+        var fd=false,fc2=-1;
+        for(var k=0;k<Math.min(cfg.look,fut.length);k++){if(fut[k].l<=buy){fd=true;fc2=k;break;}}
+        if(!fd)continue;
+        var out=null;
+        for(var k=fc2;k<Math.min(fc2+cfg.look,fut.length);k++){if(fut[k].l<=stop&&fut[k].h>=tp){out='l';break;}if(fut[k].h>=tp){out='w';break;}if(fut[k].l<=stop){out='l';break;}}
+        if(out===null)continue;
+        if(out==='w'){w++;gp+=(tp-buy)/buy-G.FEE;}else{l++;gl+=Math.abs((stop-buy)/buy)+G.FEE;}
+      }
+      var t=w+l;if(t<5)return;
+      var wr=w/t,pf=gl>0?gp/gl:gp>0?9:0,sc=wr*Math.min(pf,5);
+      if(sc>bestScore){bestScore=sc;bestBuf=buf;}
+    });
+    // 검증 구간 적용
+    var vw=0,vl=0,vgp=0,vgl=0;
+    var st2=Math.max(G.AP+2,G.VP+1);
+    for(var i=st2;i<valSlice.length-cfg.look-2;i++){
+      var c=valSlice[i],h=parseFloat(c[2]),lo=parseFloat(c[3]),cl=parseFloat(c[4]),vol=parseFloat(c[5]);
+      var rng=h-lo;if(rng<=0)continue;
+      var atr=calcATR(valSlice,i,G.AP),av=calcAV(valSlice,i,G.VP);
+      var vok=av<=0||vol>=av*G.VR,cok=cl>=lo+rng*G.CC;
+      if(!vok||!cok)continue;
+      var tp=lo+rng*0.618,buy=lo+rng*bestBuf,stop=buy-atr*G.AS;
+      if(buy>=h||tp<=buy||stop>=buy)continue;
+      var fut=[];for(var j=1;j<=cfg.look+4;j++)if(i+j<valSlice.length)fut.push({h:parseFloat(valSlice[i+j][2]),l:parseFloat(valSlice[i+j][3])});
+      var fd=false,fc3=-1;
+      for(var k=0;k<Math.min(cfg.look,fut.length);k++){if(fut[k].l<=buy){fd=true;fc3=k;break;}}
+      if(!fd)continue;
+      var out=null;
+      for(var k=fc3;k<Math.min(fc3+cfg.look,fut.length);k++){if(fut[k].l<=stop&&fut[k].h>=tp){out='l';break;}if(fut[k].h>=tp){out='w';break;}if(fut[k].l<=stop){out='l';break;}}
+      if(out===null)continue;
+      if(out==='w'){vw++;vgp+=(tp-buy)/buy-G.FEE;}else{vl++;vgl+=Math.abs((stop-buy)/buy)+G.FEE;}
+    }
+    var vt=vw+vl;
+    segResults.push({seg:s+1,t:vt,w:vw,l:vl,wr:vt>0?vw/vt*100:0,pf:vgl>0?vgp/vgl:0,buf:bestBuf});
+  }
+  renderWF(segResults);
+  return segResults;
+}
+
+function renderWF(segs){
+  var scoreEl=el('wf-score'),segsEl=el('wf-segs');
+  if(!segs||!segs.length){if(scoreEl){scoreEl.textContent='데이터 부족';scoreEl.className='wf-val warn';}return;}
+  var validSegs=segs.filter(function(s){return s.t>=5;});
+  if(!validSegs.length){if(scoreEl){scoreEl.textContent='샘플 부족';scoreEl.className='wf-val warn';}return;}
+  var avgWR=validSegs.reduce(function(s,sg){return s+sg.wr;},0)/validSegs.length;
+  var avgPF=validSegs.reduce(function(s,sg){return s+(sg.pf||0);},0)/validSegs.length;
+  var consistency=validSegs.filter(function(sg){return sg.wr>=45;}).length/validSegs.length;
+  // WF 신뢰도 점수 (0~100)
+  var wfScore=Math.round(avgWR*0.5+Math.min(avgPF,3)*10+consistency*20);
+  wfScore=Math.max(0,Math.min(100,wfScore));
+  var wfCls=wfScore>=60?'good':wfScore>=40?'warn':'bad';
+  var wfTxt=wfScore>=60?'신뢰 ('+wfScore+'점)':wfScore>=40?'보통 ('+wfScore+'점)':'약함 ('+wfScore+'점)';
+  if(scoreEl){scoreEl.textContent=wfTxt;scoreEl.className='wf-val '+wfCls;}
+  if(segsEl){
+    segsEl.style.display='';
+    segs.forEach(function(sg,i){
+      var sid='wf-s'+(i+1),se=el(sid);
+      if(!se)return;
+      var t=sg.t,wr=sg.wr;
+      if(t<3){se.textContent='N/A';se.className='wf-seg-v';return;}
+      se.textContent=wr.toFixed(0)+'%';
+      se.className='wf-seg-v '+(wr>=55?'good':wr>=40?'warn':'bad');
+    });
+  }
+  G._wfScore=wfScore; G._wfSegs=segs;
+}
+
 function renderBT(bt,cfg){
   el('btts').innerHTML='백테스트 기간: <b>'+fmtDT(bt.sTs)+'</b> ~ <b>'+fmtDT(bt.eTs)+'</b><br/>총 <b>'+Math.round(bt.bd)+'일</b> · 유효봉 <b>'+bt.vc+'회</b> <span style="color:var(--t3);font-size:9px">(현재 봉 제외, 완성봉 기준)</span>';
   el('bttl').textContent='백테스트 ('+cfg.lbl+') — 현실 보정';
@@ -2052,6 +2305,219 @@ function renderBT(bt,cfg){
   var sc=bt.b1WR*0.35+Math.min(bt.b1PF,5)*8+(bt.b1EV>0?10:0)-(bt.af<6?10:0);var pill=el('btpill');
   if(sc>=42){pill.textContent='우량';pill.className='btpill good';}else if(sc>=28){pill.textContent='적정';pill.className='btpill ok';}else{pill.textContent='주의';pill.className='btpill bad';}
   el('btcard').classList.add('on');
+}
+
+// ════════════════════════════════════════════════
+//  황금각 가중치 그리드 서치 최적화
+// ════════════════════════════════════════════════
+function gridSearchWeights(candles, bm, cfg){
+  // rsiW, fibW, volW 조합 그리드 (합계 항상 1.0)
+  var grid=[];
+  var steps=[0.2,0.3,0.4,0.5];
+  steps.forEach(function(rw){
+    steps.forEach(function(fw){
+      var vw=Math.round((1.0-rw-fw)*10)/10;
+      if(vw<0.1||vw>0.6)return;
+      if(Math.abs(rw+fw+vw-1.0)>0.01)return;
+      grid.push({rw:rw,fw:fw,vw:vw});
+    });
+  });
+  var bestWeights={rw:0.35,fw:0.35,vw:0.30};
+  var bestReturn=-Infinity;
+  var st=Math.max(G.AP+2,G.VP+1);
+  grid.forEach(function(w){
+    var totalReturn=0, trades=0;
+    for(var i=st;i<candles.length-cfg.look-2;i++){
+      var c=candles[i],h=parseFloat(c[2]),lo=parseFloat(c[3]),cl=parseFloat(c[4]),vol=parseFloat(c[5]);
+      var rng=h-lo;if(rng<=0)continue;
+      var atr=calcATR(candles,i,G.AP),av=calcAV(candles,i,G.VP);
+      var vok=av<=0||vol>=av*G.VR,cok=cl>=lo+rng*G.CC;
+      if(!vok||!cok)continue;
+      // RSI 점수
+      var rsi=sRSI(candles,i,14);
+      var rsiScore=(rsi<30?1.0:rsi<40?0.7:rsi<50?0.4:rsi>70?-0.3:0.1);
+      // 피보나치 점수 (ATR 기반 단순 추정)
+      var fibScore=(rng>atr*1.5?0.8:rng>atr?0.5:0.2);
+      // 거래량 점수
+      var volRatio=av>0?vol/av:1;
+      var volScore=(volRatio>=2?1.0:volRatio>=1.5?0.7:volRatio>=0.8?0.4:-0.2);
+      // 합산 신호
+      var signal=w.rw*rsiScore+w.fw*fibScore+w.vw*volScore;
+      if(signal<0.4)continue; // 신호 임계치
+      var buy=lo+rng*0.06,tp=lo+rng*0.618,stop=buy-atr*G.AS;
+      if(buy>=h||tp<=buy||stop>=buy)continue;
+      var fut=[];for(var j=1;j<=cfg.look+3;j++)if(i+j<candles.length)fut.push({h:parseFloat(candles[i+j][2]),l:parseFloat(candles[i+j][3])});
+      var fd=false,fc2=-1;
+      for(var k=0;k<Math.min(cfg.look,fut.length);k++){if(fut[k].l<=buy){fd=true;fc2=k;break;}}
+      if(!fd)continue;
+      var out=null;
+      for(var k=fc2;k<Math.min(fc2+cfg.look,fut.length);k++){if(fut[k].l<=stop&&fut[k].h>=tp){out='l';break;}if(fut[k].h>=tp){out='w';break;}if(fut[k].l<=stop){out='l';break;}}
+      if(out===null)continue;
+      if(out==='w')totalReturn+=(tp-buy)/buy-G.FEE;
+      else totalReturn-=Math.abs((stop-buy)/buy)+G.FEE;
+      trades++;
+    }
+    if(trades>=8&&totalReturn>bestReturn){bestReturn=totalReturn;bestWeights={rw:w.rw,fw:w.fw,vw:w.vw};}
+  });
+  G.goldenWeights=bestWeights;
+  // UI 배지 업데이트
+  var badge=el('wopt-badge');
+  if(badge){
+    badge.className='wopt-badge on';
+    var rsiEl=el('wopt-rsi'),fibEl=el('wopt-fib'),volEl=el('wopt-vol');
+    if(rsiEl)rsiEl.textContent=(bestWeights.rw*100).toFixed(0)+'%';
+    if(fibEl)fibEl.textContent=(bestWeights.fw*100).toFixed(0)+'%';
+    if(volEl)volEl.textContent=(bestWeights.vw*100).toFixed(0)+'%';
+  }
+  return bestWeights;
+}
+
+// ════════════════════════════════════════════════
+//  OI (미결제약정) + 펀딩비 분석
+// ════════════════════════════════════════════════
+function fetchOI(sym){
+  var panel=el('oi-panel');if(!panel)return;
+  var pair=sym+'USDT';
+  // OI 히스토리 (1h 12개 = 12시간치)
+  var urlOIHist='https://fapi.binance.com/futures/data/openInterestHist?symbol='+pair+'&period=1h&limit=12';
+  var urlOICur='https://fapi.binance.com/fapi/v1/openInterest?symbol='+pair;
+  var urlFund='https://fapi.binance.com/fapi/v1/fundingRate?symbol='+pair+'&limit=3';
+  function fj(u){return fetch(u).then(function(r){if(!r.ok)throw new Error();return r.json();}).catch(function(){return null;});}
+  Promise.all([fj(urlOIHist),fj(urlOICur),fj(urlFund)]).then(function(res){
+    var hist=res[0],cur=res[1],fundData=res[2];
+    if(!cur&&!hist){panel.classList.remove('on');return;}
+    panel.classList.add('on');
+    var curOI=cur?parseFloat(cur.openInterest):null;
+    var curPrice=G.livePrice||0;
+    var curOIUSD=curOI&&curPrice?curOI*curPrice:null;
+    function fmtOI(v){if(!v)return'—';if(v>=1e9)return(v/1e9).toFixed(2)+'B';if(v>=1e6)return(v/1e6).toFixed(2)+'M';if(v>=1e3)return(v/1e3).toFixed(1)+'K';return v.toFixed(0);}
+    if(el('oi-cur'))el('oi-cur').textContent=curOIUSD?'$'+fmtOI(curOIUSD):fmtOI(curOI);
+    if(el('oi-cur-sub'))el('oi-cur-sub').textContent=curOI?'계약수: '+fmtOI(curOI):'현재 미결제약정';
+    // OI 변화 (최근 1h)
+    var oiChgPct=null, oiChgDir='flat';
+    if(hist&&hist.length>=2){
+      var latest=parseFloat(hist[hist.length-1].sumOpenInterest);
+      var prev=parseFloat(hist[hist.length-2].sumOpenInterest);
+      if(prev>0){oiChgPct=(latest-prev)/prev*100;}
+      // 추세: 6시간치 비교
+      if(hist.length>=6){
+        var sixAgo=parseFloat(hist[hist.length-6].sumOpenInterest);
+        var oiTrendPct=(latest-sixAgo)/sixAgo*100;
+        var trendEl=el('oi-trend'),trendSub=el('oi-trend-sub');
+        if(trendEl){
+          if(oiTrendPct>3){trendEl.textContent='▲ '+oiTrendPct.toFixed(1)+'%';trendEl.className='oi-cell-v up';}
+          else if(oiTrendPct<-3){trendEl.textContent='▼ '+oiTrendPct.toFixed(1)+'%';trendEl.className='oi-cell-v dn';}
+          else{trendEl.textContent='→ '+oiTrendPct.toFixed(1)+'%';trendEl.className='oi-cell-v flat';}
+        }
+        if(trendSub)trendSub.textContent='6시간 OI 변화율';
+      }
+    }
+    var chgEl=el('oi-chg'),chgSub=el('oi-chg-sub');
+    if(chgEl){
+      if(oiChgPct!==null){
+        if(oiChgPct>1.5){oiChgDir='bull';chgEl.textContent='▲ +'+oiChgPct.toFixed(2)+'%';chgEl.className='oi-cell-v up';}
+        else if(oiChgPct<-1.5){oiChgDir='bear';chgEl.textContent='▼ '+oiChgPct.toFixed(2)+'%';chgEl.className='oi-cell-v dn';}
+        else{chgEl.textContent='→ '+oiChgPct.toFixed(2)+'%';chgEl.className='oi-cell-v flat';}
+      }else{chgEl.textContent='—';chgEl.className='oi-cell-v flat';}
+    }
+    if(chgSub)chgSub.textContent='직전 1시간 대비';
+    // 펀딩비
+    var avgFund=null;
+    if(fundData&&fundData.length){avgFund=fundData.reduce(function(s,d){return s+parseFloat(d.fundingRate||0);},0)/fundData.length;}
+    var fundEl=el('oi-fund'),fundSub=el('oi-fund-sub');
+    if(fundEl){
+      if(avgFund!==null){
+        var fundPct=(avgFund*100).toFixed(4);
+        if(avgFund>0.001){fundEl.textContent='+'+fundPct+'%';fundEl.className='oi-cell-v up';}
+        else if(avgFund<-0.001){fundEl.textContent=fundPct+'%';fundEl.className='oi-cell-v dn';}
+        else{fundEl.textContent=fundPct+'%';fundEl.className='oi-cell-v flat';}
+        if(fundSub)fundSub.textContent=avgFund>0.001?'롱 과열 — 매수 신중':avgFund<-0.001?'숏 과열 — 반등 기대':'중립';
+      }else{fundEl.textContent='—';fundEl.className='oi-cell-v flat';}
+    }
+    // OI 신호 종합
+    var sigEl=el('oi-signal');
+    if(sigEl){
+      var priceTrend=G.bt&&G.bt.b1WR>=55;
+      if(oiChgDir==='bull'&&avgFund!==null&&avgFund<0.0005){
+        sigEl.textContent='✅ OI 증가 + 펀딩비 낮음 → 롱 포지션 유입. 매수 신호 강화';sigEl.className='oi-signal bull';
+        G._oiScore=15;
+      }else if(oiChgDir==='bear'&&avgFund!==null&&avgFund>0.001){
+        sigEl.textContent='⚠ OI 감소 + 펀딩비 높음 → 롱 청산 압력. 진입 신중';sigEl.className='oi-signal bear';
+        G._oiScore=-10;
+      }else if(oiChgDir==='bull'){
+        sigEl.textContent='📊 OI 증가 중 — 새 포지션 유입 확인. 방향 확인 필요';sigEl.className='oi-signal flat';
+        G._oiScore=5;
+      }else{
+        sigEl.textContent='— OI 변화 미미 — 관망 구간';sigEl.className='oi-signal flat';
+        G._oiScore=0;
+      }
+    }
+    if(el('oi-ts'))el('oi-ts').textContent=new Date().toLocaleTimeString('ko-KR');
+  }).catch(function(){if(panel)panel.classList.remove('on');});
+}
+
+// ════════════════════════════════════════════════
+//  BTC 도미넌스 + USDT.D 거시 지표 (CoinGecko)
+// ════════════════════════════════════════════════
+var G_MACRO={btcDom:null,altDom:null,mktChg:null,fetched:false,fetchedAt:0};
+function fetchMacroDom(){
+  var panel=el('macro-panel');if(!panel)return;
+  // 5분 캐시
+  if(G_MACRO.fetched&&Date.now()-G_MACRO.fetchedAt<300000){renderMacro();panel.classList.add('on');return;}
+  fetch('https://api.coingecko.com/api/v3/global')
+  .then(function(r){if(!r.ok)throw new Error();return r.json();})
+  .then(function(d){
+    var data=d.data;
+    G_MACRO.btcDom=parseFloat(data.market_cap_percentage.btc)||0;
+    G_MACRO.ethDom=parseFloat(data.market_cap_percentage.eth)||0;
+    G_MACRO.altDom=100-G_MACRO.btcDom;
+    G_MACRO.mktChg=parseFloat(data.market_cap_change_percentage_24h_usd)||0;
+    G_MACRO.activeCurrencies=data.active_cryptocurrencies||0;
+    G_MACRO.fetched=true; G_MACRO.fetchedAt=Date.now();
+    renderMacro();panel.classList.add('on');
+  }).catch(function(){
+    // CoinGecko 실패 시 대체 메시지
+    panel.classList.add('on');
+    var altBar=el('altseason-bar');
+    if(altBar){altBar.textContent='— CoinGecko API 응답 대기 중 (속도 제한)';altBar.className='altseason-bar neut';}
+  });
+}
+function renderMacro(){
+  var btcDom=G_MACRO.btcDom, altDom=G_MACRO.altDom, mktChg=G_MACRO.mktChg;
+  var domEl=el('macro-btcdom'),altEl=el('macro-altdom'),chgEl=el('macro-mktchg');
+  var idxEl=el('macro-altidx'),altBar=el('altseason-bar');
+  if(domEl){
+    domEl.textContent=btcDom.toFixed(1)+'%';
+    domEl.className='macro-card-v '+(btcDom>=55?'bear':btcDom<=45?'bull':'flat');
+  }
+  if(altEl){
+    altEl.textContent=altDom.toFixed(1)+'%';
+    altEl.className='macro-card-v '+(altDom>=55?'bull':altDom<=40?'bear':'flat');
+  }
+  if(chgEl){
+    chgEl.textContent=(mktChg>=0?'+':'')+mktChg.toFixed(2)+'%';
+    chgEl.className='macro-card-v '+(mktChg>=2?'bull':mktChg<=-2?'bear':'flat');
+  }
+  // 알트시즌 지수 계산 (BTC Dom 기반)
+  // BTC Dom < 42% = 극단적 알트시즌, 42~48% = 알트시즌, 48~55% = 중립, >55% = BTC 지배
+  var altIdx, altTxt, altCls;
+  if(btcDom<42){altIdx=90;altTxt='🚀 극단 알트시즌';altCls='alt';}
+  else if(btcDom<48){altIdx=70;altTxt='✅ 알트시즌 진행 중';altCls='alt';}
+  else if(btcDom<55){altIdx=50;altTxt='⚡ 알트/BTC 중립';altCls='neut';}
+  else{altIdx=20;altTxt='₿ BTC 지배 시즌 — 알트 신중';altCls='btc';}
+  if(idxEl){idxEl.textContent=altIdx;idxEl.className='macro-card-v '+(altCls==='alt'?'bull':altCls==='btc'?'bear':'flat');}
+  if(altBar){altBar.textContent=altTxt+' | BTC Dom '+btcDom.toFixed(1)+'% | 시총 24h: '+(mktChg>=0?'+':'')+mktChg.toFixed(2)+'%';altBar.className='altseason-bar '+altCls;}
+  // 거시 점수 저장 (황금각에 반영)
+  G_MACRO.altScore=altCls==='alt'?10:altCls==='btc'?-8:0;
+  // 패널 서브텍스트
+  var domSub=el('macro-btcdom-sub');
+  if(domSub)domSub.textContent=btcDom>=55?'BTC 강세 — 알트 약할 수 있음':btcDom<=45?'알트 유리한 환경':'중립 구간';
+  // 시장 탭 동기화
+  var pBtcDom=el('pulse-btcdom'),pAltDom=el('pulse-altdom'),pMktChg=el('pulse-mktchg'),pAltBar=el('pulse-altbar');
+  if(pBtcDom){pBtcDom.textContent=btcDom.toFixed(1)+'%';pBtcDom.style.color=btcDom>=55?'var(--R)':btcDom<=45?'var(--G)':'var(--t2)';}
+  if(pAltDom){pAltDom.textContent=altDom.toFixed(1)+'%';pAltDom.style.color=altDom>=55?'var(--G)':altDom<=40?'var(--R)':'var(--t2)';}
+  if(pMktChg){pMktChg.textContent=(mktChg>=0?'+':'')+mktChg.toFixed(2)+'%';pMktChg.style.color=mktChg>=2?'var(--G)':mktChg<=-2?'var(--R)':'var(--t2)';}
+  if(pAltBar){pAltBar.textContent=altTxt+' | BTC Dom '+btcDom.toFixed(1)+'%';pAltBar.className='altseason-bar '+altCls;}
 }
 
 function calculate(isLive){
@@ -2294,20 +2760,28 @@ function renderGoldenSignal(smart,isBull,curVolRatio,livePrice){
   var panel=el('golden-panel');
   if(panel) panel.classList.add('on');
   var rsi=smart.rsi,fibH=smart.fibH,fibL=smart.fibL,score=0;
+  // ──── 최적화된 가중치 사용 (기본값: RSI 35%, Fib 35%, Vol 30%) ────
+  var W=G.goldenWeights||{rw:0.35,fw:0.35,vw:0.30};
+  // 가중치를 100점 스케일로 환산 (RSI 최대 35점 기준)
+  var RSI_MAX=35, FIB_MAX=35, VOL_MAX=25, BIAS_MAX=20;
+  var rsiMaxScaled=Math.round(RSI_MAX*(W.rw/0.35));
+  var fibMaxScaled=Math.round(FIB_MAX*(W.fw/0.35));
+  var volMaxScaled=Math.round(VOL_MAX*(W.vw/0.30));
   // 장세
   if(isBull===true)score+=20; else if(isBull===false)score+=10; else score+=5;
-  // RSI
+  // RSI (가중치 반영)
   var prevRSI=G._prevRSI||rsi;
   var rsiCrossing=prevRSI<30&&rsi>=30;
-  var rsiScore=rsiCrossing?35:rsi<30?25:rsi<40?18:rsi<50?10:rsi>70?-10:5;
+  var rsiRaw=rsiCrossing?1.0:rsi<30?0.71:rsi<40?0.51:rsi<50?0.29:rsi>70?-0.29:0.14;
+  var rsiScore=Math.round(rsiRaw*rsiMaxScaled);
   score+=rsiScore; G._prevRSI=rsi;
-  // 개선②: RSI 다이버전스 보너스
+  // RSI 다이버전스 보너스
   var div=smart.divergence;
   if(div&&div.bull){var db=Math.round(div.strength*20);score+=db;}
-  // 개선④: 캔들 패턴 보너스
+  // 캔들 패턴 보너스
   var cp=smart.candlePattern;
   if(cp&&cp.bullish){var cpb=cp.morningStar?15:cp.engulf?12:cp.hammer?10:8;score+=cpb;}
-  // 개선③: VWAP 보너스
+  // VWAP 보너스
   var vwapBonus=0;
   if(smart.vwap){var vd2=Math.abs(livePrice-smart.vwap)/livePrice*100;vwapBonus=vd2<0.5?15:vd2<1.5?8:livePrice<smart.vwap?5:0;score+=vwapBonus;}
   var rsiTxt=rsi.toFixed(1);
@@ -2318,28 +2792,31 @@ function renderGoldenSignal(smart,isBull,curVolRatio,livePrice){
   if(rsiEl){rsiEl.textContent=rsiTxt;rsiEl.style.color=rsiColor;}
   if(rsiFill){rsiFill.style.width=Math.min(100,rsi)+'%';rsiFill.style.background=rsi<30?'var(--G)':rsi>70?'var(--R)':'var(--B)';}
   if(rsiSub)rsiSub.textContent=rsiSubTxt;
-  // 거래량
+  // 거래량 (가중치 반영)
   var vr=curVolRatio||1;
-  var volScore=vr>=2?25:vr>=1.5?18:vr>=0.8?8:-5; score+=volScore;
+  var volRaw=vr>=2?1.0:vr>=1.5?0.72:vr>=0.8?0.32:-0.20;
+  var volScore=Math.round(volRaw*volMaxScaled); score+=volScore;
   var volTxt=vr>=2?'🔥 급증':vr>=1.5?'✅ 충분':vr>=0.8?'⚡ 보통':'⚠ 부족';
   var volColor=vr>=1.5?'var(--G)':vr>=0.8?'var(--t2)':'var(--R)';
   var sgVol=el('sg-vol'),sgVolSub=el('sg-vol-sub');
   if(sgVol){sgVol.textContent=volTxt;sgVol.style.color=volColor;}
   if(sgVolSub)sgVolSub.textContent='평균 '+vr.toFixed(1)+'배';
-  // 피보나치
-  var fibScore=5,fibTxt='계산 중',fibColor='var(--t3)',fibSub='스윙 포인트 탐색';
+  // 피보나치 (가중치 반영)
+  var fibScore=Math.round(0.14*fibMaxScaled),fibTxt='계산 중',fibColor='var(--t3)',fibSub='스윙 포인트 탐색';
   if(fibH&&fibL&&fibH>fibL){
     var fr=fibH-fibL,f618=fibH-fr*0.618,f786=fibH-fr*0.786;
     var d618=Math.abs(livePrice-f618)/livePrice*100;
     var d786=Math.abs(livePrice-f786)/livePrice*100;
-    if(d618<1.5){fibScore=25;fibTxt='Fib 61.8%';fibColor='var(--G)';fibSub='$'+fp(f618)+' 지지선';}
-    else if(d786<1.5){fibScore=20;fibTxt='Fib 78.6%';fibColor='var(--G)';fibSub='$'+fp(f786)+' 깊은 지지';}
-    else if(livePrice>fibH-fr*0.382){fibScore=5;fibTxt='상단 구간';fibColor='var(--t3)';fibSub='지지선까지 거리 있음';}
-    else{fibScore=15;fibTxt='중간 구간';fibColor='var(--t2)';fibSub='$'+fp(f618)+' 향해 하락 중';}
-    // ⑥ 황금 포켓 보너스 (61.8~65%)
-    var gpLo2=fibH-fr*0.650, gpHi2=fibH-fr*0.618;
+    var fibRaw;
+    if(d618<1.5){fibRaw=1.0;fibTxt='Fib 61.8%';fibColor='var(--G)';fibSub='$'+fp(f618)+' 지지선';}
+    else if(d786<1.5){fibRaw=0.8;fibTxt='Fib 78.6%';fibColor='var(--G)';fibSub='$'+fp(f786)+' 깊은 지지';}
+    else if(livePrice>fibH-fr*0.382){fibRaw=0.14;fibTxt='상단 구간';fibColor='var(--t3)';fibSub='지지선까지 거리 있음';}
+    else{fibRaw=0.43;fibTxt='중간 구간';fibColor='var(--t2)';fibSub='$'+fp(f618)+' 향해 하락 중';}
+    fibScore=Math.round(fibRaw*fibMaxScaled);
+    // 황금 포켓 보너스 (61.8~65%)
+    var gpLo2=fibH-fr*0.650,gpHi2=fibH-fr*0.618;
     if(livePrice>=gpLo2&&livePrice<=gpHi2*1.005){fibScore+=10;fibTxt='🥇황금포켓';fibSub+=' (61.8~65%)';}
-    // ⑤ MTF 컨플루언스 보너스
+    // MTF 컨플루언스 보너스
     if(smart&&smart.fibConfluence&&smart.fibConfluence.confluence){
       fibScore+=15;fibTxt+=' 🟣MTF';fibSub+=' | '+smart.fibConfluence.confluence.name;
     }
@@ -2360,6 +2837,13 @@ function renderGoldenSignal(smart,isBull,curVolRatio,livePrice){
     else if(isBull===false){tpBar.className='tp-mode bear';if(tpIcon)tpIcon.textContent='📉';if(tpTxt)tpTxt.textContent='하락장 — 목표가: 38.2% 반등 (짧게)';}
     else{tpBar.style.display='none';}
   }
+  // ── OI 신호 보너스 (미결제약정 변화 반영) ────────────────────────
+  var oiBonus=G._oiScore||0; score+=oiBonus;
+  // ── 거시 지표 보너스 (알트시즌 여부 반영) ────────────────────────
+  var macroBonus=G_MACRO.altScore||0; score+=macroBonus;
+  // ── Walk-Forward 신뢰도 보너스 ───────────────────────────────────
+  var wfBonus=0;
+  if(G._wfScore){wfBonus=G._wfScore>=60?8:G._wfScore>=40?0:-8;score+=wfBonus;}
   // 총점 판정
   score=Math.max(0,Math.min(100,score));
   var banner=el('gb-banner'),gbIcon=el('gb-icon'),gbTitle=el('gb-title'),gbDesc=el('gb-desc'),gbScore=el('gb-score');
@@ -2368,7 +2852,7 @@ function renderGoldenSignal(smart,isBull,curVolRatio,livePrice){
     if(banner)banner.className='golden-banner hit';
     if(gbIcon)gbIcon.textContent=rsiCrossing?'🚨':'🌟';
     if(gbTitle){gbTitle.textContent='황금 매수각 — 지금이 타이밍!';gbTitle.className='gb-title hit';}
-    var reasons=[];if(rsi<40)reasons.push('RSI 과매도');if(vr>=1.5)reasons.push('거래량 충분');if(fibScore>=20)reasons.push('피보나치 지지');if(isBull===true)reasons.push('상승장');
+    var reasons=[];if(rsi<40)reasons.push('RSI 과매도');if(vr>=1.5)reasons.push('거래량 충분');if(fibScore>=fibMaxScaled*0.7)reasons.push('피보나치 지지');if(isBull===true)reasons.push('상승장');if(oiBonus>0)reasons.push('OI 매수');if(macroBonus>0)reasons.push('알트시즌');
     if(gbDesc)gbDesc.textContent=reasons.join(' + ')+' 동시 충족';
     if(gbScore)gbScore.style.color='var(--G)';
   } else if(score>=50){
@@ -2671,6 +3155,14 @@ function renderSummaryCard(){
     relScore+=dayScore;
     // 3. PF 품질 (최대 10점)
     relScore+=bt2.b1PF>=2?10:bt2.b1PF>=1.5?7:bt2.b1PF>=1.2?4:0;
+    // 4. Walk-Forward 신뢰도 보너스 (최대 10점)
+    if(G._wfScore){relScore+=G._wfScore>=60?10:G._wfScore>=40?5:-5;}
+    // 5. OI 신호 보너스
+    if(G._oiScore){relScore+=G._oiScore>0?5:G._oiScore<0?-5:0;}
+    // 4. Walk-Forward 신뢰도 보너스 (최대 10점)
+    if(G._wfScore){relScore+=G._wfScore>=60?10:G._wfScore>=40?5:-5;}
+    // 5. OI 신호 보너스
+    if(G._oiScore){relScore+=G._oiScore>0?5:G._oiScore<0?-5:0;}
     // 4. BTC 베타 (±5점)
     if(G.btcBeta!==null){
       if(G.btcBeta>=0.5&&G.btcBeta<=2.0)relScore+=5; // 적정 베타
@@ -2709,6 +3201,12 @@ function renderSummaryCard(){
     var sDays=Math.round(bt2.bd);
     sampleChip.textContent='샘플 '+bt2.b1T+'회/'+sDays+'일';
     sampleChip.className='rel-chip '+(bt2.b1T>=60?'good':bt2.b1T>=30?'warn':'bad');
+  }
+  // Walk-Forward 칩
+  var wfChip=el('rel-wf');
+  if(wfChip){
+    if(G._wfScore!=null){wfChip.textContent='WF '+G._wfScore+'점';wfChip.className='rel-chip '+(G._wfScore>=60?'good':G._wfScore>=40?'warn':'bad');}
+    else{wfChip.textContent='WF 검증중';wfChip.className='rel-chip';}
   }
 
   if(el('sc-action')){el('sc-action').textContent=action;el('sc-action').className='sc-action '+actionCls;}
