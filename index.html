@@ -1064,136 +1064,71 @@ html,body{background:var(--bg0);color:var(--t1);font-family:var(--ui);font-size:
       <!-- 12카드 그리드 -->
       <div class="sc-grid">
 
-        <!-- 1+2. 2×2 판단 매트릭스 (종합환경 × 황금각타이밍) -->
-        <div class="sc-matrix" onclick="showCardDetail(1)" style="cursor:pointer">
-          <div class="sc-matrix-top">
-            <span class="sc-matrix-lbl">판단 매트릭스</span>
-            <span class="sc-matrix-icon">탭 ›</span>
-          </div>
-          <div class="sc-matrix-grid">
-            <!-- A: 환경↑ + 타이밍↑ -->
-            <div class="sc-mx-cell mx-go" id="mx-go">
-              <span class="sc-mx-label">✅ 진입 최적</span>
-              <span class="sc-mx-desc">환경 유리 + 황금각 확인</span>
-            </div>
-            <!-- B: 환경↑ + 타이밍↓ -->
-            <div class="sc-mx-cell mx-wait-env" id="mx-wait-env">
-              <span class="sc-mx-label">⏳ 타이밍 대기</span>
-              <span class="sc-mx-desc">장세 좋음, RSI/Fib 개선 기다림</span>
-            </div>
-            <!-- C: 환경↓ + 타이밍↑ -->
-            <div class="sc-mx-cell mx-wait-tim" id="mx-wait-tim">
-              <span class="sc-mx-label">⚡ 소량 진입</span>
-              <span class="sc-mx-desc">황금각 나옴, 장세 불리 → 비중 ↓</span>
-            </div>
-            <!-- D: 환경↓ + 타이밍↓ -->
-            <div class="sc-mx-cell mx-stop" id="mx-stop">
-              <span class="sc-mx-label">❌ 패스</span>
-              <span class="sc-mx-desc">환경·타이밍 모두 불리</span>
+        <!-- 1+2. 판단 매트릭스 — 이미지 스타일 4카드 -->
+        <div class="sc-matrix" style="padding:0;background:none;border:none">
+          <!-- 점수 헤더 -->
+          <div style="display:flex;align-items:center;justify-content:space-between;padding:8px 12px 6px;background:var(--bg1);border-bottom:1px solid var(--bd)">
+            <span style="font-size:9px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--t3)">판단 매트릭스</span>
+            <div style="display:flex;gap:10px;align-items:center">
+              <span style="font-size:10px;color:var(--t3)">종합환경 <span id="mx-env-val" style="font-family:var(--num);font-weight:700;color:var(--G)">—점</span></span>
+              <span style="color:var(--t3);font-size:10px">×</span>
+              <span style="font-size:10px;color:var(--t3)">타이밍 <span id="mx-gb-val" style="font-family:var(--num);font-weight:700;color:var(--A)">—점</span></span>
+              <span style="color:var(--t3);font-size:10px">=</span>
+              <span id="mx-verdict" style="font-family:var(--num);font-size:11px;font-weight:800;color:var(--t2)">—</span>
             </div>
           </div>
-          <div class="sc-matrix-scores">
-            <div class="sc-mx-score">
-              <span class="sc-mx-score-lbl">종합 환경</span>
-              <div class="sc-mx-score-bar"><div class="sc-mx-score-fill" id="mx-env-fill" style="width:0%;background:var(--G)"></div></div>
-              <span class="sc-mx-score-val good" id="mx-env-val">—점</span>
-            </div>
-            <span class="sc-mx-vs">×</span>
-            <div class="sc-mx-score">
-              <span class="sc-mx-score-lbl">황금각 타이밍</span>
-              <div class="sc-mx-score-bar"><div class="sc-mx-score-fill" id="mx-gb-fill" style="width:0%;background:var(--A)"></div></div>
-              <span class="sc-mx-score-val warn" id="mx-gb-val">—점</span>
-            </div>
-            <span class="sc-mx-vs">=</span>
-            <div class="sc-mx-score">
-              <span class="sc-mx-score-lbl">판정</span>
-              <span class="sc-mx-score-val" id="mx-verdict" style="color:var(--t2)">—</span>
-            </div>
-          </div>
-        </div>
+          <!-- 4카드 그리드 -->
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--bd)">
 
-        <!-- 3. 매수가 BUY1 -->
-        <div class="sc-card" onclick="showCardDetail(3)">
-          <div class="sc-card-top">
-            <span class="sc-card-lbl">매수가 BUY1</span>
-            <span class="sc-card-icon">📍</span>
-          </div>
-          <div class="sc-card-row">
-            <div class="sc-card-val good" id="sc-buy1">—</div>
-            <div class="sc-card-aux" id="sc-buy1-sub">—</div>
-          </div>
-          <div class="sc-card-sub" id="sc-buy1-hint">현재가 대비</div>
-          <span class="sc-card-tap">탭 ›</span>
-        </div>
+            <!-- A: 지금 들어가기 최고 (GO) -->
+            <div class="sc-mx-cell mx-go" id="mx-go" onclick="showCardDetail(1)" style="padding:12px 10px;min-height:90px;border-radius:0;border:none;cursor:pointer;position:relative">
+              <div style="font-size:20px;margin-bottom:4px">✅</div>
+              <div class="sc-mx-label" style="font-size:11px;font-weight:800;margin-bottom:3px">지금 들어가기 최고!</div>
+              <div class="sc-mx-desc" style="font-size:10px">환경 + 골드 신호 확인</div>
+              <div class="sc-mx-active-badge" id="mx-go-badge" style="display:none">현재</div>
+            </div>
 
-        <!-- 4. 손절가 -->
-        <div class="sc-card" onclick="showCardDetail(4)">
-          <div class="sc-card-top">
-            <span class="sc-card-lbl">손절가 Stop</span>
-            <span class="sc-card-icon">🛑</span>
-          </div>
-          <div class="sc-card-row">
-            <div class="sc-card-val bad" id="sc-stop">—</div>
-            <div class="sc-card-aux bad" id="sc-stop-sub">—</div>
-          </div>
-          <div class="sc-card-sub">진입 대비</div>
-          <span class="sc-card-tap">탭 ›</span>
-        </div>
+            <!-- B: 타이밍 기다리기 (WAIT ENV) -->
+            <div class="sc-mx-cell mx-wait-env" id="mx-wait-env" onclick="showCardDetail(1)" style="padding:12px 10px;min-height:90px;border-radius:0;border:none;cursor:pointer;position:relative">
+              <div style="font-size:20px;margin-bottom:4px">⏳</div>
+              <div class="sc-mx-label" style="font-size:11px;font-weight:800;margin-bottom:3px">타이밍 기다리기</div>
+              <div class="sc-mx-desc" style="font-size:10px">좋은 자릿수, 대기</div>
+              <div class="sc-mx-active-badge" id="mx-wait-env-badge" style="display:none">현재</div>
+            </div>
 
-        <!-- 5. 목표가 TP -->
-        <div class="sc-card" onclick="showCardDetail(5)">
-          <div class="sc-card-top">
-            <span class="sc-card-lbl">목표가 TP</span>
-            <span class="sc-card-icon">🎯</span>
-          </div>
-          <div class="sc-card-row">
-            <div class="sc-card-val warn" id="sc-tp">—</div>
-            <div class="sc-card-aux good" id="sc-tp-sub">—</div>
-          </div>
-          <div class="sc-card-sub">진입 대비</div>
-          <span class="sc-card-tap">탭 ›</span>
-        </div>
+            <!-- C: 조금만 들어가기 (WAIT TIM) -->
+            <div class="sc-mx-cell mx-wait-tim" id="mx-wait-tim" onclick="showCardDetail(1)" style="padding:12px 10px;min-height:90px;border-radius:0;border:none;cursor:pointer;position:relative">
+              <div style="font-size:20px;margin-bottom:4px">⚡</div>
+              <div class="sc-mx-label" style="font-size:11px;font-weight:800;margin-bottom:3px">조금만 들어가기</div>
+              <div class="sc-mx-desc" style="font-size:10px">골드 신호 빠짐, 조금만 사기↓</div>
+              <div class="sc-mx-active-badge" id="mx-wait-tim-badge" style="display:none">현재</div>
+            </div>
 
-        <!-- 6. 청산가 -->
-        <div class="sc-card" onclick="showCardDetail(6)">
-          <div class="sc-card-top">
-            <span class="sc-card-lbl">청산가 (강제청산)</span>
-            <span class="sc-card-icon">💀</span>
-          </div>
-          <div class="sc-card-row">
-            <div class="sc-card-val bad" id="sc-liq">—</div>
-            <div class="sc-card-aux good" id="sc-liq-sub">—</div>
-          </div>
-          <div class="sc-card-sub">여유 거리</div>
-          <span class="sc-card-tap">탭 ›</span>
-        </div>
+            <!-- D: 지금은 패스 (STOP) -->
+            <div class="sc-mx-cell mx-stop" id="mx-stop" onclick="showCardDetail(1)" style="padding:12px 10px;min-height:90px;border-radius:0;border:none;cursor:pointer;position:relative">
+              <div style="font-size:20px;margin-bottom:4px">❌</div>
+              <div class="sc-mx-label" style="font-size:11px;font-weight:800;margin-bottom:3px">지금은 패스</div>
+              <div class="sc-mx-desc" style="font-size:10px">모든 상황 나빠 / 타이밍 놓침</div>
+              <div class="sc-mx-active-badge" id="mx-stop-badge" style="display:none">현재</div>
+            </div>
 
-        <!-- 7. 투자 권장 금액 -->
-        <div class="sc-card" onclick="showCardDetail(7)">
-          <div class="sc-card-top">
-            <span class="sc-card-lbl">투자 권장 (보정 후)</span>
-            <span class="sc-card-icon">💰</span>
           </div>
-          <div class="sc-card-row">
-            <div class="sc-card-val warn" id="sc-invest-val">—</div>
-            <div class="sc-card-aux neut" id="sc-invest-sub">100만원</div>
+          <!-- 점수 바 -->
+          <div style="display:flex;gap:8px;padding:7px 12px;background:var(--bg1);border-top:1px solid var(--bd)">
+            <div style="flex:1">
+              <div style="display:flex;justify-content:space-between;font-size:9px;color:var(--t3);margin-bottom:3px"><span>진체 상황</span><span>×</span></div>
+              <div style="height:3px;background:var(--bg3);border-radius:2px;overflow:hidden"><div id="mx-env-fill" style="height:100%;border-radius:2px;background:var(--G);width:0%;transition:width .5s"></div></div>
+              <div style="font-family:var(--num);font-size:10px;font-weight:700;color:var(--t2);margin-top:2px" id="mx-env-score-lbl">—점</div>
+            </div>
+            <div style="flex:1">
+              <div style="display:flex;justify-content:space-between;font-size:9px;color:var(--t3);margin-bottom:3px"><span>골드 신호 타이밍</span><span>=</span></div>
+              <div style="height:3px;background:var(--bg3);border-radius:2px;overflow:hidden"><div id="mx-gb-fill" style="height:100%;border-radius:2px;background:var(--A);width:0%;transition:width .5s"></div></div>
+              <div style="font-family:var(--num);font-size:10px;font-weight:700;color:var(--t2);margin-top:2px" id="mx-gb-score-lbl">—점</div>
+            </div>
+            <div style="display:flex;align-items:center;padding-top:4px">
+              <span id="mx-verdict-lbl" style="font-family:var(--num);font-size:11px;font-weight:800;color:var(--t2)">—</span>
+            </div>
           </div>
-          <div class="sc-card-sub">위험도 보정 적용</div>
-          <span class="sc-card-tap">탭 ›</span>
-        </div>
-
-        <!-- 8. 레버리지 손익 -->
-        <div class="sc-card" onclick="showCardDetail(8)">
-          <div class="sc-card-top">
-            <span class="sc-card-lbl">레버리지 손익 5배</span>
-            <span class="sc-card-icon">⚡</span>
-          </div>
-          <div class="sc-card-row">
-            <div class="sc-card-val good" id="sc-lev-win">—</div>
-            <div class="sc-card-aux bad" id="sc-lev-lose">—</div>
-          </div>
-          <div class="sc-card-sub">익절 / 손절</div>
-          <span class="sc-card-tap">탭 ›</span>
         </div>
 
         <!-- 9. 7일 방향성 -->
