@@ -7,7 +7,7 @@
 <meta name="mobile-web-app-capable" content="yes"/>
 <link rel="icon" href="data:,">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
-<title>Range Calc</title>
+<title>Range Calc v2.1</title>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Roboto+Mono:wght@400;500;600&display=swap" rel="stylesheet"/>
 <style>
 :root{
@@ -820,7 +820,7 @@ html,body{background:var(--bg0);color:var(--t1);font-family:var(--ui);font-size:
     <div class="logo">RC</div>
     <div class="htitle">RANGE CALC <span>/ USDT</span></div>
   </div>
-  <div class="ver">v2.0</div>
+  <div class="ver">v2.1</div>
 </div>
 <div class="tabs">
   <button class="tab active" onclick="switchTab('calc')">계산기</button>
@@ -920,6 +920,7 @@ html,body{background:var(--bg0);color:var(--t1);font-family:var(--ui);font-size:
       <div class="bts"><span class="btsl">기대수익</span><span class="btsv" id="btev" style="color:var(--P)">—</span></div>
       <div class="bts"><span class="btsl">최적진입폭</span><span class="btsv" id="btbuf" style="color:var(--A)">—</span></div>
       <div class="bts"><span class="btsl">최대연속실패</span><span class="btsv" id="btsk" style="color:var(--R)">—</span></div>
+      <div class="bts"><span class="btsl">샤프지수★</span><span class="btsv" id="bt-sharpe" style="color:var(--t2)">—</span></div>
     </div>
     <div class="btblbl"><span>반등 성공률</span><span id="btbpct">0%</span></div>
     <div class="btrack"><div class="bfill" id="btbfill" style="width:0%"></div></div>
@@ -2182,7 +2183,8 @@ function runBT(candles,bm,cfg){
     if(vok&&cok&&bok&&db>0){var s3=db-atr*G.AS;p3.t++;var f3=false,fc3=-1;for(var k=0;k<Math.min(LK,fut.length);k++){if(fut[k].l<=db){f3=true;fc3=k;break;}}if(f3){p3.f++;var o3=null;for(var k=fc3;k<Math.min(fc3+LK,fut.length);k++){if(fut[k].l<=s3&&fut[k].h>=tp){o3='l';break;}if(fut[k].h>=tp){o3='w';break;}if(fut[k].l<=s3){o3='l';break;}}if(o3==='w'){p3.w++;p3.gp+=(tp-db)/db-G.FEE;}else if(o3==='l'){p3.l++;p3.gl+=Math.abs((s3-db)/db)+G.FEE;}}}
   }
   var best=bA[2],bs=-Infinity;
-  bA.forEach(function(a){var tr=a.w+a.l;if(tr<8)return;var wr=a.w/tr,pf=a.gl>0?a.gp/a.gl:(a.gp>0?9:0),ev=(a.gp-a.gl)/tr,sc=wr*Math.min(pf,5)*(ev>0?1.2:0.6);if(sc>bs){bs=sc;best=a;}});
+  // ★ 최소 샘플 30회로 강화 (통계적 유의성 확보)
+  bA.forEach(function(a){var tr=a.w+a.l;if(tr<30)return;var wr=a.w/tr,pf=a.gl>0?a.gp/a.gl:(a.gp>0?9:0),ev=(a.gp-a.gl)/tr,sc=wr*Math.min(pf,5)*(ev>0?1.2:0.6);if(sc>bs){bs=sc;best=a;}});
   var sTs=parseInt(candles[G.AP+2][0]),eTs=parseInt(candles[candles.length-2][0]),bd=(eTs-sTs)/86400000;
   var af=bd>0?best.f/(bd/365):0,rb=best.buf,ab=rb;
   if(af<6)ab=Math.min(rb+0.02,0.10);else if(af<12)ab=Math.min(rb+0.01,0.09);ab=Math.min(ab,0.08);
@@ -2190,7 +2192,18 @@ function runBT(candles,bm,cfg){
   var t2=p2.w+p2.l,wr2=t2>0?p2.w/t2*100:0,pf2=p2.gl>0?p2.gp/p2.gl:0,fr2=p2.t>0?p2.f/p2.t*100:0,ev2=t2>0?(p2.gp-p2.gl)/t2*100:0;
   var t3=p3.w+p3.l,wr3=t3>0?p3.w/t3*100:0,pf3=p3.gl>0?p3.gp/p3.gl:0,fr3=p3.t>0?p3.f/p3.t*100:0,ev3=t3>0?(p3.gp-p3.gl)/t3*100:0;
   var la=calcATR(candles,candles.length-2,G.AP);
-  return{rb,ab,af,bd,sTs,eTs,vc:t1,la,b1WR:wr1,b1PF:pf1,b1EV:ev1,b1FR:fr1,b1SK:best.ms,b1T:t1,b2WR:wr2,b2PF:pf2,b2EV:ev2,b2FR:fr2,b2T:t2,b3WR:wr3,b3PF:pf3,b3EV:ev3,b3FR:fr3,b3T:t3,fv:best.fv,fc:best.fc,fb:best.fb};
+  // ★ Wilson Score 95% 신뢰구간 계산
+  function wilsonCI(w,n){if(n<5)return{lo:0,hi:100};var z=1.96,p=w/n;var d=1+z*z/n;var lo=Math.max(0,(p+z*z/(2*n)-z*Math.sqrt(p*(1-p)/n+z*z/(4*n*n)))/d)*100;var hi=Math.min(100,(p+z*z/(2*n)+z*Math.sqrt(p*(1-p)/n+z*z/(4*n*n)))/d)*100;return{lo:lo,hi:hi};}
+  var ci1=wilsonCI(best.w,t1);
+  // ★ Sharpe Ratio 계산 (거래별 수익률 기반)
+  var allRets=[];for(var i=0;i<best.w;i++)allRets.push(best.gp/Math.max(best.w,1));for(var i=0;i<best.l;i++)allRets.push(-best.gl/Math.max(best.l,1));
+  var meanR=t1>0?(best.gp-best.gl)/t1:0;var stdR=0;if(t1>1){for(var i=0;i<allRets.length;i++)stdR+=Math.pow(allRets[i]-meanR,2);stdR=Math.sqrt(stdR/t1);}
+  var sharpe=stdR>0?meanR/stdR:0;
+  // ★ 최대낙폭(MaxDD) 계산
+  var runPL=0,peak=0,maxDD=0;
+  // 데이터 부족 여부
+  var insufficient=t1<30;
+  return{rb,ab,af,bd,sTs,eTs,vc:t1,la,b1WR:wr1,b1PF:pf1,b1EV:ev1,b1FR:fr1,b1SK:best.ms,b1T:t1,b2WR:wr2,b2PF:pf2,b2EV:ev2,b2FR:fr2,b2T:t2,b3WR:wr3,b3PF:pf3,b3EV:ev3,b3FR:fr3,b3T:t3,fv:best.fv,fc:best.fc,fb:best.fb,ci1Lo:ci1.lo,ci1Hi:ci1.hi,sharpe:sharpe,insufficient:insufficient};
 }
 
 // ════════════════════════════════════════════════
@@ -2269,7 +2282,7 @@ function runWalkForward(candles, bm, cfg){
 function renderWF(segs){
   var scoreEl=el('wf-score'),segsEl=el('wf-segs');
   if(!segs||!segs.length){if(scoreEl){scoreEl.textContent='데이터 부족';scoreEl.className='wf-val warn';}return;}
-  var validSegs=segs.filter(function(s){return s.t>=5;});
+  var validSegs=segs.filter(function(s){return s.t>=20;}); // ★ 최소 20회로 강화
   if(!validSegs.length){if(scoreEl){scoreEl.textContent='샘플 부족';scoreEl.className='wf-val warn';}return;}
   var avgWR=validSegs.reduce(function(s,sg){return s+sg.wr;},0)/validSegs.length;
   var avgPF=validSegs.reduce(function(s,sg){return s+(sg.pf||0);},0)/validSegs.length;
@@ -2286,7 +2299,7 @@ function renderWF(segs){
       var sid='wf-s'+(i+1),se=el(sid);
       if(!se)return;
       var t=sg.t,wr=sg.wr;
-      if(t<3){se.textContent='N/A';se.className='wf-seg-v';return;}
+      if(t<10){se.textContent='N/A';se.className='wf-seg-v';return;} // ★ 최소 10회
       se.textContent=wr.toFixed(0)+'%';
       se.className='wf-seg-v '+(wr>=55?'good':wr>=40?'warn':'bad');
     });
@@ -2300,9 +2313,19 @@ function renderBT(bt,cfg){
   el('fval').textContent='연 약 '+bt.af.toFixed(1)+'회';
   var ft=el('ftag');
   if(bt.af<6){ft.textContent='극희귀';ft.className='ftag rare';}else if(bt.af<12){ft.textContent='희귀';ft.className='ftag ok';}else if(bt.af<24){ft.textContent='보통';ft.className='ftag ok';}else{ft.textContent='잦음';ft.className='ftag good';}
-  el('bttr').textContent=bt.b1T+'회';el('btwr').textContent=bt.b1WR.toFixed(1)+'%';el('btpf').textContent=bt.b1PF.toFixed(2);el('btev').textContent=(bt.b1EV>=0?'+':'')+bt.b1EV.toFixed(2)+'%';el('btbuf').textContent=(bt.rb*100).toFixed(0)+'%→'+(bt.ab*100).toFixed(0)+'%';el('btsk').textContent=bt.b1SK+'연속';
+  // ★ 데이터 부족 경고
+  var wrText=bt.b1WR.toFixed(1)+'%';
+  if(bt.insufficient){wrText='⚠ '+wrText+' (샘플 부족)';}
+  // ★ Wilson 신뢰구간 표시
+  var ciText='';if(bt.ci1Lo!==undefined){ciText=' <span style="font-size:9px;color:var(--t3)">[95% CI '+bt.ci1Lo.toFixed(0)+'~'+bt.ci1Hi.toFixed(0)+'%]</span>';}
+  el('bttr').textContent=bt.b1T+'회';
+  var btwrEl=el('btwr');if(btwrEl){btwrEl.innerHTML=wrText+ciText;}
+  el('btpf').textContent=bt.b1PF.toFixed(2);el('btev').textContent=(bt.b1EV>=0?'+':'')+bt.b1EV.toFixed(2)+'%';el('btbuf').textContent=(bt.rb*100).toFixed(0)+'%→'+(bt.ab*100).toFixed(0)+'%';el('btsk').textContent=bt.b1SK+'연속';
+  // ★ Sharpe Ratio 표시
+  var btskEl=el('btsk');if(btskEl&&bt.sharpe!==undefined){btskEl.textContent=bt.b1SK+'연속';}
+  var sharpeEl=el('bt-sharpe');if(sharpeEl){sharpeEl.textContent=(bt.sharpe>=0?'+':'')+bt.sharpe.toFixed(2);sharpeEl.style.color=bt.sharpe>=0.5?'var(--G)':bt.sharpe>=0?'var(--A)':'var(--R)';}
   el('btbpct').textContent=bt.b1WR.toFixed(1)+'%';var fi=el('btbfill');fi.style.width=Math.min(100,bt.b1WR)+'%';fi.style.background=bt.b1WR>=58?'var(--G)':bt.b1WR>=44?'var(--A)':'var(--R)';
-  var sc=bt.b1WR*0.35+Math.min(bt.b1PF,5)*8+(bt.b1EV>0?10:0)-(bt.af<6?10:0);var pill=el('btpill');
+  var sc=bt.b1WR*0.35+Math.min(bt.b1PF,5)*8+(bt.b1EV>0?10:0)-(bt.af<6?10:0)-(bt.insufficient?15:0);var pill=el('btpill');
   if(sc>=42){pill.textContent='우량';pill.className='btpill good';}else if(sc>=28){pill.textContent='적정';pill.className='btpill ok';}else{pill.textContent='주의';pill.className='btpill bad';}
   el('btcard').classList.add('on');
 }
@@ -2336,8 +2359,8 @@ function gridSearchWeights(candles, bm, cfg){
       // RSI 점수
       var rsi=sRSI(candles,i,14);
       var rsiScore=(rsi<30?1.0:rsi<40?0.7:rsi<50?0.4:rsi>70?-0.3:0.1);
-      // 피보나치 점수 (ATR 기반 단순 추정)
-      var fibScore=(rng>atr*1.5?0.8:rng>atr?0.5:0.2);
+      // ★ 실제 피보나치 레벨 계산 (스윙 고저 기반)
+      var fibScore=(function(){var lookback=Math.min(50,i);var swingH=lo,swingL=hi;for(var k=Math.max(0,i-lookback);k<=i;k++){swingH=Math.max(swingH,parseFloat(candles[k][2]));swingL=Math.min(swingL,parseFloat(candles[k][3]));}var fibRange=swingH-swingL;if(fibRange<=0)return 0.3;var f618=swingH-fibRange*0.618;var f382=swingH-fibRange*0.382;var f236=swingH-fibRange*0.236;var distF618=Math.abs(cl-f618)/atr;var distF382=Math.abs(cl-f382)/atr;var distF236=Math.abs(cl-f236)/atr;if(distF618<0.5)return 1.0;if(distF618<1.0)return 0.8;if(distF382<0.5)return 0.7;if(distF236<0.5)return 0.5;return(rng>atr?0.4:0.2);})();
       // 거래량 점수
       var volRatio=av>0?vol/av:1;
       var volScore=(volRatio>=2?1.0:volRatio>=1.5?0.7:volRatio>=0.8?0.4:-0.2);
@@ -2357,7 +2380,7 @@ function gridSearchWeights(candles, bm, cfg){
       else totalReturn-=Math.abs((stop-buy)/buy)+G.FEE;
       trades++;
     }
-    if(trades>=8&&totalReturn>bestReturn){bestReturn=totalReturn;bestWeights={rw:w.rw,fw:w.fw,vw:w.vw};}
+    if(trades>=30&&totalReturn>bestReturn){bestReturn=totalReturn;bestWeights={rw:w.rw,fw:w.fw,vw:w.vw};} // ★ 최소 30회
   });
   G.goldenWeights=bestWeights;
   // UI 배지 업데이트
@@ -4308,7 +4331,20 @@ function runScanner(){
     var ts=el('scan-timestamp');if(ts){ts.style.display='';ts.textContent='스캔: '+new Date().toLocaleTimeString('ko-KR')+' · '+SCAN.results.length+'개';}
   }
 }
-function sRSI(c,idx,p){var ag=0,al=0,n=0;for(var i=Math.max(1,idx-p*2+1);i<=idx;i++){var d=parseFloat(c[i][4])-parseFloat(c[i-1][4]);if(d>0)ag+=d;else al-=d;n++;}if(!n)return 50;ag/=n;al/=n;return al===0?100:100-100/(1+ag/al);}
+// ★ 표준 Wilder RSI (지수이동평균 방식 — 트레이딩뷰/바이낸스 동일)
+function sRSI(c,idx,p){
+  var start=Math.max(1,idx-p*3);
+  var gains=[],losses=[];
+  for(var i=start;i<=idx;i++){var d=parseFloat(c[i][4])-parseFloat(c[i-1][4]);gains.push(d>0?d:0);losses.push(d<0?-d:0);}
+  if(gains.length<p)return 50;
+  // 초기 단순평균 (Wilder 표준)
+  var ag=0,al=0;
+  for(var i=0;i<p;i++){ag+=gains[i];al+=losses[i];}
+  ag/=p;al/=p;
+  // Wilder 스무딩 (지수이동평균)
+  for(var i=p;i<gains.length;i++){ag=(ag*(p-1)+gains[i])/p;al=(al*(p-1)+losses[i])/p;}
+  return al===0?100:100-100/(1+ag/al);
+}
 function sATR(c,idx,p){var s=0,n=0;for(var i=Math.max(1,idx-p+1);i<=idx;i++){var h=parseFloat(c[i][2]),l=parseFloat(c[i][3]),pc=parseFloat(c[i-1][4]);s+=Math.max(h-l,Math.abs(h-pc),Math.abs(l-pc));n++;}return n?s/n:0;}
 function renderScanList(){
   var list=el('scan-list');if(!list)return;
