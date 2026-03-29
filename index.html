@@ -646,36 +646,48 @@ html,body{background:var(--bg0);color:var(--t1);font-family:var(--ui);font-size:
 .cd-bar-val{font-family:var(--num);font-size:10px;font-weight:600;width:38px;text-align:right;flex-shrink:0}
 .cd-tip{font-size:10px;color:var(--t3);line-height:1.6;margin-top:8px;padding:8px 10px;background:var(--bg2);border-radius:4px;border-left:3px solid var(--bd2)}
 .cd-tip b{color:var(--t2)}
-/* ── 2×2 판단 매트릭스 ── */
-.sc-matrix{grid-column:1/-1;background:var(--bg1);padding:10px 12px 8px}
-.sc-matrix-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px}
+/* ── 5단계 판단 매트릭스 ── */
+.sc-matrix{grid-column:1/-1;background:var(--bg1);padding:0}
+.sc-matrix-top{display:flex;align-items:center;justify-content:space-between;padding:8px 12px 6px;background:var(--bg1);border-bottom:1px solid var(--bd)}
 .sc-matrix-lbl{font-size:9px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--t3)}
 .sc-matrix-icon{font-size:10px;color:var(--t3)}
-.sc-matrix-grid{display:grid;grid-template-columns:1fr 1fr;gap:4px;margin-bottom:6px}
-.sc-mx-cell{padding:7px 9px;border-radius:5px;border:1px solid var(--bd);display:flex;flex-direction:column;gap:3px;position:relative;transition:border-color .2s}
-.sc-mx-cell.active{border-width:2px}
-.sc-mx-cell.mx-go{background:rgba(0,177,64,.07);border-color:rgba(0,177,64,.4)}
-.sc-mx-cell.mx-wait-env{background:rgba(240,176,64,.06);border-color:rgba(240,176,64,.25)}
-.sc-mx-cell.mx-wait-tim{background:rgba(51,112,255,.06);border-color:rgba(51,112,255,.25)}
-.sc-mx-cell.mx-stop{background:rgba(240,64,64,.05);border-color:rgba(240,64,64,.2)}
-.sc-mx-label{font-size:8px;font-weight:700;letter-spacing:.05em;text-transform:uppercase}
-.sc-mx-cell.mx-go .sc-mx-label{color:var(--G)}
-.sc-mx-cell.mx-wait-env .sc-mx-label{color:var(--A)}
-.sc-mx-cell.mx-wait-tim .sc-mx-label{color:var(--B)}
-.sc-mx-cell.mx-stop .sc-mx-label{color:var(--R)}
-.sc-mx-desc{font-size:9px;color:var(--t3);line-height:1.4}
-.sc-mx-active-badge{position:absolute;top:5px;right:6px;font-size:9px;font-weight:700;padding:1px 5px;border-radius:3px}
-.sc-mx-cell.mx-go .sc-mx-active-badge{background:var(--Gd);color:var(--G)}
-.sc-mx-cell.mx-wait-env .sc-mx-active-badge{background:var(--Ad);color:var(--A)}
-.sc-mx-cell.mx-wait-tim .sc-mx-active-badge{background:var(--Bd);color:var(--B)}
-.sc-mx-cell.mx-stop .sc-mx-active-badge{background:var(--Rd);color:var(--R)}
-.sc-matrix-scores{display:flex;align-items:center;justify-content:space-between;padding:6px 2px 0;border-top:1px solid var(--bd);margin-top:2px}
-.sc-mx-score{display:flex;flex-direction:column;align-items:center;gap:2px}
-.sc-mx-score-lbl{font-size:8px;color:var(--t3);letter-spacing:.04em}
-.sc-mx-score-bar{width:80px;height:4px;background:var(--bg3);border-radius:2px;overflow:hidden}
+.sc-matrix-grid{display:flex;flex-direction:column;gap:1px;background:var(--bd)}
+.sc-mx-cell{padding:14px 12px;border-radius:0;border:none;display:flex;align-items:center;gap:10px;position:relative;transition:all .2s;cursor:pointer;min-height:70px}
+.sc-mx-cell.active{transform:scale(1.02);z-index:10}
+.sc-mx-cell.mx-stage1{background:rgba(240,64,64,.08);border-left:4px solid var(--R)}
+.sc-mx-cell.mx-stage2{background:rgba(240,176,64,.08);border-left:4px solid var(--A)}
+.sc-mx-cell.mx-stage3{background:rgba(51,112,255,.08);border-left:4px solid var(--B)}
+.sc-mx-cell.mx-stage4{background:rgba(155,89,247,.08);border-left:4px solid var(--P)}
+.sc-mx-cell.mx-stage5{background:rgba(0,177,64,.08);border-left:4px solid var(--G)}
+.sc-mx-emoji{font-size:32px;flex-shrink:0;line-height:1}
+.sc-mx-content{flex:1;display:flex;flex-direction:column;gap:2px}
+.sc-mx-stage-num{font-family:var(--num);font-size:10px;font-weight:700;letter-spacing:.05em;opacity:.6}
+.sc-mx-cell.mx-stage1 .sc-mx-stage-num{color:var(--R)}
+.sc-mx-cell.mx-stage2 .sc-mx-stage-num{color:var(--A)}
+.sc-mx-cell.mx-stage3 .sc-mx-stage-num{color:var(--B)}
+.sc-mx-cell.mx-stage4 .sc-mx-stage-num{color:var(--P)}
+.sc-mx-cell.mx-stage5 .sc-mx-stage-num{color:var(--G)}
+.sc-mx-label{font-size:13px;font-weight:800;letter-spacing:.02em;line-height:1.3}
+.sc-mx-cell.mx-stage1 .sc-mx-label{color:var(--R)}
+.sc-mx-cell.mx-stage2 .sc-mx-label{color:var(--A)}
+.sc-mx-cell.mx-stage3 .sc-mx-label{color:var(--B)}
+.sc-mx-cell.mx-stage4 .sc-mx-label{color:var(--P)}
+.sc-mx-cell.mx-stage5 .sc-mx-label{color:var(--G)}
+.sc-mx-desc{font-size:10px;color:var(--t2);line-height:1.4}
+.sc-mx-active-badge{position:absolute;top:12px;right:12px;font-size:9px;font-weight:700;padding:2px 8px;border-radius:3px;display:none}
+.sc-mx-cell.active .sc-mx-active-badge{display:block}
+.sc-mx-cell.mx-stage1 .sc-mx-active-badge{background:var(--Rd);color:var(--R)}
+.sc-mx-cell.mx-stage2 .sc-mx-active-badge{background:var(--Ad);color:var(--A)}
+.sc-mx-cell.mx-stage3 .sc-mx-active-badge{background:var(--Bd);color:var(--B)}
+.sc-mx-cell.mx-stage4 .sc-mx-active-badge{background:var(--Pd);color:var(--P)}
+.sc-mx-cell.mx-stage5 .sc-mx-active-badge{background:var(--Gd);color:var(--G)}
+.sc-matrix-scores{display:flex;align-items:center;justify-content:space-between;padding:8px 12px;background:var(--bg1);border-top:1px solid var(--bd);gap:6px}
+.sc-mx-score{display:flex;flex-direction:column;gap:2px;flex:1}
+.sc-mx-score-lbl{font-size:8px;color:var(--t3);letter-spacing:.04em;margin-bottom:1px}
+.sc-mx-score-bar{width:100%;height:3px;background:var(--bg3);border-radius:2px;overflow:hidden}
 .sc-mx-score-fill{height:100%;border-radius:2px;transition:width .5s}
-.sc-mx-score-val{font-family:var(--num);font-size:11px;font-weight:700}
-.sc-mx-vs{font-size:10px;color:var(--t3)}
+.sc-mx-score-val{font-family:var(--num);font-size:10px;font-weight:700;margin-top:1px}
+.sc-mx-vs{font-size:10px;color:var(--t3);padding:0 4px}
 
 /* ── 롱/숏 7단계 게이지 ── */
 .ls-wrap{background:var(--bg1);border-bottom:1px solid var(--bd);padding:8px 12px 6px}
@@ -1064,69 +1076,97 @@ html,body{background:var(--bg0);color:var(--t1);font-family:var(--ui);font-size:
       <!-- 12카드 그리드 -->
       <div class="sc-grid">
 
-        <!-- 1+2. 판단 매트릭스 — 이미지 스타일 4카드 -->
-        <div class="sc-matrix" style="padding:0;background:none;border:none">
+        <!-- 1+2. 판단 매트릭스 — 5단계 큰 카드 -->
+        <div class="sc-matrix">
           <!-- 점수 헤더 -->
-          <div style="display:flex;align-items:center;justify-content:space-between;padding:8px 12px 6px;background:var(--bg1);border-bottom:1px solid var(--bd)">
-            <span style="font-size:9px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--t3)">판단 매트릭스</span>
-            <div style="display:flex;gap:10px;align-items:center">
-              <span style="font-size:10px;color:var(--t3)">종합환경 <span id="mx-env-val" style="font-family:var(--num);font-weight:700;color:var(--G)">—점</span></span>
-              <span style="color:var(--t3);font-size:10px">×</span>
-              <span style="font-size:10px;color:var(--t3)">타이밍 <span id="mx-gb-val" style="font-family:var(--num);font-weight:700;color:var(--A)">—점</span></span>
-              <span style="color:var(--t3);font-size:10px">=</span>
+          <div class="sc-matrix-top">
+            <span class="sc-matrix-lbl">판단 매트릭스</span>
+            <div style="display:flex;gap:8px;align-items:center;font-size:10px">
+              <span style="color:var(--t3)">환경 <span id="mx-env-val" style="font-family:var(--num);font-weight:700;color:var(--t2)">—</span></span>
+              <span style="color:var(--t3)">×</span>
+              <span style="color:var(--t3)">타이밍 <span id="mx-gb-val" style="font-family:var(--num);font-weight:700;color:var(--t2)">—</span></span>
+              <span style="color:var(--t3)">=</span>
               <span id="mx-verdict" style="font-family:var(--num);font-size:11px;font-weight:800;color:var(--t2)">—</span>
             </div>
           </div>
-          <!-- 4카드 그리드 -->
-          <div style="display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--bd)">
+          <!-- 5단계 카드 -->
+          <div class="sc-matrix-grid">
 
-            <!-- A: 지금 들어가기 최고 (GO) -->
-            <div class="sc-mx-cell mx-go" id="mx-go" onclick="showCardDetail(1)" style="padding:12px 10px;min-height:90px;border-radius:0;border:none;cursor:pointer;position:relative">
-              <div style="font-size:20px;margin-bottom:4px">✅</div>
-              <div class="sc-mx-label" style="font-size:11px;font-weight:800;margin-bottom:3px">지금 들어가기 최고!</div>
-              <div class="sc-mx-desc" style="font-size:10px">환경 + 골드 신호 확인</div>
-              <div class="sc-mx-active-badge" id="mx-go-badge" style="display:none">현재</div>
+            <!-- 1단계: 최악의 구간 -->
+            <div class="sc-mx-cell mx-stage1" id="mx-stage1" onclick="showCardDetail(1)">
+              <div class="sc-mx-emoji">💀</div>
+              <div class="sc-mx-content">
+                <div class="sc-mx-stage-num">1단계</div>
+                <div class="sc-mx-label">최악의 구간</div>
+                <div class="sc-mx-desc">환경 나쁨 + 타이밍 나쁨 → 절대 진입 금지</div>
+              </div>
+              <div class="sc-mx-active-badge">현재</div>
             </div>
 
-            <!-- B: 타이밍 기다리기 (WAIT ENV) -->
-            <div class="sc-mx-cell mx-wait-env" id="mx-wait-env" onclick="showCardDetail(1)" style="padding:12px 10px;min-height:90px;border-radius:0;border:none;cursor:pointer;position:relative">
-              <div style="font-size:20px;margin-bottom:4px">⏳</div>
-              <div class="sc-mx-label" style="font-size:11px;font-weight:800;margin-bottom:3px">타이밍 기다리기</div>
-              <div class="sc-mx-desc" style="font-size:10px">좋은 자릿수, 대기</div>
-              <div class="sc-mx-active-badge" id="mx-wait-env-badge" style="display:none">현재</div>
+            <!-- 2단계: 기다리기 -->
+            <div class="sc-mx-cell mx-stage2" id="mx-stage2" onclick="showCardDetail(1)">
+              <div class="sc-mx-emoji">⏳</div>
+              <div class="sc-mx-content">
+                <div class="sc-mx-stage-num">2단계</div>
+                <div class="sc-mx-label">기다리기</div>
+                <div class="sc-mx-desc">환경 보통 + 타이밍 나쁨 → 관망</div>
+              </div>
+              <div class="sc-mx-active-badge">현재</div>
             </div>
 
-            <!-- C: 조금만 들어가기 (WAIT TIM) -->
-            <div class="sc-mx-cell mx-wait-tim" id="mx-wait-tim" onclick="showCardDetail(1)" style="padding:12px 10px;min-height:90px;border-radius:0;border:none;cursor:pointer;position:relative">
-              <div style="font-size:20px;margin-bottom:4px">⚡</div>
-              <div class="sc-mx-label" style="font-size:11px;font-weight:800;margin-bottom:3px">조금만 들어가기</div>
-              <div class="sc-mx-desc" style="font-size:10px">골드 신호 빠짐, 조금만 사기↓</div>
-              <div class="sc-mx-active-badge" id="mx-wait-tim-badge" style="display:none">현재</div>
+            <!-- 3단계: 소액 진입 -->
+            <div class="sc-mx-cell mx-stage3" id="mx-stage3" onclick="showCardDetail(1)">
+              <div class="sc-mx-emoji">💧</div>
+              <div class="sc-mx-content">
+                <div class="sc-mx-stage-num">3단계</div>
+                <div class="sc-mx-label">소액 진입</div>
+                <div class="sc-mx-desc">환경 보통 + 타이밍 보통 → 비중 30% 이하</div>
+              </div>
+              <div class="sc-mx-active-badge">현재</div>
             </div>
 
-            <!-- D: 지금은 패스 (STOP) -->
-            <div class="sc-mx-cell mx-stop" id="mx-stop" onclick="showCardDetail(1)" style="padding:12px 10px;min-height:90px;border-radius:0;border:none;cursor:pointer;position:relative">
-              <div style="font-size:20px;margin-bottom:4px">❌</div>
-              <div class="sc-mx-label" style="font-size:11px;font-weight:800;margin-bottom:3px">지금은 패스</div>
-              <div class="sc-mx-desc" style="font-size:10px">모든 상황 나빠 / 타이밍 놓침</div>
-              <div class="sc-mx-active-badge" id="mx-stop-badge" style="display:none">현재</div>
+            <!-- 4단계: 반절 진입 -->
+            <div class="sc-mx-cell mx-stage4" id="mx-stage4" onclick="showCardDetail(1)">
+              <div class="sc-mx-emoji">⚡</div>
+              <div class="sc-mx-content">
+                <div class="sc-mx-stage-num">4단계</div>
+                <div class="sc-mx-label">반절 진입</div>
+                <div class="sc-mx-desc">환경 좋음 + 타이밍 보통 → 비중 50%</div>
+              </div>
+              <div class="sc-mx-active-badge">현재</div>
+            </div>
+
+            <!-- 5단계: 최적에 진입 -->
+            <div class="sc-mx-cell mx-stage5" id="mx-stage5" onclick="showCardDetail(1)">
+              <div class="sc-mx-emoji">🚀</div>
+              <div class="sc-mx-content">
+                <div class="sc-mx-stage-num">5단계</div>
+                <div class="sc-mx-label">최적에 진입</div>
+                <div class="sc-mx-desc">환경 좋음 + 타이밍 좋음 → 최대 비중 진입</div>
+              </div>
+              <div class="sc-mx-active-badge">현재</div>
             </div>
 
           </div>
           <!-- 점수 바 -->
-          <div style="display:flex;gap:8px;padding:7px 12px;background:var(--bg1);border-top:1px solid var(--bd)">
-            <div style="flex:1">
-              <div style="display:flex;justify-content:space-between;font-size:9px;color:var(--t3);margin-bottom:3px"><span>진체 상황</span><span>×</span></div>
-              <div style="height:3px;background:var(--bg3);border-radius:2px;overflow:hidden"><div id="mx-env-fill" style="height:100%;border-radius:2px;background:var(--G);width:0%;transition:width .5s"></div></div>
-              <div style="font-family:var(--num);font-size:10px;font-weight:700;color:var(--t2);margin-top:2px" id="mx-env-score-lbl">—점</div>
+          <div class="sc-matrix-scores">
+            <div class="sc-mx-score">
+              <div class="sc-mx-score-lbl">종합 환경</div>
+              <div class="sc-mx-score-bar"><div id="mx-env-fill" style="height:100%;border-radius:2px;background:var(--G);width:0%;transition:width .5s"></div></div>
+              <div class="sc-mx-score-val" id="mx-env-score-lbl" style="color:var(--t2)">—점</div>
             </div>
-            <div style="flex:1">
-              <div style="display:flex;justify-content:space-between;font-size:9px;color:var(--t3);margin-bottom:3px"><span>골드 신호 타이밍</span><span>=</span></div>
-              <div style="height:3px;background:var(--bg3);border-radius:2px;overflow:hidden"><div id="mx-gb-fill" style="height:100%;border-radius:2px;background:var(--A);width:0%;transition:width .5s"></div></div>
-              <div style="font-family:var(--num);font-size:10px;font-weight:700;color:var(--t2);margin-top:2px" id="mx-gb-score-lbl">—점</div>
+            <span class="sc-mx-vs">×</span>
+            <div class="sc-mx-score">
+              <div class="sc-mx-score-lbl">타이밍</div>
+              <div class="sc-mx-score-bar"><div id="mx-gb-fill" style="height:100%;border-radius:2px;background:var(--A);width:0%;transition:width .5s"></div></div>
+              <div class="sc-mx-score-val" id="mx-gb-score-lbl" style="color:var(--t2)">—점</div>
             </div>
-            <div style="display:flex;align-items:center;padding-top:4px">
-              <span id="mx-verdict-lbl" style="font-family:var(--num);font-size:11px;font-weight:800;color:var(--t2)">—</span>
+            <span class="sc-mx-vs">=</span>
+            <div class="sc-mx-score">
+              <div class="sc-mx-score-lbl">최종</div>
+              <div style="height:14px;display:flex;align-items:center">
+                <span id="mx-verdict-lbl" style="font-family:var(--num);font-size:11px;font-weight:800;color:var(--t2)">—</span>
+              </div>
             </div>
           </div>
         </div>
@@ -2929,46 +2969,81 @@ function renderSummaryCard(){
     gbScore=Math.min(99,gbScore);
   }
 
-  // ── 2×2 매트릭스 렌더링 ──────────────────────────────────────────
-  var envGood = diagScore>=50;   // 종합 환경 양호
-  var timGood = gbScore>=50;     // 황금각 타이밍 도달
-  // 4개 셀 중 현재 해당 셀에 active badge 표시
-  ['mx-go','mx-wait-env','mx-wait-tim','mx-stop'].forEach(function(id){
-    var cell=el(id); if(!cell) return;
-    // 기존 배지 제거
-    var old=cell.querySelector('.sc-mx-active-badge');
-    if(old) old.remove();
-    cell.classList.remove('active');
-  });
-  var activeId = envGood&&timGood?'mx-go': envGood&&!timGood?'mx-wait-env': !envGood&&timGood?'mx-wait-tim':'mx-stop';
-  var activeCell=el(activeId);
-  if(activeCell){
-    activeCell.classList.add('active');
-    var badge=document.createElement('span');
-    badge.className='sc-mx-active-badge';
-    badge.textContent='◀ 현재';
-    activeCell.appendChild(badge);
+  // ── 5단계 매트릭스 렌더링 ──────────────────────────────────────────
+  // 환경 점수: diagScore (0~100)
+  // 타이밍 점수: gbScore (0~100)
+  
+  // 5단계 분류 로직
+  var stage;
+  if (diagScore < 40 || gbScore < 40) {
+    stage = 1; // 최악의 구간: 환경 나쁨 또는 타이밍 나쁨
+  } else if (diagScore >= 40 && diagScore < 60 && gbScore >= 40 && gbScore < 60) {
+    stage = 2; // 기다리기: 둘 다 보통
+  } else if ((diagScore >= 60 && diagScore < 75 && gbScore >= 40 && gbScore < 60) || 
+             (diagScore >= 40 && diagScore < 60 && gbScore >= 60 && gbScore < 75)) {
+    stage = 3; // 소액 진입: 하나는 좋고 하나는 보통
+  } else if ((diagScore >= 75 && gbScore >= 40 && gbScore < 60) || 
+             (diagScore >= 60 && diagScore < 75 && gbScore >= 60 && gbScore < 75)) {
+    stage = 4; // 반절 진입: 하나는 매우 좋고 하나는 보통, 또는 둘 다 좋음
+  } else {
+    stage = 5; // 최적에 진입: 둘 다 매우 좋음 (환경 75+ & 타이밍 75+)
   }
+  
+  // 모든 단계 셀 초기화
+  ['mx-stage1','mx-stage2','mx-stage3','mx-stage4','mx-stage5'].forEach(function(id){
+    var cell=el(id); 
+    if(cell) cell.classList.remove('active');
+  });
+  
+  // 현재 단계 활성화
+  var activeId = 'mx-stage' + stage;
+  var activeCell=el(activeId);
+  if(activeCell) activeCell.classList.add('active');
+  
   // 점수 바
   var envFill=el('mx-env-fill'),envVal=el('mx-env-val');
   var gbFill=el('mx-gb-fill'),gbVal=el('mx-gb-val');
   var mxVerdict=el('mx-verdict');
+  
   if(envFill) envFill.style.width=diagScore+'%';
-  if(envFill) envFill.style.background=diagScore>=70?'var(--G)':diagScore>=50?'var(--A)':'var(--R)';
-  if(envVal){envVal.textContent=diagScore+'점';envVal.className='sc-mx-score-val '+(diagScore>=70?'good':diagScore>=50?'warn':'bad');}
+  if(envFill) envFill.style.background=diagScore>=75?'var(--G)':diagScore>=60?'var(--P)':diagScore>=40?'var(--A)':'var(--R)';
+  
   if(gbFill) gbFill.style.width=(gbScore||0)+'%';
-  if(gbFill) gbFill.style.background=gbScore>=70?'var(--G)':gbScore>=50?'var(--A)':'var(--t3)';
-  if(gbVal){gbVal.textContent=(gbScore||'—')+'점';gbVal.className='sc-mx-score-val '+(gbScore>=70?'good':gbScore>=50?'warn':'neut');}
-  var verdictMap={'mx-go':'진입 최적','mx-wait-env':'타이밍 대기','mx-wait-tim':'소량 진입','mx-stop':'패스'};
-  var verdictClsMap={'mx-go':'good','mx-wait-env':'warn','mx-wait-tim':'b','mx-stop':'bad'};
-  if(mxVerdict){mxVerdict.textContent=verdictMap[activeId];mxVerdict.style.color=activeId==='mx-go'?'var(--G)':activeId==='mx-wait-env'?'var(--A)':activeId==='mx-wait-tim'?'var(--B)':'var(--R)';}
+  if(gbFill) gbFill.style.background=gbScore>=75?'var(--G)':gbScore>=60?'var(--P)':gbScore>=40?'var(--A)':'var(--R)';
+  
+  // 헤더 점수 표시
+  var envScoreLbl=el('mx-env-score-lbl');
+  var gbScoreLbl=el('mx-gb-score-lbl');
+  if(envScoreLbl){
+    envScoreLbl.textContent=diagScore+'점';
+    envScoreLbl.style.color=diagScore>=75?'var(--G)':diagScore>=60?'var(--P)':diagScore>=40?'var(--A)':'var(--R)';
+  }
+  if(gbScoreLbl){
+    gbScoreLbl.textContent=(gbScore||'—')+'점';
+    gbScoreLbl.style.color=gbScore>=75?'var(--G)':gbScore>=60?'var(--P)':gbScore>=40?'var(--A)':'var(--R)';
+  }
+  
+  // 최종 판단
+  var verdictMap={1:'절대금지',2:'관망',3:'소액30%',4:'반절50%',5:'최적진입'};
+  var verdictColorMap={1:'var(--R)',2:'var(--A)',3:'var(--B)',4:'var(--P)',5:'var(--G)'};
+  var verdictLbl=el('mx-verdict-lbl');
+  
+  if(mxVerdict){
+    mxVerdict.textContent=verdictMap[stage];
+    mxVerdict.style.color=verdictColorMap[stage];
+  }
+  if(verdictLbl){
+    verdictLbl.textContent=verdictMap[stage];
+    verdictLbl.style.color=verdictColorMap[stage];
+  }
 
-  // ── sc-action 행동지침 (매트릭스 기반) ───────────────────────────
+  // ── sc-action 행동지침 (5단계 기반) ───────────────────────────
   var actionCls,action;
-  if(activeId==='mx-go'){actionCls='go';action='✅ BUY1 지정가 + 손절가 동시 등록 → 기다리세요';}
-  else if(activeId==='mx-wait-env'){actionCls='wait';action='⏳ 장세 좋음. 황금각(RSI↓ or Fib 수렴) 신호 올 때까지 대기.';}
-  else if(activeId==='mx-wait-tim'){actionCls='wait';action='⚡ 황금각 나옴. 장세 불리 → BUY1 소량만. BUY2까지 분산.';}
-  else{actionCls='stop';action='❌ 환경·타이밍 모두 불리. RSI 개선 또는 다른 코인 검색.';}
+  if(stage===5){actionCls='go';action='🚀 최대 비중 진입! BUY1 지정가 + 손절 동시 등록';}
+  else if(stage===4){actionCls='wait';action='⚡ 반절 진입. BUY1에서 50% 비중, BUY2 대기';}
+  else if(stage===3){actionCls='wait';action='💧 소액만 진입. BUY1에서 30% 이하 비중';}
+  else if(stage===2){actionCls='wait';action='⏳ 기다리기. 환경 또는 타이밍 개선 대기';}
+  else{actionCls='stop';action='💀 절대 진입 금지! 다른 코인 검색 또는 대기';}
 
   // 하위 호환용 (기존 sc-title 등 숨김 처리 — 매트릭스로 대체)
   var finalScore=Math.max(1,Math.min(99,Math.round((diagScore+(gbScore||diagScore))/2)));
